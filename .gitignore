@@ -16,10 +16,16 @@ ml/models/*.pkl
 
 # Terraform: keep the .tf source and the lock file (both should be
 # versioned so provider versions stay reproducible), but never commit the
-# downloaded provider binaries or any real state file.
+# downloaded provider binaries, any real state file, saved plan output, or
+# crash logs. *.tfvars is excluded because that's where real values (your
+# public IP, real vpc_id/subnet_ids, db_password) actually live -- never
+# committed, only passed locally or via TF_VAR_ environment variables.
 devops/terraform/.terraform/
 devops/terraform/*.tfstate
 devops/terraform/*.tfstate.*
+devops/terraform/*.tfvars
+devops/terraform/*.tfplan
+devops/terraform/crash.log
 
 # Ad-hoc logs generated while running/debugging the stack locally
 *.log
