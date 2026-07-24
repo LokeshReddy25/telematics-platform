@@ -1,0 +1,30 @@
+# datasource.yml
+#
+# Grafana provisioning file that auto-configures InfluxDB as a datasource on
+# container startup, so a fresh `docker-compose up` gives you a working
+# dashboard with zero manual clicking-through-the-UI setup. Grafana watches
+# its /etc/grafana/provisioning/datasources directory for files like this one.
+#
+# We use the Flux query language (rather than InfluxQL) because InfluxDB 2.x
+# is Flux-native and Flux composes more naturally with the bucket/org model
+# used by storage/influxdb_writer.py.
+
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB-Telematics
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    editable: true
+    jsonData:
+      version: Flux
+      organization: telematics-org
+      defaultBucket: telematics
+      tlsSkipVerify: true
+    secureJsonData:
+      # In local Docker Compose this matches INFLUXDB_TOKEN used by
+      # storage/influxdb_writer.py; in Kubernetes/production this is
+      # injected from a Secret instead of committed here.
+      token: telematics-dev-token

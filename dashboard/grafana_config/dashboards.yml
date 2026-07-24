@@ -1,0 +1,23 @@
+# dashboards.yml
+#
+# Grafana "dashboard provider" config. datasource.yml (in this same folder)
+# tells Grafana WHERE to get data from; this file tells Grafana WHERE to
+# find dashboard JSON files to auto-load on startup (dashboard.json).
+# Without this provider file, dashboard.json would sit unused -- Grafana
+# only picks up provisioned dashboards from directories it's explicitly
+# told to scan.
+
+apiVersion: 1
+
+providers:
+  - name: "Telematics Dashboards"
+    orgId: 1
+    folder: ""
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      # Matches the path this directory is mounted to inside the Grafana
+      # container in docker-compose.yml.
+      path: /etc/grafana/provisioning/dashboards

@@ -1,0 +1,60 @@
+# devops/k8s/simulator-deployment.yaml
+#
+# Runs the trip simulator + Kafka producer (devops/Dockerfile.simulator) as
+# a continuously-running Deployment, generating a steady stream of vehicle
+# events into Kafka so the rest of the pipeline always has live data to
+# process in a demo/cluster environment.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trip-simulator
+  namespace: telematics
+  labels:
+    app: trip-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trip-simulator
+  template:
+    metadata:
+      labels:
+        app: trip-simulator
+    spec:
+      containers:
+        - name: trip-simulator
+          image: telematics/trip-simulator:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--bootstrap"
+            - "$(KAFKA_BOOTSTRAP_SERVERS)"
+            - "--drivers"
+            - "10"
+            - "--trips"
+            - "5"
+            - "--speed"
+            - "0.5"
+          envFrom:
+            - configMapRef:
+                name: telematics-config
+          readinessProbe:
+            exec:
+              command: ["pgrep", "-f", "kafka_producer.py"]
+            initialDelaySeconds: 10
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command: ["pgrep", "-f", "kafka_producer.py"]
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"

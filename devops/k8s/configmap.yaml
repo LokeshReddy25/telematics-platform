@@ -1,0 +1,36 @@
+# devops/k8s/configmap.yaml
+#
+# Shared, non-secret runtime configuration for every deployment in this
+# namespace. Centralising it here means kafka-deployment.yaml,
+# spark-deployment.yaml, simulator-deployment.yaml, and
+# influxdb-deployment.yaml all reference the SAME values instead of each
+# hardcoding its own copy that could silently drift out of sync (e.g. a
+# stale Kafka bootstrap address after a rename).
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telematics-config
+  namespace: telematics
+data:
+  KAFKA_BOOTSTRAP_SERVERS: "kafka-service:9092"
+  KAFKA_TOPIC: "vehicle.trip.events"
+  INFLUXDB_URL: "http://influxdb-service:8086"
+  INFLUXDB_ORG: "telematics-org"
+  INFLUXDB_BUCKET: "telematics"
+  SPARK_CHECKPOINT_LOCATION: "/tmp/telematics-checkpoints"
+---
+# Token is intentionally kept separate as a Secret rather than a ConfigMap
+# value, since InfluxDB auth tokens are credentials, not plain config.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: telematics-secrets
+  namespace: telematics
+type: Opaque
+stringData:
+  INFLUXDB_TOKEN: "telematics-dev-token"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: telematics

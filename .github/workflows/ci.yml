@@ -1,0 +1,133 @@
+# .github/workflows/ci.yml
+#
+# CI/CD pipeline for the telematics platform. Four jobs, gated so each only
+# starts once the previous one succeeds (via `needs:`): lint -> test ->
+# build -> deploy. Fast, cheap checks (linting) run first so a style
+# mistake fails in seconds instead of burning CI minutes on Docker builds.
+#
+# IMPORTANT: the `deploy` job is intentionally NOT wired to `push` or
+# `pull_request` at all -- it only exists under the `workflow_dispatch`
+# trigger, which is GitHub's manual "Run workflow" button in the Actions
+# tab. There is no code path in this file that can deploy to AWS
+# automatically; a human has to explicitly click a button in the GitHub UI
+# every single time, on purpose.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
+  # Enables the manual "Run workflow" button in the GitHub Actions tab.
+  # This is the ONLY way the deploy job below can ever execute.
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: Lint (flake8 + black)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install lint tools
+        run: pip install -r requirements-dev.txt
+
+      - name: Run flake8 (style + error checks)
+        # max-line-length relaxed slightly beyond PEP8's 79 to match the
+        # more readable ~120 col style used throughout this project's
+        # heavily-commented modules, while still catching real issues
+        # (unused imports, undefined names, syntax problems).
+        run: flake8 . --max-line-length=120 --extend-exclude=ml/models
+
+      - name: Run black (formatting check)
+        # --check makes black report formatting violations without
+        # rewriting files -- CI should never silently modify your code.
+        run: black --check --line-length=120 .
+
+  test:
+    name: Test (pytest)
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ML + test dependencies
+        run: |
+          pip install -r ml/requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Train risk model
+        # tests/test_risk_scorer.py imports risk_scorer.py, which loads
+        # ml/models/risk_model.pkl at module-import time. The .pkl is
+        # gitignored (it's a generated artifact, not source), so CI trains
+        # a fresh one here -- exactly the same command a developer runs
+        # locally before testing.
+        run: python ml/train_model.py
+
+      - name: Run pytest
+        run: pytest tests/ -v
+
+  build:
+    name: Build Docker images
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build simulator image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: devops/Dockerfile.simulator
+          push: false
+          tags: telematics/trip-simulator:ci
+
+      - name: Build Spark image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: devops/Dockerfile.spark
+          push: false
+          tags: telematics/spark-stream-processor:ci
+
+      - name: Build ML image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: devops/Dockerfile.ml
+          push: false
+          tags: telematics/ml-trainer:ci
+
+  deploy:
+    name: Deploy to AWS (manual only)
+    runs-on: ubuntu-latest
+    needs: build
+    # This condition is redundant with the trigger design above (deploy has
+    # no `push`/`pull_request` path to begin with) but is kept explicit as
+    # a second, visible guardrail: this job runs ONLY when a human
+    # triggers `workflow_dispatch` from the Actions tab.
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Deploy placeholder
+        run: |
+          echo "This is where 'terraform apply' or a real AWS deploy would go."
+          echo "It is deliberately NOT implemented here -- deployment stays"
+          echo "a manual action run from your own machine with your own"
+          echo "AWS credentials, never an automatic side effect of a push."

@@ -1,0 +1,63 @@
+# devops/k8s/spark-deployment.yaml
+#
+# Runs the Structured Streaming job (spark/stream_processor.py) built by
+# devops/Dockerfile.spark. Modelled as a single long-running Deployment
+# (rather than a Job) because a streaming query is meant to run
+# continuously, not complete.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-stream-processor
+  namespace: telematics
+  labels:
+    app: spark-stream-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-stream-processor
+  template:
+    metadata:
+      labels:
+        app: spark-stream-processor
+    spec:
+      containers:
+        - name: spark-stream-processor
+          image: telematics/spark-stream-processor:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: telematics-config
+            - secretRef:
+                name: telematics-secrets
+          # No exposed ports: this workload only consumes from Kafka and
+          # writes to InfluxDB, it doesn't serve traffic itself. Liveness is
+          # therefore checked via process existence (exec probe) rather than
+          # a network probe.
+          readinessProbe:
+            exec:
+              command: ["pgrep", "-f", "stream_processor.py"]
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            exec:
+              command: ["pgrep", "-f", "stream_processor.py"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          volumeMounts:
+            - name: spark-checkpoints
+              mountPath: /tmp/telematics-checkpoints
+      volumes:
+        - name: spark-checkpoints
+          emptyDir: {}

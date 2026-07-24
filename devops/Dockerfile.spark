@@ -1,0 +1,44 @@
+# devops/Dockerfile.spark
+#
+# Containerises the Spark Structured Streaming job (Phase 6). Based on the
+# official Apache Spark image, which ships a working Spark + Java 11 +
+# Python 3 runtime out of the box so we don't have to hand-roll a JVM
+# install on top of a plain Python image.
+#
+# NOTE: this originally targeted bitnami/spark:3.5, but Bitnami moved its
+# versioned image tags behind a paid "Bitnami Secure Images" subscription
+# after this project was first speced, pulling bitnami/spark:3.5 from free
+# Docker Hub access entirely. apache/spark is the official, freely
+# available replacement with an equivalent Java+Python+Spark runtime.
+#
+# We layer PySpark's Python-side dependencies (scikit-learn, pandas,
+# influxdb-client) on top, plus the ml/ and storage/ source directories the
+# streaming job imports at runtime.
+
+FROM apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu
+
+USER root
+
+WORKDIR /app
+
+# The Ubuntu-based Spark image doesn't ship pip by default; install it
+# alongside the Python dependencies stream_processor.py needs at runtime.
+RUN apt-get update && apt-get install -y --no-install-recommends python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install the Python dependencies needed by stream_processor.py and the
+# modules it imports (risk_scorer.py, influxdb_writer.py).
+COPY spark/requirements.txt ./spark-requirements.txt
+RUN pip install --no-cache-dir -r spark-requirements.txt
+
+# Copy all three source directories the streaming job spans: the Spark job
+# itself, the ML scoring module, and the InfluxDB persistence module.
+COPY spark/ ./spark/
+COPY ml/ ./ml/
+COPY storage/ ./storage/
+
+# Kafka's Spark connector is pulled in at submit time via --packages so the
+# image doesn't need to bundle a specific connector jar version manually.
+ENV SPARK_KAFKA_PACKAGE="org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0"
+
+ENTRYPOINT ["/opt/spark/bin/spark-submit", "--packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0", "/app/spark/stream_processor.py"]

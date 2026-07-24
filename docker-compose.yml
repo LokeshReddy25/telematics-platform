@@ -1,0 +1,78 @@
+# docker-compose.yml (project root)
+#
+# Brings up the rest of the local stack that sits downstream of Kafka:
+# InfluxDB (the time-series sink storage/influxdb_writer.py writes to) and
+# Grafana (the dashboard defined in dashboard/grafana_config/). Kept as a
+# separate compose file from kafka/docker-compose.yml -- rather than one
+# giant file -- so the Kafka layer (Phase 3 of the build) stays a clean,
+# independent unit, while this file adds the storage/visualisation layer on
+# top of it via the shared `telematics-net` Docker network.
+#
+# Run order:
+#   1) docker compose -f kafka/docker-compose.yml up -d   (creates telematics-net)
+#   2) docker compose up -d                                 (this file, joins telematics-net)
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    container_name: telematics-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      # DOCKER_INFLUXDB_INIT_MODE=setup runs InfluxDB's first-boot wizard
+      # non-interactively, creating the org/bucket/token that
+      # storage/influxdb_writer.py and dashboard/grafana_config/datasource.yml
+      # are already hardcoded to expect -- so no manual UI setup is needed.
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: admin
+      DOCKER_INFLUXDB_INIT_PASSWORD: telematics-admin-pw
+      DOCKER_INFLUXDB_INIT_ORG: telematics-org
+      DOCKER_INFLUXDB_INIT_BUCKET: telematics
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: telematics-dev-token
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    networks:
+      - telematics-net
+
+  grafana:
+    image: grafana/grafana:10.4.2
+    container_name: telematics-grafana
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      # Skip Grafana's own login wall for local dev convenience; production
+      # (Amazon Managed Grafana, per README) would use real auth instead.
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_SECURITY_ADMIN_PASSWORD: telematics-admin-pw
+    volumes:
+      # Mount the two provisioning files this project already defines
+      # (Phase 8) straight into Grafana's provisioning directories, so the
+      # InfluxDB datasource and the driver-risk dashboard are live the
+      # moment the container starts -- no manual click-through setup.
+      - ./dashboard/grafana_config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml:ro
+      - ./dashboard/grafana_config/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro
+      - ./dashboard/grafana_config/dashboard.json:/etc/grafana/provisioning/dashboards/dashboard.json:ro
+      - grafana-data:/var/lib/grafana
+    networks:
+      - telematics-net
+
+networks:
+  # Declared as `external` because kafka/docker-compose.yml is the one that
+  # actually creates this network -- it must be started first.
+  telematics-net:
+    name: telematics-net
+    external: true
+
+volumes:
+  influxdb-data:
+  grafana-data:

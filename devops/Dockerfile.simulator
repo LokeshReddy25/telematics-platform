@@ -1,0 +1,33 @@
+# devops/Dockerfile.simulator
+#
+# Containerises the trip simulator + Kafka producer (Phase 1/2). Built from
+# python:3.11-slim to keep the image small since this service has no heavy
+# native dependencies (unlike the Spark/ML images).
+
+FROM python:3.11-slim
+
+# Kafka's C client (librdkafka), which confluent-kafka wraps, needs build
+# tools + headers to compile its Python bindings on some platforms. procps
+# provides `pgrep`, which devops/k8s/simulator-deployment.yaml's liveness
+# and readiness probes exec into the container to run -- python:3.11-slim
+# doesn't ship it by default.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    librdkafka-dev \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy only requirements first so Docker's layer cache is reused across
+# rebuilds when only application code changes, not dependencies.
+COPY simulator/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY simulator/ ./
+
+# Defaults can be overridden at `docker run` / docker-compose time via
+# environment or command args; --bootstrap defaults to the Docker-internal
+# Kafka listener since this container runs on the same Docker network.
+ENTRYPOINT ["python", "kafka_producer.py"]
+CMD ["--bootstrap", "kafka:9092", "--drivers", "5", "--trips", "3", "--speed", "0.5"]
