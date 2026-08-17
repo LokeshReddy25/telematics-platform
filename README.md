@@ -1,6 +1,6 @@
 # Connected Vehicle Insurance Telematics Platform
 
-A production-structured, end-to-end telematics pipeline that turns raw connected-vehicle trip data into a per-trip driver risk score, streamed live to a monitoring dashboard. It models the kind of usage-based insurance (UBI) architecture built and operated by insurers like **ERGO** and **Allianz** and automotive/connected-car groups like **CARIAD** and **BMW** across the NRW/Rhineland tech corridor: simulated vehicle telemetry flows through **Kafka**, is aggregated and scored in near-real-time by **Spark Structured Streaming** and a **scikit-learn** risk model, is persisted to **InfluxDB**, and is visualised live in **Grafana** — with a full Docker/Kubernetes/Terraform/CI DevOps layer underneath so the same pipeline that runs on a laptop can be deployed to AWS.
+A production-structured, end-to-end telematics pipeline that turns raw connected-vehicle trip data into a per-trip driver risk score, streamed live to a monitoring dashboard. It models the kind of usage-based insurance (UBI) architecture built by insurers and automotive/connected-vehicle platforms worldwide: simulated vehicle telemetry flows through **Kafka**, is aggregated and scored in near-real-time by **Spark Structured Streaming** and a **scikit-learn** risk model, is persisted to **InfluxDB**, and is visualised live in **Grafana** — with a full Docker/Kubernetes/Terraform/CI DevOps layer underneath so the same pipeline that runs on a laptop can be deployed to AWS.
 
 ## Architecture
 
