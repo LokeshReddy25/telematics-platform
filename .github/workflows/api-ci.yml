@@ -1,0 +1,61 @@
+# .github/workflows/api-ci.yml
+#
+# CI for the Vehicle Telematics API. Two jobs:
+#   test  — pytest against an in-memory SQLite database (no Postgres or
+#           Docker needed), so this is fast and runs on every push/PR.
+#   build — builds the API Docker image, only once the tests pass.
+#
+# Deployment is deliberately NOT here. The repo's main CI (ci.yml) keeps
+# deploy behind a manual workflow_dispatch, and the API follows the same
+# rule: shipping to AWS is a human decision, never a side effect of push.
+
+name: API CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - ".github/workflows/api-ci.yml"
+  pull_request:
+    branches: ["**"]
+    paths:
+      - "api/**"
+      - ".github/workflows/api-ci.yml"
+
+jobs:
+  test:
+    name: Test (pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install API dependencies
+        run: pip install -r api/requirements.txt
+
+      - name: Run pytest
+        run: python -m pytest api/tests -v
+
+  build:
+    name: Build API image
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build API image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api
+          push: false
+          tags: telematics/vehicle-api:ci

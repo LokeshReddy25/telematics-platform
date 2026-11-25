@@ -1,0 +1,45 @@
+# api/docker-compose.yml
+#
+# Local dev stack for the Vehicle Telematics API: the API plus its
+# PostgreSQL database. Kafka / Spark / InfluxDB are deliberately NOT
+# here — they live in the repo-root docker-compose.yml and keep running
+# exactly as before. Run from inside api/:
+#
+#     docker compose up --build
+#
+# The API is then at http://localhost:8000 (interactive docs at /docs),
+# Postgres at localhost:5432.
+#
+# JWT_SECRET below is a dev-only value. For anything beyond local dev,
+# override it: JWT_SECRET=<real secret> docker compose up
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: telematics
+      POSTGRES_PASSWORD: telematics-dev
+      POSTGRES_DB: telematics
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telematics -d telematics"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://telematics:telematics-dev@postgres:5432/telematics
+      JWT_SECRET: dev-only-secret-change-me
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:

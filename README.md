@@ -113,6 +113,42 @@ cd ..
 #    Then open Grafana at http://localhost:3000 to view the live dashboard.
 ```
 
+## Vehicle Telematics API
+
+A FastAPI service (`api/`) that turns the streaming platform into a
+queryable product: register vehicles and trips, ingest telemetry events,
+and read driver risk scores — all behind JWT auth. Risk scores live in
+PostgreSQL (the API's store); InfluxDB stays as the time-series sink for
+the streaming pipeline, and the Spark job writes scored trips here via
+`POST /drivers/{driver_id}/risk-scores`.
+
+```bash
+# From api/ — starts the API plus PostgreSQL (Kafka/Spark untouched)
+cd api
+docker compose up --build
+# API at http://localhost:8000 — interactive docs at /docs
+
+# Without Docker: pip install -r requirements.txt, then
+# DATABASE_URL defaults to a local SQLite file (telematics.db)
+uvicorn app.main:app --reload
+```
+
+Endpoints (all except `/health` need a `Bearer` token from `/auth/login`):
+
+| Method & path | What it does |
+|---|---|
+| `GET /health` | Liveness check (also pings the database) |
+| `POST /auth/register`, `POST /auth/login` | Create a user / get a JWT (60-min expiry) |
+| `POST /vehicles`, `GET /vehicles`, `GET /vehicles/{id}` | Register and list vehicles (duplicate VIN → 409) |
+| `POST /trips`, `GET /trips`, `GET /trips/{id}` | Start a trip, list trips, fetch one |
+| `POST /telemetry` | Ingest one event or a batch of events |
+| `GET /trips/{id}/telemetry`, `GET /vehicles/{id}/telemetry?from=&to=` | Read events back, in timestamp order |
+| `POST /drivers/{id}/risk-scores` | Record a computed score (Spark job's writer) |
+| `GET /drivers/{id}/risk-score`, `GET /drivers/{id}/risk-scores?limit=` | Latest score / score history (scoped to your own driver) |
+
+Tests: `python -m pytest api/tests -v` (24 tests, in-memory SQLite, no
+Postgres needed). CI runs them on every push in `.github/workflows/api-ci.yml`.
+
 ## Environment Variables
 
 | Variable | Used By | Default | Description |
@@ -123,6 +159,8 @@ cd ..
 | `INFLUXDB_TOKEN` | storage, spark | `telematics-dev-token` | InfluxDB auth token |
 | `INFLUXDB_ORG` | storage, spark | `telematics-org` | InfluxDB organization name |
 | `INFLUXDB_BUCKET` | storage, spark | `telematics` | InfluxDB bucket for scored trips |
+| `DATABASE_URL` | api | `sqlite:///./telematics.db` | API database; compose sets `postgresql://telematics:telematics-dev@postgres:5432/telematics` |
+| `JWT_SECRET` | api | `dev-only-secret-change-me` | Secret signing the API's JWTs — set a real one outside local dev |
 
 ## Tech Stack
 
@@ -132,6 +170,10 @@ cd ..
 | Apache Kafka (Confluent) | 7.5.0 | Event streaming backbone |
 | Apache Spark (PySpark) | 3.5.0 | Structured Streaming aggregation |
 | scikit-learn | 1.4.0 | GradientBoostingRegressor risk model |
+| FastAPI | 0.115 | Vehicle Telematics API (`api/`) |
+| PostgreSQL (SQLAlchemy) | 16 / 2.0 | API store: vehicles, trips, telemetry, risk scores |
+| JWT (python-jose + passlib) | — | API authentication (HS256, 60-min tokens) |
+| pytest | 8.3 | API test suite (`api/tests/`, 24 tests) |
 | InfluxDB | 2.7 | Time-series risk score storage |
 | Grafana | latest | Live risk dashboard |
 | Prometheus | latest | Infrastructure/service metrics |
