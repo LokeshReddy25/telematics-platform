@@ -1,0 +1,86 @@
+
+### 2026-11-26T09:26:24.708010+00:00 SSM Run Command 96e6452d-a550-4536-864a-b12dfcaf2bd7 on i-02b5a401355a83e97
+$ wc -l /var/log/telematics-bootstrap.log; grep -vE "^\s*(Installing|Verifying|Downloading|Running|Upgrading|Cleanup|Complete|Dependencies|Transaction|Package|=+|\(|Total|Install|Last metadata|Amazon Linux|Preparing|Running scriptlet)" /var/log/telematics-bootstrap.log | LC_ALL=C tr -cd "\11\12\15\40-\176" | tail -c 15000
+--- status: Success (exit 0)
+--- stdout:
+167 /var/log/telematics-bootstrap.log
++ shutdown -h +300 'telematics-demo: auto-terminate after 300 minutes'
+Shutdown scheduled for Thu 2026-11-26 13:34:53 UTC, use 'shutdown -c' to cancel.
++ '[' '!' -f /swapfile ']'
++ fallocate -l 4G /swapfile
++ chmod 600 /swapfile
++ mkswap /swapfile
+Setting up swapspace version 1, size = 4 GiB (4294963200 bytes)
+no label, UUID=d04b5edc-c0b0-4f02-be5e-adca07b67e28
++ swapon /swapfile
++ echo '/swapfile swap swap defaults 0 0'
++ dnf install -y docker git
+ docker                  x86_64  25.0.18-1.amzn2023.0.4      amazonlinux   49 M
+ git                     x86_64  2.50.1-1.amzn2023.0.2       amazonlinux   50 k
+ container-selinux       noarch  4:2.245.0-1.amzn2023        amazonlinux   58 k
+ containerd              x86_64  2.3.7-1.amzn2023.0.4        amazonlinux   24 M
+ git-core                x86_64  2.50.1-1.amzn2023.0.2       amazonlinux  4.9 M
+ git-core-doc            noarch  2.50.1-1.amzn2023.0.2       amazonlinux  2.8 M
+ iptables-libs           x86_64  1.8.8-3.amzn2023.0.2        amazonlinux  401 k
+ iptables-nft            x86_64  1.8.8-3.amzn2023.0.2        amazonlinux  183 k
+ libcgroup               x86_64  3.0-1.amzn2023.0.1          amazonlinux   75 k
+ libnetfilter_conntrack  x86_64  1.0.8-2.amzn2023.0.2        amazonlinux   58 k
+ libnfnetlink            x86_64  1.0.1-19.amzn2023.0.2       amazonlinux   30 k
+ libnftnl                x86_64  1.2.2-2.amzn2023.0.2        amazonlinux   84 k
+ perl-Error              noarch  1:0.17030-2.amzn2023.0.1    amazonlinux   42 k
+ perl-File-Find          noarch  1.37-477.amzn2023.0.11      amazonlinux   26 k
+ perl-Git                noarch  2.50.1-1.amzn2023.0.2       amazonlinux   38 k
+ perl-TermReadKey        x86_64  2.38-9.amzn2023.0.3         amazonlinux   36 k
+ perl-lib                x86_64  0.65-477.amzn2023.0.11      amazonlinux   15 k
+ pigz                    x86_64  2.5-1.amzn2023.0.4          amazonlinux   83 k
+ runc                    x86_64  1.4.3-1.amzn2023.0.3        amazonlinux  3.7 M
+
+
+--------------------------------------------------------------------------------
+Created symlink /etc/systemd/system/sockets.target.wants/docker.socket  /usr/lib/systemd/system/docker.socket.
+
+
+  container-selinux-4:2.245.0-1.amzn2023.noarch                                 
+  containerd-2.3.7-1.amzn2023.0.4.x86_64                                        
+  docker-25.0.18-1.amzn2023.0.4.x86_64                                          
+  git-2.50.1-1.amzn2023.0.2.x86_64                                              
+  git-core-2.50.1-1.amzn2023.0.2.x86_64                                         
+  git-core-doc-2.50.1-1.amzn2023.0.2.noarch                                     
+  iptables-libs-1.8.8-3.amzn2023.0.2.x86_64                                     
+  iptables-nft-1.8.8-3.amzn2023.0.2.x86_64                                      
+  libcgroup-3.0-1.amzn2023.0.1.x86_64                                           
+  libnetfilter_conntrack-1.0.8-2.amzn2023.0.2.x86_64                            
+  libnfnetlink-1.0.1-19.amzn2023.0.2.x86_64                                     
+  libnftnl-1.2.2-2.amzn2023.0.2.x86_64                                          
+  perl-Error-1:0.17030-2.amzn2023.0.1.noarch                                    
+  perl-File-Find-1.37-477.amzn2023.0.11.noarch                                  
+  perl-Git-2.50.1-1.amzn2023.0.2.noarch                                         
+  perl-TermReadKey-2.38-9.amzn2023.0.3.x86_64                                   
+  perl-lib-0.65-477.amzn2023.0.11.x86_64                                        
+  pigz-2.5-1.amzn2023.0.4.x86_64                                                
+  runc-1.4.3-1.amzn2023.0.3.x86_64                                              
+
++ systemctl enable --now docker
+Created symlink /etc/systemd/system/multi-user.target.wants/docker.service  /usr/lib/systemd/system/docker.service.
++ PLUGINS=/usr/local/lib/docker/cli-plugins
++ mkdir -p /usr/local/lib/docker/cli-plugins
++ curl -fsSL -o /usr/local/lib/docker/cli-plugins/docker-compose https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64
++ sha256sum -c -
++ echo '383ce6698cd5d5bbf958d2c8489ed75094e34a77d340404d9f32c4ae9e12baf0  /usr/local/lib/docker/cli-plugins/docker-compose'
+/usr/local/lib/docker/cli-plugins/docker-compose: OK
++ curl -fsSL -o /usr/local/lib/docker/cli-plugins/docker-buildx https://github.com/docker/buildx/releases/download/v0.17.1/buildx-v0.17.1.linux-amd64
++ echo 'aa7a9778349e1a8ace685e4c51a1d33e7a9b0aa6925d1c625b09cb3800eba696  /usr/local/lib/docker/cli-plugins/docker-buildx'
++ sha256sum -c -
+/usr/local/lib/docker/cli-plugins/docker-buildx: OK
++ chmod 755 /usr/local/lib/docker/cli-plugins/docker-compose /usr/local/lib/docker/cli-plugins/docker-buildx
++ docker compose version
+Docker Compose version v2.29.7
++ docker buildx version
+github.com/docker/buildx v0.17.1 257815a6fbaee88976808020bf04274388275ae8
++ git clone --branch main --depth 1 https://github.com/LokeshReddy25/telematics-platform /opt/telematics-platform
+Cloning into '/opt/telematics-platform'...
++ echo IyBkb2NrZXItY29tcG9zZS5hd3MueW1sCiMKIyBPdmVycmlkZSBmb3IgdGhlIHNpbmdsZS1FQzIgZGVtbyAoZGV2b3BzL3RlcnJhZm9ybS1lYzIvKS4gVXNlIGl0IG9uIHRvcCBvZgojIHRoZSByb290IGZpbGU6CiMKIyAgICAgZG9ja2VyIGNvbXBvc2UgLWYgZG9ja2VyLWNvbXBvc2UueW1sIC1mIGRvY2tlci1jb21wb3NlLmF3cy55bWwgdXAgLWQgLS1idWlsZAojCiMgTWVtb3J5OiBubyBsaW1pdHMgYXJlIHNldC4gVGhlIHdob2xlIHN0YWNrIG1lYXN1cmVkIGFib3V0IDEuNzggR2lCIGxvY2FsbHkKIyAocmVzdWx0cy9yYXcvbG9jYWxfbWVtb3J5X2RvY2tlcl9zdGF0cy5sb2cpLCB3ZWxsIHdpdGhpbiB0aGUgOCBHaUIKIyBtN2ktZmxleC5sYXJnZSwgYW5kIHVzZXJfZGF0YSBhbHNvIGFkZHMgNCBHQiBvZiBzd2FwLgojCiMgUG9ydHM6IGV2ZXJ5IHB1Ymxpc2hlZCBwb3J0IGlzIHJlLWJvdW5kIHRvIDEyNy4wLjAuMSwgc28gbm90aGluZyBsaXN0ZW5zIG9uCiMgdGhlIGluc3RhbmNlJ3MgbmV0d29yayBpbnRlcmZhY2UuIFRoZSBzZWN1cml0eSBncm91cCBhbHJlYWR5IGhhcyBubyBpbmJvdW5kCiMgcnVsZXM7IHRoaXMgaXMgYSBzZWNvbmQgbGF5ZXIuIEdyYWZhbmEgYW5kIHRoZSBSaXNrIEFQSSBhcmUgcmVhY2hlZCBvbmx5CiMgdGhyb3VnaCBhbiBTU00gU2Vzc2lvbiBNYW5hZ2VyIHBvcnQtZm9yd2FyZC4KIwojIGAhb3ZlcnJpZGVgIChDb21wb3NlIHYyLjI0LjQrKSByZXBsYWNlcyB0aGUgcG9ydCBsaXN0IGluc3RlYWQgb2YgYXBwZW5kaW5nLgoKc2VydmljZXM6CiAgem9va2VlcGVyOgogICAgcG9ydHM6ICFvdmVycmlkZQogICAgICAtICIxMjcuMC4wLjE6MjE4MToyMTgxIgogIGthZmthOgogICAgcG9ydHM6ICFvdmVycmlkZQogICAgICAtICIxMjcuMC4wLjE6MjkwOTI6MjkwOTIiCiAga2Fma2EtdWk6CiAgICBwb3J0czogIW92ZXJyaWRlCiAgICAgIC0gIjEyNy4wLjAuMTo4MDgwOjgwODAiCiAgaW5mbHV4ZGI6CiAgICBwb3J0czogIW92ZXJyaWRlCiAgICAgIC0gIjEyNy4wLjAuMTo4MDg2OjgwODYiCiAgZ3JhZmFuYToKICAgIHBvcnRzOiAhb3ZlcnJpZGUKICAgICAgLSAiMTI3LjAuMC4xOjMwMDA6MzAwMCIKICByaXNrLWFwaToKICAgIHBvcnRzOiAhb3ZlcnJpZGUKICAgICAgLSAiMTI3LjAuMC4xOjgwMDE6ODAwMCIK
++ base64 -d
+++ date -Is
++ echo 'bootstrap complete 2026-11-26T08:35:40+00:00'
+

@@ -1,0 +1,6 @@
+$ printf 'whoami\nexit\n' | aws ssm start-session --region ap-southeast-2 --target i-02b5a401355a83e97   (2026-11-26T08:35:57+00:00)
+
+Starting session with SessionId: <redacted>
+[?2004hsh-5.2$ [Ksh-5.2$ 
+aws: [ERROR]: Command '['session-manager-plugin', 'AWS_SSM_START_SESSION_RESPONSE', 'ap-southeast-2', 'StartSession', '', '{"Target": "i-02b5a401355a83e97"}', 'https://ssm.ap-southeast-2.amazonaws.com']' returned non-zero exit status 143.
+exit=124

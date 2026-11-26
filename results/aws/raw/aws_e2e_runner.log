@@ -1,0 +1,41 @@
++ sleep 5
++ for i in $(seq 1 60)
++ docker logs telematics-spark-bench
++ grep -q 'Streaming query started'
++ sleep 5
++ for i in $(seq 1 60)
++ docker logs telematics-spark-bench
++ grep -q 'Streaming query started'
++ break
++ docker logs telematics-spark-bench
++ grep 'Streaming query started'
+Streaming query started. Reading from kafka=kafka:9092 topic=vehicle.trip.events, window=60 seconds, checkpoint=/tmp/telematics-checkpoints
++ bash benchmarks/run_e2e.sh
+ALL_DONE
++ docker rm -f telematics-spark-bench
+telematics-spark-bench
++ docker compose -f docker-compose.yml -f docker-compose.aws.yml start spark simulator
+ Container telematics-zookeeper  Waiting
+ Container telematics-platform-model-trainer-1  Starting
+ Container telematics-platform-model-trainer-1  Started
+ Container telematics-zookeeper  Healthy
+ Container telematics-kafka  Waiting
+ Container telematics-kafka  Healthy
+ Container telematics-platform-kafka-init-1  Starting
+ Container telematics-platform-kafka-init-1  Started
+ Container telematics-platform-model-trainer-1  Waiting
+ Container telematics-influxdb  Waiting
+ Container telematics-platform-kafka-init-1  Waiting
+ Container telematics-influxdb  Healthy
+ Container telematics-platform-model-trainer-1  Exited
+ Container telematics-platform-kafka-init-1  Exited
+ Container telematics-platform-spark-1  Starting
+ Container telematics-platform-spark-1  Started
+ Container telematics-platform-kafka-init-1  Waiting
+ Container telematics-platform-kafka-init-1  Exited
+ Container telematics-platform-simulator-1  Starting
+ Container telematics-platform-simulator-1  Started
+++ date -u -Is
++ echo 'E2E BENCHMARK DONE 2026-11-26T09:00:26+00:00'
+E2E BENCHMARK DONE 2026-11-26T09:00:26+00:00
+

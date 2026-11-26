@@ -1,0 +1,20 @@
+### start 2026-11-26T09:32:07+00:00 terraform apply -no-color -input=false destroy.tfplan
+aws_iam_role_policy_attachment.ssm_core: Destroying... [id=telematics-demo-ssm-role-20261126083428581400000001]
+aws_vpc_security_group_egress_rule.all_outbound: Destroying... [id=sgr-0f32f015fa4d01fea]
+aws_instance.app: Destroying... [id=i-02b5a401355a83e97]
+aws_iam_role_policy_attachment.ssm_core: Destruction complete after 1s
+aws_vpc_security_group_egress_rule.all_outbound: Destruction complete after 2s
+aws_instance.app: Still destroying... [id=i-02b5a401355a83e97, 00m10s elapsed]
+aws_instance.app: Still destroying... [id=i-02b5a401355a83e97, 00m20s elapsed]
+aws_instance.app: Still destroying... [id=i-02b5a401355a83e97, 00m30s elapsed]
+aws_instance.app: Destruction complete after 33s
+aws_iam_instance_profile.ssm: Destroying... [id=telematics-demo-ssm-profile]
+aws_security_group.instance: Destroying... [id=sg-0a73688a042f4b640]
+aws_iam_instance_profile.ssm: Destruction complete after 1s
+aws_iam_role.ssm: Destroying... [id=telematics-demo-ssm-role]
+aws_iam_role.ssm: Destruction complete after 1s
+aws_security_group.instance: Destruction complete after 2s
+
+Apply complete! Resources: 0 added, 0 changed, 6 destroyed.
+exit=0
+### end 2026-11-26T09:32:48+00:00

@@ -1,0 +1,29 @@
+APPLY START (UTC): 2026-11-26T08:34:22+00:00
+$ terraform apply -input=false ec2.tfplan
+aws_security_group.instance: Creating...
+aws_iam_role.ssm: Creating...
+aws_iam_role.ssm: Creation complete after 2s [id=telematics-demo-ssm-role]
+aws_iam_role_policy_attachment.ssm_core: Creating...
+aws_iam_instance_profile.ssm: Creating...
+aws_iam_role_policy_attachment.ssm_core: Creation complete after 1s [id=telematics-demo-ssm-role-<ACCOUNT-ID><ACCOUNT-ID>01]
+aws_security_group.instance: Creation complete after 6s [id=sg-0a73688a042f4b640]
+aws_vpc_security_group_egress_rule.all_outbound: Creating...
+aws_vpc_security_group_egress_rule.all_outbound: Creation complete after 1s [id=sgr-0f32f015fa4d01fea]
+aws_iam_instance_profile.ssm: Creation complete after 8s [id=telematics-demo-ssm-profile]
+aws_instance.app: Creating...
+aws_instance.app: Still creating... [00m10s elapsed]
+aws_instance.app: Still creating... [00m20s elapsed]
+aws_instance.app: Creation complete after 24s [id=i-02b5a401355a83e97]
+
+Apply complete! Resources: 6 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+ami_id = <sensitive>
+auto_terminate_minutes = 300
+availability_zone = "ap-southeast-2c"
+grafana_port_forward_command = "aws ssm start-session --region ap-southeast-2 --target i-02b5a401355a83e97 --document-name AWS-StartPortForwardingSession --parameters portNumber=3000,localPortNumber=3000"
+instance_id = "i-02b5a401355a83e97"
+ssm_session_command = "aws ssm start-session --region ap-southeast-2 --target i-02b5a401355a83e97"
+exit=0
+APPLY END (UTC): 2026-11-26T08:34:59+00:00

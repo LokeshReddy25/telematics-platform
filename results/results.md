@@ -144,6 +144,69 @@ runs happened in daytime.
   one per category, and "Top 5 Riskiest Drivers" shows `_start`/`_stop`
   columns with the score column off-screen.
 
+## AWS deployment
+
+**What it was:** the full root `docker compose` stack (10 services) running
+on **one EC2 instance**. It was not EKS, MSK, EMR or a managed service. All
+logs are in `results/aws/`. Account IDs, IP addresses and SSM session IDs
+were removed when the logs were saved (`devops/terraform-ec2/ssm_run.py`).
+
+| | |
+|---|---|
+| Date / region | 2026-11-26, ap-southeast-2 (Sydney), availability zone ap-southeast-2c |
+| Instance | `m7i-flex.large` (2 vCPU, 8 GiB), Amazon Linux 2023, 30 GB gp3 encrypted root, 4 GB swap file, IMDSv2 required |
+| Network | Default VPC. Security group with 0 inbound rules, no key pair, no SSH. Every container port bound to `127.0.0.1` (`docker-compose.aws.yml`). Access only through SSM Run Command and Session Manager port forwarding. |
+| Code deployed | `main` cloned by `user_data`, then `docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build` |
+| Terraform | `devops/terraform-ec2/`, 6 resources. Apply 08:34:22 → 08:34:59 UTC (`terraform_apply.log`). Destroy 09:32:07 → 09:32:48 UTC (`terraform_destroy.log`) |
+| Total run time | 58 min 26 s from apply start to destroy end |
+| Estimated cost (**estimate, not measured from the bill**) | about $0.13 ($0.1253). That is 58 min 26 s at AWS's published Sydney on-demand prices: m7i-flex.large $0.1197/h, 30 GB gp3 at $0.096 per GB-month (730 h/month), public IPv4 $0.005/h. Prices are listed in `devops/terraform-ec2/README.md`. |
+| Safety net | `shutdown -h +300` with `instance_initiated_shutdown_behavior = terminate`. It was not needed. |
+
+**Steps and evidence**
+
+| Step | Result | Log |
+|---|---|---|
+| Session Manager reaches the instance | session opened and showed a `sh-5.2$` prompt. The piped, non-TTY test then hit its timeout (exit 124), so the `whoami` output was not captured. Run Command worked for every later step. | `c1_ssm_session_check.log` |
+| Bootstrap (docker, compose v2.29.7, buildx v0.17.1 checked by sha256, repo clone) | done marker present | `c2_bootstrap_check.log`, `c2_bootstrap_full.log` |
+| `compose up --build` | started 08:38:57 UTC. At the 08:43:48 check the unit reported `Result=success`, exit 0, with all services up. The exact end time was not recorded. The first attempt, sent directly through Run Command, ended `TimedOut` (exit 137). It was re-run as a `systemd-run` unit. | `c2_compose_up.log`, `c2_build_evidence.log` |
+| Kafka receiving events | end offsets 1014 → 1119 in 30 s (+105) | `c2_verify_stack.log` |
+| Spark → InfluxDB | 71 `risk_score` points from 30 distinct trips in the last 15 min | `c2_verify_stack.log` |
+| Risk API (inside the instance) | `/health` 200, `/drivers/top-risk?limit=3` 200, `limit=0` 422 | `c2_verify_stack.log` |
+| Grafana | `/api/health` 200 on the instance. Through an SSM port-forward to the laptop: `/api/health` and the dashboard URL both 200. Screenshot taken. | `c2_verify_stack.log`, `c3_port_forward_check.log`, `grafana_aws_via_ssm.png` |
+| Tests (1 run, `python:3.11-slim` containers, `aws_tests.sh`) | `tests/` 17 passed. `risk_api` 46 passed (including 5 integration tests against the deployed InfluxDB), 1 warning, 100% coverage | `c2_tests.log` |
+| Destroy + check | 6 destroyed. No running instances, volumes, own snapshots or AMIs, Elastic IPs, network interfaces, non-default security groups, `telematics*` IAM roles, instance profiles or log groups in the region. The terminated instance shows `User initiated (2026-11-26 09:32:15 GMT)`. | `terraform_destroy.log`, `d_post_destroy_verify.log` |
+
+**End-to-end latency on EC2.** The method is the same as the local run:
+`benchmarks/run_e2e.sh`, 3 runs, with the looping simulator stopped and
+Spark started through `spark_with_progress.py`
+(`devops/terraform-ec2/aws_e2e_benchmark.sh`). Numbers are from
+`python benchmarks/summarize.py results/aws/raw` → `results/aws/summary_aws.json`,
+shown as median (min–max) over 3 runs.
+
+| Metric | EC2 | Local (above) |
+|---|---|---|
+| Event → score, median | 15.562 s (15.062–16.157) | 16.155 s |
+| Event → score, p95 | 29.446 s (29.434–29.482) | 29.454 s |
+| Last event of trip → score, median | 15.879 s (12.511–17.922) | |
+| Events sent per run | 512 (492–531) | |
+| Trips scored / produced | 15 / 15 in all 3 runs | |
+| Events without a matching score | 0 in all 3 runs | |
+| Clock offset applied | 32.5, 19.6, 18.8 ms | |
+| Spark triggerExecution, batches with input | median 1,064 ms (605–1,683), 18 of 22 batches | 938 ms |
+
+The latency is about the same as on the laptop because the 30 s trigger
+sets it, not the hardware.
+
+**Resources** (`c2_verify_stack.log`, `c2_resources_snapshots.log`, `free -m`, 4
+readings with the full stack running): 2,285–2,370 MiB used of 7,779 MiB, swap
+0 MiB used, root disk 12G of 30G (40%). The largest container was Spark at
+829.9–831.5 MiB. On the laptop it was 786.7–789.8 MiB
+(`raw/local_memory_docker_stats.log`).
+
+**Not done on AWS:** see the NOT MEASURED table below. The host's `sshd`
+was listening on port 22, but no inbound rule and no key pair existed, so it
+could not be reached. It was not disabled.
+
 ## NOT MEASURED
 
 | What | Why |
@@ -152,7 +215,9 @@ runs happened in daytime.
 | Model quality on real driving data | There is none in this project. Training and test data are both synthetic, from the same generator. |
 | Model quality on live pipeline windows | No ground-truth label exists for simulated trips, so no MAE/R² is possible. The category mix above is the closest available evidence. |
 | GitHub Actions results on GitHub | `gh` CLI isn't installed and no GitHub token was available. Only the same commands run locally were measured (lint, pytest). |
-| Anything on AWS | Nothing has been deployed (rule: no `terraform apply`, no spend). |
+| Kafka throughput, producer speed, model MAE/R² **on AWS** | Not run on the EC2 instance. Only the e2e latency benchmark, the stack check and the test suites were repeated there (see [AWS deployment](#aws-deployment)). |
+| MSK, EKS, EMR, managed Grafana | Never deployed. The AWS run was one EC2 instance running Docker Compose. `devops/terraform` (MSK stack) has never been applied. |
+| Actual AWS cost of the deployment (from the bill) | Not measured. Only the estimate in [AWS deployment](#aws-deployment) is given. AWS Billing shows the real figure after up to 24 h. |
 | Kubernetes pipeline latency/throughput | The k8s deployment runs a different simulator config (10 drivers, 5 trips, 0.5 s) and its InfluxDB isn't exposed. Only its pod status and logs were checked. |
 | GPU usage | Nothing in the project uses a GPU. |
 | Coverage of `kafka_producer.py`, `stream_processor.py`, `influxdb_writer.py`, `train_model.py` | Measured as 0%. They have no unit tests. |
@@ -171,8 +236,10 @@ a Low/Medium/High/Critical category to InfluxDB, and a provisioned Grafana
 dashboard plots them. On this laptop, a score appears in InfluxDB a median
 of about 16 s after its event is produced. That delay comes almost entirely
 from the 30 s trigger. The repo also contains Dockerfiles, Kubernetes
-manifests that have been run on a local Docker Desktop cluster, Terraform
-for AWS that validates but has never been applied, a read-only FastAPI
+manifests that have been run on a local Docker Desktop cluster, an MSK
+Terraform stack that validates but has never been applied, a
+single-EC2-instance Terraform stack that was applied once and destroyed the
+same day (see [AWS deployment](#aws-deployment)), a read-only FastAPI
 service (`risk_api/`) that serves the scores from InfluxDB, and GitHub
 Actions workflows that lint, test and build images. The CI deploy job is
 only a placeholder.
