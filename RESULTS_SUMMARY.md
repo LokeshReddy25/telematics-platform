@@ -68,14 +68,25 @@ Pipeline code changed only in the first commit: your two fixes to
    once runs exist, and they only render publicly if the repo is public.
    The new `risk-api-ci.yml` integration job is untested on GitHub Actions
    itself; it passed only against my local InfluxDB.
-3. **Capture this Grafana screenshot** for the README/portfolio. Run
+3. ~~Capture a Grafana screenshot~~. **Done on 2026-11-26** on branch
+   `fix/grafana-panels`: `docs/grafana-dashboard.png` (1920 px wide, live
+   local data, shown at the top of the README). Original note, kept as history:
+   **Capture this Grafana screenshot** for the README/portfolio. Run
    `docker compose up -d --build`, wait about 5 minutes, then open
    http://localhost:3000/d/telematics-driver-risk/?from=now-15m&to=now in a
    window at least 1,900 px wide, so the "Top 5 Riskiest Drivers" score
    column is visible. The **"Live Risk Score per Driver"** time-series panel
    is the one to show. `results/grafana_dashboard.png` is a headless capture
    from this session that you can use meanwhile.
-4. **Fix or explain two dashboard panels.** "Risk Category Distribution"
+4. ~~Fix or explain two dashboard panels~~. **Done on 2026-11-26** on branch
+   `fix/grafana-panels`: "Risk Category Distribution" now shows one slice per
+   category (Low/Medium/High/Critical), "Top 5 Riskiest Drivers" shows only
+   `driver_id` and the average risk score, sorted highest first, and the
+   "Live Risk Score per Driver" and "Harsh Braking Events Over Time" legends
+   show only `driver_id` (Harsh Braking is now grouped bars per driver per
+   5-minute window). The pie counts, top-5 averages and harsh-braking sums
+   matched direct InfluxDB queries over the same range. Two limits remain: the "Live Risk Score per Driver" lines look jagged because several trips per driver are scored milliseconds apart in the same micro-batch, and the dashboard references datasource uid `InfluxDB-Telematics` while the provisioned datasource gets a generated uid. That mismatch does not stop the panels loading.
+   Original note, kept as history: "Risk Category Distribution"
    renders as one `_value` slice, and the "Top 5" table shows `_start`/`_stop`
    columns. These are Flux/transform issues in
    `dashboard/grafana_config/dashboard.json`. I didn't touch them.
