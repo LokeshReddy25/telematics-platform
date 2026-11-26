@@ -28,11 +28,11 @@ Things to be ready for in an interview:
   events, and a trip that crosses a 60 s window boundary is scored as two
   separate windows. The scored-record count in results.md is higher than
   the trip count for this reason.
-- **The end-to-end demo depends on an uncommitted fix.** The committed
-  `simulator/trip_generator.py` backdates trips by up to 24 h. The 2-minute
-  watermark then drops most of them (RUNBOOK.md, "Fixes already applied").
-  The working tree has the fix, but it is not committed. Measured on a fresh
-  clone of the committed code: **7 of 27** trips got a score. With the fix,
+- **The end-to-end demo depended on a fix that was uncommitted when this
+  check was written** (now committed as the first commit on
+  `feature/risk-api`). The previous `simulator/trip_generator.py` backdated
+  trips by up to 24 h, and the 2-minute watermark then dropped most of them.
+  Measured on a fresh clone of the code without the fix: **7 of 27** trips got a score. With the fix,
   15 of 15 got one in each of 3 runs.
 - **Scoring runs on the Spark driver.** `process_batch` calls
   `batch_df.collect()` and scores rows in a Python loop. That is fine for

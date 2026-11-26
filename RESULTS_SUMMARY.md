@@ -28,7 +28,7 @@ Latency is set by the 30 s Spark trigger, not by Kafka or the model.
 
 | Claim | Verdict | Main caveat |
 |---|---|---|
-| Kafka + Spark Structured Streaming pipeline, near-real-time scores | **SUPPORTED** | "Near-real-time" = 30 s micro-batches (median 16 s). Demo depends on the uncommitted `trip_generator.py` fix (below) |
+| Kafka + Spark Structured Streaming pipeline, near-real-time scores | **SUPPORTED** | "Near-real-time" = 30 s micro-batches (median 16 s). Demo depended on a `trip_generator.py` fix, now committed (below) |
 | Gradient Boosting scoring, InfluxDB, risk levels | **SUPPORTED** | Model trained on synthetic, formula-generated labels. Simulator features don't match training distributions. Categories are per trip window, not per driver |
 | Monitoring + deployment with Grafana, Docker, K8s, Terraform, GitHub Actions, CI/CD | **PARTIAL** | Grafana ✔, Docker ✔, K8s ✔ (local cluster only). Terraform validated, **never applied**. CI ✔, but the **deploy job is an `echo` placeholder (no CD)**. Prometheus is claimed in the old README but **NOT FOUND** |
 
@@ -54,13 +54,12 @@ No existing pipeline code (`simulator/`, `spark/`, `ml/`, `storage/`) was change
 
 ## Still to do by hand
 
-1. **Decide on the two uncommitted pipeline changes** (`simulator/trip_generator.py`,
-   `spark/stream_processor.py`). I didn't commit them because they aren't
-   mine and the rules said not to change pipeline code. But on a fresh clone
-   of the committed code, only **7 of 27** trips got a risk score, versus
-   **15 of 15** per run with the fix. Anyone who clones the repo and runs
-   `docker compose up` sees the sparse version until the fix is committed.
-2. **Push the branch and check CI on GitHub.** I couldn't verify any
+1. ~~Decide on the two uncommitted pipeline changes~~. **Done:** committed at
+   your request as the first commit on this branch ("Fix sparse risk
+   scoring…"). Before the fix, 7 of 27 trips got a score; after it, 15 of 15
+   in each run. `tests/` still passes 17/17 on the committed code (3 runs,
+   `results/raw/pytest_pipeline_after_fix_commit_run*.log`).
+2. **Open the PR and check CI on GitHub.** The branch is pushed. I couldn't verify any
    workflow on GitHub (`gh` isn't installed). The badges only turn green
    once runs exist, and they only render publicly if the repo is public.
    The new `risk-api-ci.yml` integration job is untested on GitHub Actions
@@ -80,10 +79,9 @@ No existing pipeline code (`simulator/`, `spark/`, `ml/`, `storage/`) was change
    `results/resume_claims_check.md`. In particular: say "CI" not "CI/CD",
    "Terraform (validated, not applied)", "micro-batch (30 s)", and "synthetic
    training data".
-6. **RUNBOOK.md (untracked) is now partly outdated.** With the new root
-   compose, `docker compose up -d` also starts Kafka and Spark, so RUNBOOK
-   steps 1 and 4 would start them twice. Either follow the README Quickstart
-   or update RUNBOOK.
+6. ~~RUNBOOK.md outdated~~. **Done:** rewritten for the single
+   `docker compose up` flow (and now committed), including how to remove the
+   old separately started Kafka/Spark containers once.
 7. Optional: `kubectl apply -f devops/k8s/risk-api-deployment.yaml` on the
    local cluster (I only ran a server-side dry run) after
    `docker build -t telematics/risk-api:latest risk_api`.

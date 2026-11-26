@@ -1,8 +1,10 @@
 # Measured results: Connected Vehicle Insurance Telematics Platform
 
 **Date:** 2026-11-26 (all runs between 11:13 and 11:38 IST)
-**Code measured:** `main` @ `1b5d95c`, **plus two uncommitted working-tree
-changes**: `simulator/trip_generator.py` (trips start within 0–20 s of
+**Code measured:** `main` @ `1b5d95c`, **plus two working-tree changes that
+were uncommitted at measurement time** (since committed as the first commit
+on `feature/risk-api`, with `tests/` re-run there: 17/17 passed in 3 runs,
+`raw/pytest_pipeline_after_fix_commit_run*.log`): `simulator/trip_generator.py` (trips start within 0–20 s of
 "now" instead of up to 24 h ago) and `spark/stream_processor.py` (adds
 `spark.jars.packages`). Both are described in RUNBOOK.md. The pipeline code
 was not modified for these measurements. Every measurement script is in
