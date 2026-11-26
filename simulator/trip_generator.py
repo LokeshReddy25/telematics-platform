@@ -156,9 +156,14 @@ def generate_trip_events(driver_id: str, profile: str, num_events: int = 30) -> 
     params = PROFILE_PARAMS[profile]
     speed = random.uniform(*params["target_speed_range"])
 
-    # Trip starts at a random point in the last 24h so "is_night" varies
-    # realistically across generated trips.
-    trip_start = datetime.now() - timedelta(seconds=random.randint(0, 86400))
+    # Trip starts at (or a few seconds before) "now" -- this is a live
+    # streaming demo, not a historical backfill, and Spark's windowed
+    # aggregation in stream_processor.py only tolerates WATERMARK_DELAY
+    # (2 minutes) of event-time lateness. Backdating trips further than
+    # that (an earlier version used up to 24h, for "is_night" variety)
+    # causes the watermark to advance past older trips' windows before
+    # they arrive, silently dropping them from the Grafana dashboard.
+    trip_start = datetime.now() - timedelta(seconds=random.randint(0, 20))
 
     for i in range(num_events):
         ts = trip_start + timedelta(seconds=i * 2)
