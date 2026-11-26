@@ -1,0 +1,90 @@
+# devops/k8s/risk-api-deployment.yaml
+#
+# Driver Risk Score API (risk_api/) in the `telematics` namespace. It reuses
+# the existing telematics-config ConfigMap (InfluxDB URL/org/bucket) and the
+# telematics-secrets Secret (INFLUXDB_TOKEN), so no value is duplicated here.
+#
+# Build the image into the cluster's local image store first:
+#   docker build -t telematics/risk-api:latest risk_api
+# Then: kubectl apply -f devops/k8s/risk-api-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk-api
+  namespace: telematics
+  labels:
+    app: risk-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: risk-api
+  template:
+    metadata:
+      labels:
+        app: risk-api
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: risk-api
+          image: telematics/risk-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: INFLUXDB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: telematics-config
+                  key: INFLUXDB_URL
+            - name: INFLUXDB_ORG
+              valueFrom:
+                configMapKeyRef:
+                  name: telematics-config
+                  key: INFLUXDB_ORG
+            - name: INFLUXDB_BUCKET
+              valueFrom:
+                configMapKeyRef:
+                  name: telematics-config
+                  key: INFLUXDB_BUCKET
+            - name: INFLUXDB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: telematics-secrets
+                  key: INFLUXDB_TOKEN
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            # /health returns 503 while InfluxDB is down. Restarting the API
+            # would not fix that, so liveness only checks that the process
+            # serves HTTP (the OpenAPI document needs no InfluxDB).
+            httpGet:
+              path: /openapi.json
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: risk-api-service
+  namespace: telematics
+spec:
+  selector:
+    app: risk-api
+  ports:
+    - port: 8000
+      targetPort: 8000
