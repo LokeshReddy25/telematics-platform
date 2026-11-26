@@ -347,26 +347,48 @@
       33
     ]
   },
-  "pytest_existing_api_passed": {
+  "pytest_pipeline_after_fix_commit_passed": {
     "runs": 3,
-    "median": 24,
-    "min": 24,
-    "max": 24,
+    "median": 17,
+    "min": 17,
+    "max": 17,
     "values": [
-      24,
-      24,
-      24
+      17,
+      17,
+      17
     ]
   },
-  "pytest_existing_api_coverage_pct": {
+  "pytest_pipeline_after_fix_commit_coverage_pct": {
     "runs": 3,
-    "median": 96,
-    "min": 96,
-    "max": 96,
+    "median": 33,
+    "min": 33,
+    "max": 33,
     "values": [
-      96,
-      96,
-      96
+      33,
+      33,
+      33
+    ]
+  },
+  "pytest_pipeline_post_api_removal_passed": {
+    "runs": 3,
+    "median": 17,
+    "min": 17,
+    "max": 17,
+    "values": [
+      17,
+      17,
+      17
+    ]
+  },
+  "pytest_pipeline_post_api_removal_coverage_pct": {
+    "runs": 3,
+    "median": 33,
+    "min": 33,
+    "max": 33,
+    "values": [
+      33,
+      33,
+      33
     ]
   },
   "pytest_risk_api_passed": {
@@ -381,6 +403,28 @@
     ]
   },
   "pytest_risk_api_coverage_pct": {
+    "runs": 3,
+    "median": 100,
+    "min": 100,
+    "max": 100,
+    "values": [
+      100,
+      100,
+      100
+    ]
+  },
+  "pytest_risk_api_post_api_removal_passed": {
+    "runs": 3,
+    "median": 46,
+    "min": 46,
+    "max": 46,
+    "values": [
+      46,
+      46,
+      46
+    ]
+  },
+  "pytest_risk_api_post_api_removal_coverage_pct": {
     "runs": 3,
     "median": 100,
     "min": 100,

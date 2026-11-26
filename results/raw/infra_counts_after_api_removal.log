@@ -1,0 +1,75 @@
+# HEAD f802dd3 on feature/risk-api, after merging origin/main (api/ deleted) and removing deploy/  (2026-11-26T12:11:37+05:30)
+$ git ls-files "*docker-compose*.yml"
+docker-compose.yml
+kafka/docker-compose.yml
+
+$ docker compose config --services
+influxdb
+grafana
+zookeeper
+kafka
+risk-api
+kafka-init
+model-trainer
+spark
+kafka-ui
+simulator
+
+$ docker compose config --services | wc -l
+10
+
+$ grep -nE "^  [a-zA-Z0-9_-]+:$" kafka/docker-compose.yml
+20:  zookeeper:
+44:  kafka:
+81:  kafka-ui:
+97:  telematics-net:
+102:  zookeeper-data:
+103:  zookeeper-log:
+104:  kafka-data:
+
+$ git ls-files "*Dockerfile*"
+devops/Dockerfile.ml
+devops/Dockerfile.simulator
+devops/Dockerfile.spark
+risk_api/Dockerfile
+
+$ git ls-files "*Dockerfile*" | wc -l
+4
+
+$ ls devops/k8s/*.yaml
+devops/k8s/configmap.yaml
+devops/k8s/influxdb-deployment.yaml
+devops/k8s/kafka-deployment.yaml
+devops/k8s/risk-api-deployment.yaml
+devops/k8s/simulator-deployment.yaml
+devops/k8s/spark-deployment.yaml
+
+$ ls devops/k8s/*.yaml | wc -l
+6
+
+$ grep -h "^kind:" devops/k8s/*.yaml | sort | uniq -c
+      1 kind: ConfigMap
+      5 kind: Deployment
+      1 kind: Namespace
+      1 kind: Secret
+      3 kind: Service
+
+$ git ls-files "*.tf"
+devops/terraform/main.tf
+devops/terraform/outputs.tf
+devops/terraform/variables.tf
+
+$ grep -cE "^resource \"" $(git ls-files "*.tf")
+devops/terraform/main.tf:7
+devops/terraform/outputs.tf:0
+devops/terraform/variables.tf:0
+
+$ ls .github/workflows
+ci.yml
+risk-api-ci.yml
+
+$ find . -name "*.tfstate*" -not -path "*/.terraform/*"
+
+$ cd devops/terraform && terraform validate
+Success! The configuration is valid.
+

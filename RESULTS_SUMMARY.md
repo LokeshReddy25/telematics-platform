@@ -17,10 +17,9 @@ is in [results/resume_claims_check.md](results/resume_claims_check.md).
 | Spark micro-batch time (29 batches with input) | median 938 ms (408–1,823) |
 | Per demo run | 5 drivers, 15 trips, 461 events (454–492), 37 scored records (34–39) |
 | Model, held-out (random 80/20 split of 10,000 synthetic rows, seed 42) | MAE 2.646, R² 0.975 (identical in all 3 runs) |
-| `tests/` | 17/17 passed, 33% coverage |
-| `api/tests` (existing Vehicle API) | 24/24 passed, 96% coverage |
-| `risk_api/tests` (new) | 46/46 passed (41 unit + 5 integration), 100% coverage; unit-only 99% |
-| Infra | 7 compose services in 3 files (10 in the new single-command stack), 5 k8s manifests (9 objects), 33 Terraform resource blocks |
+| `tests/` | 17/17 passed, 33% coverage (same in 3 runs after the `api/`/`deploy/` removal) |
+| `risk_api/tests` (the only API in the repo) | 46/46 passed (41 unit + 5 integration), 100% coverage; unit-only 99% (same in 3 runs after the removal) |
+| Infra (re-counted after the removal) | 2 compose files; root stack has 10 services. 4 Dockerfiles. 6 k8s manifests (11 objects). 7 Terraform resource blocks (`devops/terraform` only) |
 
 Latency is set by the 30 s Spark trigger, not by Kafka or the model.
 
@@ -28,7 +27,7 @@ Latency is set by the 30 s Spark trigger, not by Kafka or the model.
 
 | Claim | Verdict | Main caveat |
 |---|---|---|
-| Kafka + Spark Structured Streaming pipeline, near-real-time scores | **SUPPORTED** | "Near-real-time" = 30 s micro-batches (median 16 s). Demo depended on a `trip_generator.py` fix, now committed (below) |
+| Kafka + Spark Structured Streaming pipeline, near-real-time scores | **SUPPORTED** | "Near-real-time" = 30 s micro-batches (median 16.155 s). Demo depended on a `trip_generator.py` fix, now committed (below) |
 | Gradient Boosting scoring, InfluxDB, risk levels | **SUPPORTED** | Model trained on synthetic, formula-generated labels. Simulator features don't match training distributions. Categories are per trip window, not per driver |
 | Monitoring + deployment with Grafana, Docker, K8s, Terraform, GitHub Actions, CI/CD | **PARTIAL** | Grafana ✔, Docker ✔, K8s ✔ (local cluster only). Terraform validated, **never applied**. CI ✔, but the **deploy job is an `echo` placeholder (no CD)**. Prometheus is claimed in the old README but **NOT FOUND** |
 
@@ -46,11 +45,16 @@ Latency is set by the 30 s Spark trigger, not by Kafka or the model.
 - `.github/workflows/risk-api-ci.yml`: unit + coverage, integration against an InfluxDB service container, image build
 - `docker-compose.yml`: the whole stack from one `docker compose up -d --build`
   (adds model-trainer, kafka-init, spark, simulator, risk-api; includes the Kafka file)
+- Removed `deploy/` (ECS Fargate Terraform for the Vehicle API that was deleted on `main`)
+  and its `.gitignore` rules; merged `origin/main` (deletion of `api/` and `api-ci.yml`)
 - README: CI badges, working Quickstart, Risk API in the diagram and tech
   stack, Results section, "nothing deployed to AWS" statement. Prometheus
-  claim removed. Corrected a false claim that Spark writes to the Vehicle API.
+  claim removed. All references to the deleted Vehicle API (`api/`) removed;
+  README states that `risk_api/` is the only API in the repo.
 
-No existing pipeline code (`simulator/`, `spark/`, `ml/`, `storage/`) was changed.
+Pipeline code changed only in the first commit: your two fixes to
+`simulator/trip_generator.py` and `spark/stream_processor.py`. `ml/` and
+`storage/` are unchanged.
 
 ## Still to do by hand
 

@@ -10,6 +10,14 @@ on `feature/risk-api`, with `tests/` re-run there: 17/17 passed in 3 runs,
 was not modified for these measurements. Every measurement script is in
 `benchmarks/`.
 
+**Repo changes after measurement:** `api/` (the separate Vehicle API) and
+`api-ci.yml` were deleted on `main` and merged into this branch. `deploy/`
+(the ECS Fargate Terraform for that API) was then removed. Test counts,
+coverage and infrastructure counts below were **re-run on the resulting
+code** (logs marked `post_api_removal`). The performance numbers (Kafka,
+latency, Spark, model) never involved `api/` or `deploy/`, so they are
+unaffected. The old `api/tests` logs are kept in `raw/removed_api/`.
+
 ## Machine
 
 Source: `results/raw/machine_specs.log`
@@ -71,24 +79,21 @@ by `benchmarks/summarize.py` → `results/raw/summary.json`.
 | Model MAE, held-out test set | **2.646** (2.646–2.646) | `cd ml && python train_model.py` | `raw/train_model_run{1,2,3}.log` |
 | Model R², held-out test set | **0.975** (0.975–0.975) | same | same |
 | Train/test split | 10,000 synthetic rows, `train_test_split(test_size=0.2, random_state=42)` → 8,000 train / 2,000 test, random (not stratified, not by driver) | same (printed `Train samples: 8000 \| Test samples: 2000`) | same |
-| Pipeline tests (`tests/`) | **17 passed / 17** (17–17), 100% pass rate | `python -m pytest tests/ -v --cov=ml --cov=simulator --cov=storage --cov=spark --cov-report=term` | `raw/pytest_pipeline_run{1,2,3}.log` |
-| Pipeline test coverage (statements in ml/, simulator/, storage/, spark/) | **33%** (33–33); risk_scorer 91%, trip_generator 91%, kafka_producer / stream_processor / influxdb_writer / train_model 0% | same | same |
-| Existing Vehicle API tests (`api/tests`) | **24 passed / 24** (24–24) | `python -m pytest api/tests -v --cov=api/app --cov-report=term` | `raw/pytest_existing_api_run{1,2,3}.log` |
-| Existing Vehicle API coverage | **96%** (96–96) | same | same |
-| Risk API tests (`risk_api/`, added on `feature/risk-api`), unit + integration against the compose InfluxDB | **46 passed / 46** (46–46), **100%** statement coverage of `risk_api/app` (100–100) | `cd risk_api && RISK_API_IT_INFLUXDB_URL=http://localhost:8086 RISK_API_IT_INFLUXDB_TOKEN=<dev token> python -m pytest -v --cov=app --cov-report=term-missing` | `raw/pytest_risk_api_run{1,2,3}.log` |
+| Pipeline tests (`tests/`) | **17 passed / 17** (17–17), 100% pass rate. Same result in 3 runs on the original code, 3 after committing the fix, and 3 after removing `api/`/`deploy/` | `python -m pytest tests/ -v --cov=ml --cov=simulator --cov=storage --cov=spark --cov-report=term` | `raw/pytest_pipeline_run{1,2,3}.log`, `raw/pytest_pipeline_after_fix_commit_run{1,2,3}.log`, `raw/pytest_pipeline_post_api_removal_run{1,2,3}.log` |
+| Pipeline test coverage (statements in ml/, simulator/, storage/, spark/) | **33%** (33–33) in all 9 runs; risk_scorer 91%, trip_generator 91%, kafka_producer / stream_processor / influxdb_writer / train_model 0% | same | same |
+| Risk API tests (`risk_api/`, the only API in the repo), unit + integration against the compose InfluxDB | **46 passed / 46** (46–46), **100%** statement coverage of `risk_api/app` (100–100). Same before and after the `api/`/`deploy/` removal | `cd risk_api && RISK_API_IT_INFLUXDB_URL=http://localhost:8086 RISK_API_IT_INFLUXDB_TOKEN=<dev token> python -m pytest -v --cov=app --cov-report=term-missing` | `raw/pytest_risk_api_run{1,2,3}.log`, `raw/pytest_risk_api_post_api_removal_run{1,2,3}.log` |
 | Risk API unit tests only (InfluxDB mocked, what CI's `unit` job runs) | 41 passed / 41, 99% coverage (1 line uncovered: closing an app-owned client on shutdown) | `python -m pytest -m "not integration" -v --cov=app --cov-report=term-missing` | `raw/pytest_risk_api_unit_only.log` |
 | Risk API container against live pipeline data | `/health` 200, top-risk 200, driver 200, trip 200, `limit=0` 422, bad id 422, unknown driver 404, startup refused without token, Docker health `healthy` | see log | `raw/risk_api_container_check.log` |
 | Risk API k8s manifest | `kubectl apply --dry-run=server` accepted Deployment + Service (nothing created) | `kubectl apply --dry-run=server -f devops/k8s/risk-api-deployment.yaml` | `raw/k8s_risk_api_dry_run.log` |
 | One-command stack from a fresh clone (no model file, no uncommitted changes) | `docker compose up -d --build` exit 0 in 165 s (incl. image builds); 10 services; model trained in-container (MAE 2.646, R² 0.975); first score visible via API 60 s after `up` returned | `git clone --branch feature/risk-api …; docker compose up -d --build` | `raw/compose_fresh_clone_up.log`, `raw/compose_fresh_clone_checks.log` |
 | Trips scored, **committed** `trip_generator.py` (trips backdated up to 24 h), fresh clone, trips started after Spark's query (06:15:40–06:20:00 UTC) | **7 of 27** trips got a score and 20 got none. That matches RUNBOOK.md's explanation (late events behind the 2-minute watermark are dropped), but the cause itself was not separately measured. For comparison, the uncommitted fix (trips start near "now") scored 15 of 15 trips in each e2e run above | `python benchmarks/trip_coverage.py --since 2026-11-26T06:15:40Z --until 2026-11-26T06:20:00Z` | `raw/trip_coverage_committed_generator.log` |
-| Lint on `feature/risk-api` (CI's commands) | flake8 exit 0, black: 44 files unchanged | same as below | `raw/lint_check_branch.log` |
-| Lint (CI's commands), `main` | flake8 exit 0, black: 34 files unchanged | `flake8 . --max-line-length=120 --extend-exclude=ml/models` / `black --check --line-length=120 .` | `raw/lint_check.log` |
-| Docker Compose services | 7 across 3 files: root (influxdb, grafana), kafka/ (zookeeper, kafka, kafka-ui), api/ (postgres, api) | `grep -nE "^  [a-zA-Z0-9_-]+:$" docker-compose.yml kafka/docker-compose.yml api/docker-compose.yml` | `raw/infra_counts.log` |
-| Dockerfiles | 4 (`devops/Dockerfile.{spark,simulator,ml}`, `api/Dockerfile`) | `find` / file listing | n/a |
-| Kubernetes manifests | 5 files, 9 objects (4 Deployment, 2 Service, 1 ConfigMap, 1 Secret, 1 Namespace) | `ls devops/k8s/*.yaml \| wc -l`; `grep -h "^kind:" devops/k8s/*.yaml \| sort \| uniq -c` | `raw/infra_counts.log` |
-| Kubernetes deployments running on the local Docker Desktop cluster | 4/4 Running (namespace age 125 days) | `kubectl get all,configmap,secret -n telematics` | `raw/k8s_local_state.log` |
-| Terraform resource blocks | 33: `devops/terraform` 7 (3 SG, MSK, EC2, DB subnet group, RDS) + `deploy/terraform` 26 (VPC, ECS Fargate, ALB, RDS, ECR, Secrets Manager, IAM, …) | `grep -cE '^resource "' devops/terraform/*.tf deploy/terraform/*.tf` | `raw/infra_counts.log` |
-| Terraform validity | both stacks: `Success! The configuration is valid.` | `terraform init -backend=false -input=false && terraform validate` (in each dir) | `raw/terraform_validate.log` |
+| Lint (CI's commands), current branch | flake8 exit 0, black: 25 files unchanged | `flake8 . --max-line-length=120 --extend-exclude=ml/models` / `black --check --line-length=120 .` | `raw/lint_check_post_api_removal.log` |
+| Docker Compose services | 2 compose files. The root file (which `include`s `kafka/docker-compose.yml`) defines 10 services: influxdb, grafana, zookeeper, kafka, kafka-ui, kafka-init, model-trainer, spark, simulator, risk-api. `kafka/docker-compose.yml` alone has 3 | `git ls-files "*docker-compose*.yml"`; `docker compose config --services \| wc -l`; `grep -nE "^  [a-zA-Z0-9_-]+:$" kafka/docker-compose.yml` | `raw/infra_counts_after_api_removal.log` |
+| Dockerfiles | 4: `devops/Dockerfile.{ml,simulator,spark}`, `risk_api/Dockerfile` | `git ls-files "*Dockerfile*" \| wc -l` | `raw/infra_counts_after_api_removal.log` |
+| Kubernetes manifests | 6 files, 11 objects (5 Deployment, 3 Service, 1 ConfigMap, 1 Secret, 1 Namespace), including the new `risk-api-deployment.yaml` | `ls devops/k8s/*.yaml \| wc -l`; `grep -h "^kind:" devops/k8s/*.yaml \| sort \| uniq -c` | `raw/infra_counts_after_api_removal.log` |
+| Kubernetes deployments running on the local Docker Desktop cluster | 4/4 Running (namespace age 125 days; the Risk API manifest was only dry-run, not deployed) | `kubectl get all,configmap,secret -n telematics` | `raw/k8s_local_state.log` |
+| Terraform resource blocks | **7**, all in `devops/terraform` (3 security groups, MSK, EC2, DB subnet group, RDS). The only `.tf` files in the repo | `git ls-files "*.tf"`; `grep -cE '^resource "' $(git ls-files "*.tf")` | `raw/infra_counts_after_api_removal.log` |
+| Terraform validity | `devops/terraform`: `Success! The configuration is valid.` | `cd devops/terraform && terraform validate` | `raw/infra_counts_after_api_removal.log` |
 | Terraform applied? | **No.** No `.tfstate` anywhere and no remote backend configured | `find . -name "*.tfstate*"` (no output) | n/a |
 
 ### Notes on the latency numbers
@@ -167,6 +172,7 @@ dashboard plots them. On this laptop, a score appears in InfluxDB a median
 of about 16 s after its event is produced. That delay comes almost entirely
 from the 30 s trigger. The repo also contains Dockerfiles, Kubernetes
 manifests that have been run on a local Docker Desktop cluster, Terraform
-for AWS that validates but has never been applied, a separate FastAPI
-"Vehicle API" backed by Postgres, and GitHub Actions workflows that lint,
-test and build images. The CI deploy job is only a placeholder.
+for AWS that validates but has never been applied, a read-only FastAPI
+service (`risk_api/`) that serves the scores from InfluxDB, and GitHub
+Actions workflows that lint, test and build images. The CI deploy job is
+only a placeholder.

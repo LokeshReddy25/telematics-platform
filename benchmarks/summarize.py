@@ -121,7 +121,13 @@ out["model_mae"] = stats(mae)
 out["model_r2"] = stats(r2)
 
 # pytest
-for name in ("pytest_pipeline", "pytest_existing_api", "pytest_risk_api"):
+for name in (
+    "pytest_pipeline",
+    "pytest_pipeline_after_fix_commit",
+    "pytest_pipeline_post_api_removal",
+    "pytest_risk_api",
+    "pytest_risk_api_post_api_removal",
+):
     passed, total_cov = [], []
     for p in files(f"{name}_run*.log"):
         txt = open(p, encoding="utf-8").read()
