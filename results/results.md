@@ -137,7 +137,12 @@ runs happened in daytime.
 
 ## Screenshots
 
-- `results/grafana_dashboard.png`: the provisioned dashboard
+- `docs/grafana-dashboard.png` (2026-11-26, branch `fix/grafana-panels`): the
+  dashboard after its four panels were fixed, last 15 minutes of live local
+  data, 1920 px wide with the empty bottom area cropped. No panel shows
+  `_start`/`_stop`/`_measurement` metadata. The pie counts, top-5 averages and harsh-braking sums matched
+  direct InfluxDB queries over the same range. Two limits remain: the "Live Risk Score per Driver" lines look jagged because several trips per driver are scored milliseconds apart in the same micro-batch, and the dashboard references datasource uid `InfluxDB-Telematics` while the provisioned datasource gets a generated uid. That mismatch does not stop the panels loading.
+- `results/grafana_dashboard.png` (earlier, before the fix; kept as history): the provisioned dashboard
   (http://localhost:3000/d/telematics-driver-risk/), last 30 minutes,
   captured with headless Chrome (`raw/grafana_screenshot_cmd.log`). Visible
   problems: "Risk Category Distribution" is one `_value` slice rather than

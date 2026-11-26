@@ -29,7 +29,7 @@ Latency is set by the 30 s Spark trigger, not by Kafka or the model.
 |---|---|---|
 | Kafka + Spark Structured Streaming pipeline, near-real-time scores | **SUPPORTED** | "Near-real-time" = 30 s micro-batches (median 16.155 s). Demo depended on a `trip_generator.py` fix, now committed (below) |
 | Gradient Boosting scoring, InfluxDB, risk levels | **SUPPORTED** | Model trained on synthetic, formula-generated labels. Simulator features don't match training distributions. Categories are per trip window, not per driver |
-| Monitoring + deployment with Grafana, Docker, K8s, Terraform, GitHub Actions, CI/CD | **PARTIAL** | Grafana ✔, Docker ✔, K8s ✔ (local cluster only). Terraform validated, **never applied**. CI ✔, but the **deploy job is an `echo` placeholder (no CD)**. Prometheus is claimed in the old README but **NOT FOUND** |
+| Monitoring + deployment with Grafana, Docker, K8s, Terraform, GitHub Actions, CI/CD | **PARTIAL** | Grafana ✔, Docker ✔, K8s ✔ (local cluster only). Terraform: the MSK stack (`devops/terraform`) validated, **never applied**. *Update:* a separate single-EC2 stack (`devops/terraform-ec2`) was applied once on 2026-11-26, verified, and destroyed the same day (see `results/results.md#aws-deployment`). CI ✔, but the **deploy job is an `echo` placeholder (no CD)**. Prometheus is claimed in the old README but **NOT FOUND** |
 
 ## What was added on this branch
 
@@ -68,20 +68,31 @@ Pipeline code changed only in the first commit: your two fixes to
    once runs exist, and they only render publicly if the repo is public.
    The new `risk-api-ci.yml` integration job is untested on GitHub Actions
    itself; it passed only against my local InfluxDB.
-3. **Capture this Grafana screenshot** for the README/portfolio. Run
+3. ~~Capture a Grafana screenshot~~. **Done on 2026-11-26** on branch
+   `fix/grafana-panels`: `docs/grafana-dashboard.png` (1920 px wide, live
+   local data, shown at the top of the README). Original note, kept as history:
+   **Capture this Grafana screenshot** for the README/portfolio. Run
    `docker compose up -d --build`, wait about 5 minutes, then open
    http://localhost:3000/d/telematics-driver-risk/?from=now-15m&to=now in a
    window at least 1,900 px wide, so the "Top 5 Riskiest Drivers" score
    column is visible. The **"Live Risk Score per Driver"** time-series panel
    is the one to show. `results/grafana_dashboard.png` is a headless capture
    from this session that you can use meanwhile.
-4. **Fix or explain two dashboard panels.** "Risk Category Distribution"
+4. ~~Fix or explain two dashboard panels~~. **Done on 2026-11-26** on branch
+   `fix/grafana-panels`: "Risk Category Distribution" now shows one slice per
+   category (Low/Medium/High/Critical), "Top 5 Riskiest Drivers" shows only
+   `driver_id` and the average risk score, sorted highest first, and the
+   "Live Risk Score per Driver" and "Harsh Braking Events Over Time" legends
+   show only `driver_id` (Harsh Braking is now grouped bars per driver per
+   5-minute window). The pie counts, top-5 averages and harsh-braking sums
+   matched direct InfluxDB queries over the same range. Two limits remain: the "Live Risk Score per Driver" lines look jagged because several trips per driver are scored milliseconds apart in the same micro-batch, and the dashboard references datasource uid `InfluxDB-Telematics` while the provisioned datasource gets a generated uid. That mismatch does not stop the panels loading.
+   Original note, kept as history: "Risk Category Distribution"
    renders as one `_value` slice, and the "Top 5" table shows `_start`/`_stop`
    columns. These are Flux/transform issues in
    `dashboard/grafana_config/dashboard.json`. I didn't touch them.
 5. **Update your resume wording**. Suggestions are at the bottom of
    `results/resume_claims_check.md`. In particular: say "CI" not "CI/CD",
-   "Terraform (validated, not applied)", "micro-batch (30 s)", and "synthetic
+   "Terraform (MSK design validated, not applied; single-EC2 Docker Compose deployment run once and destroyed)", "micro-batch (30 s)", and "synthetic
    training data".
 6. ~~RUNBOOK.md outdated~~. **Done:** rewritten for the single
    `docker compose up` flow (and now committed), including how to remove the

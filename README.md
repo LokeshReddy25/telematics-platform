@@ -3,7 +3,11 @@
 [![CI](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/ci.yml)
 [![Risk API CI](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/risk-api-ci.yml/badge.svg)](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/risk-api-ci.yml)
 
-An end-to-end streaming pipeline that turns simulated connected-vehicle trip data into per-trip driver risk scores, in the style of usage-based insurance (UBI). Simulated telemetry flows through **Kafka**. **Spark Structured Streaming** aggregates it in 30-second micro-batches and scores it with a **scikit-learn** Gradient Boosting model trained on synthetic data. Scores are written to **InfluxDB** and shown in **Grafana**, and a **FastAPI** service (`risk_api/`, the only API in this repo) serves them over REST. Everything runs locally with one `docker compose up`. The repo also has Kubernetes manifests (run on a local cluster), Terraform for AWS (validated, **never applied, so nothing is deployed on AWS**) and GitHub Actions CI. Measured numbers are in [Results](#results).
+## Dashboard
+
+![Grafana dashboard showing live driver risk scores from the pipeline](docs/grafana-dashboard.png)
+
+An end-to-end streaming pipeline that turns simulated connected-vehicle trip data into per-trip driver risk scores, in the style of usage-based insurance (UBI). Simulated telemetry flows through **Kafka**. **Spark Structured Streaming** aggregates it in 30-second micro-batches and scores it with a **scikit-learn** Gradient Boosting model trained on synthetic data. Scores are written to **InfluxDB** and shown in **Grafana**, and a **FastAPI** service (`risk_api/`, the only API in this repo) serves them over REST. Everything runs locally with one `docker compose up`. The repo also has Kubernetes manifests (run on a local cluster), Terraform for AWS (the MSK stack was never applied; a single-EC2 Docker Compose deployment ran once and was destroyed the same day) and GitHub Actions CI. Measured numbers are in [Results](#results).
 
 ## Architecture
 
@@ -76,7 +80,7 @@ An end-to-end streaming pipeline that turns simulated connected-vehicle trip dat
 |---|---|---|
 | Docker + Docker Compose | Compose v2.20+ (uses `include`) | Runs every service, including Spark and model training |
 | Python | 3.11 | Only for running tests/benchmarks or the pieces outside Docker |
-| (Optional) Terraform | 1.5+ | AWS infrastructure code (not applied) |
+| (Optional) Terraform | 1.5+ | AWS infrastructure code (`devops/terraform` MSK stack: never applied; `devops/terraform-ec2`: applied once, destroyed the same day) |
 | (Optional) kubectl | 1.28+ | Kubernetes deployment |
 
 ## Quickstart
@@ -172,7 +176,7 @@ cd risk_api && pip install -r requirements-test.txt && python -m pytest -m "not 
 | Grafana | 10.4.2 | Live risk dashboard |
 | Docker / Docker Compose | Compose v2.20+ | Local containerisation, one-command stack |
 | Kubernetes | 1.28+ | Manifests in `devops/k8s/`, run on a local Docker Desktop cluster |
-| Terraform (AWS) | 1.5+ | Infrastructure as code: validated, **not applied** |
+| Terraform (AWS) | 1.5+ | Infrastructure as code. `devops/terraform` (MSK design): validated, **never applied**. `devops/terraform-ec2` (one EC2 instance running Docker Compose): applied once, verified, destroyed the same day ([AWS deployment](#aws-deployment)) |
 | GitHub Actions | — | CI: lint, tests, image builds. The `deploy` job is a placeholder (no CD) |
 
 ## Results

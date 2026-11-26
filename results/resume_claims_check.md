@@ -5,7 +5,8 @@ working-tree changes noted below. All numbers are from `results/results.md`.
 Updated the same day after `api/` (Vehicle API) was deleted on `main` and
 `deploy/` (its ECS Fargate Terraform) was removed. The infrastructure
 evidence below reflects the code as it is now
-(`results/raw/infra_counts_after_api_removal.log`).
+(`results/raw/infra_counts_after_api_removal.log`). Updated again after the
+single-EC2 AWS deployment ([results.md](results.md#aws-deployment)).
 
 Verdicts: **SUPPORTED** (code exists and ran in this session), **PARTIAL**
 (part of the claim holds, part doesn't), **NOT FOUND** (no code for it).
@@ -79,16 +80,16 @@ Things you could not defend if asked, so phrase them carefully:
 
 | Tool | Verdict | Evidence / gap |
 |---|---|---|
-| Grafana | SUPPORTED | [dashboard/grafana_config/](../dashboard/grafana_config/): provisioned datasource and a 4-panel dashboard, rendered in this session (`results/grafana_dashboard.png`). Two panels render poorly: "Risk Category Distribution" shows one `_value` slice instead of one per category, and "Top 5 Riskiest Drivers" shows `_start`/`_stop` columns with no visible risk score. |
+| Grafana | SUPPORTED | [dashboard/grafana_config/](../dashboard/grafana_config/): provisioned datasource and a 4-panel dashboard, rendered in this session (`results/grafana_dashboard.png`). At first check two panels rendered poorly: "Risk Category Distribution" showed one `_value` slice instead of one per category, and "Top 5 Riskiest Drivers" showed `_start`/`_stop` columns with no visible risk score. **Fixed on 2026-11-26** (branch `fix/grafana-panels`, screenshot `docs/grafana-dashboard.png`): one slice per category, top 5 by average score with only `driver_id` and the score, and driver-only legends on the risk score and harsh braking panels. Pie counts, top-5 averages and harsh-braking sums matched direct InfluxDB queries. Two limits remain: the "Live Risk Score per Driver" lines look jagged because several trips per driver are scored milliseconds apart in the same micro-batch, and the dashboard references datasource uid `InfluxDB-Telematics` while the provisioned datasource gets a generated uid. That mismatch does not stop the panels loading. |
 | Monitoring (ops) | NOT FOUND | The old README mentioned Prometheus twice, but there is no Prometheus config, service or scrape target anywhere in the repo (that claim is now removed from the README). Grafana shows business data only, no service health. |
 | Docker | SUPPORTED | 4 Dockerfiles (`devops/Dockerfile.{ml,simulator,spark}`, `risk_api/Dockerfile`). One root compose file (including `kafka/docker-compose.yml`) runs 10 services from a single `docker compose up`, verified from a fresh clone. |
 | Kubernetes | SUPPORTED (local cluster only) | 6 manifests in [devops/k8s/](../devops/k8s/), 11 objects. `kubectl get all -n telematics` on the local Docker Desktop cluster shows the 4 pipeline deployments Running, age 125 days (`results/raw/k8s_local_state.log`). The Risk API manifest was only server-side dry-run, not deployed. Never deployed to EKS. No Grafana manifest. The Secret holds the dev token in plain text. |
-| Terraform | PARTIAL | One stack, `devops/terraform`: 7 resource blocks (MSK, EC2, RDS, DB subnet group, 3 security groups). Passes `terraform validate`. **Never applied**: no state file exists and no remote backend is configured. The RDS "metadata_store" isn't used by any pipeline code. |
+| Terraform | PARTIAL | Two stacks. `devops/terraform`: 7 resource blocks (MSK, EC2, RDS, DB subnet group, 3 security groups). Passes `terraform validate`. **Never applied**: no state file exists and no remote backend is configured. The RDS "metadata_store" isn't used by any pipeline code. `devops/terraform-ec2`: 6 resources (one EC2 instance, a security group with no inbound rules, an SSM-only IAM role and instance profile). **Applied once** on 2026-11-26 to run the whole stack with Docker Compose on that one instance, verified, and **destroyed the same day** ([results.md](results.md#aws-deployment)). Not EKS, not MSK, not production. |
 | GitHub Actions | PARTIAL | [ci.yml](../.github/workflows/ci.yml): lint → test → build images, which is real CI. The **`deploy` job is a placeholder that only `echo`s text.** [risk-api-ci.yml](../.github/workflows/risk-api-ci.yml): Risk API unit + integration tests and image build. Whether these pass on GitHub is NOT MEASURED (`gh` isn't installed). The same lint and test commands pass locally (`results/raw/lint_check_post_api_removal.log`, pytest logs). |
 
 Things you could not defend:
 - "CI/CD": there is CI, but no CD. The deploy job is a placeholder.
-- Anything implying AWS: nothing has been deployed to AWS.
+- Anything implying a production, managed or highly available AWS deployment (MSK, EKS, EMR): the only AWS deployment was one EC2 instance running Docker Compose for under an hour on 2026-11-26, then destroyed.
 - "Monitoring" in the ops sense: there is no Prometheus and no alerting.
 
 ---
@@ -109,6 +110,7 @@ Things you could not defend:
   coverage).
 - Containerised every component with Docker/Docker Compose (whole stack
   from one `docker compose up`), deployed the pipeline to a local
-  Kubernetes cluster, wrote Terraform for AWS (MSK, EC2, RDS; validated,
-  not applied), and set up GitHub Actions CI for lint, tests and image
+  Kubernetes cluster, wrote Terraform for AWS (an MSK/EC2/RDS design, validated,
+  not applied; and a single-EC2 stack used once to run the whole
+  Docker Compose stack, verified over SSM, then destroyed), and set up GitHub Actions CI for lint, tests and image
   builds.
