@@ -31,7 +31,9 @@ Things to be ready for in an interview:
 - **The end-to-end demo depends on an uncommitted fix.** The committed
   `simulator/trip_generator.py` backdates trips by up to 24 h. The 2-minute
   watermark then drops most of them (RUNBOOK.md, "Fixes already applied").
-  The working tree has the fix, but it is not committed.
+  The working tree has the fix, but it is not committed. Measured on a fresh
+  clone of the committed code: **7 of 27** trips got a score. With the fix,
+  15 of 15 got one in each of 3 runs.
 - **Scoring runs on the Spark driver.** `process_batch` calls
   `batch_df.collect()` and scores rows in a Python loop. That is fine for
   this volume, but it is not distributed scoring. Spark runs in local mode

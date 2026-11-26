@@ -1,0 +1,4 @@
+# fresh clone (committed trip_generator.py, trips backdated up to 24h); Spark query started 06:15:33Z
+$ python benchmarks/trip_coverage.py --since 2026-11-26T06:15:40Z --until 2026-11-26T06:20:00Z
+{"since": "2026-11-26T06:15:40Z", "until": "2026-11-26T06:20:00Z", "trips_in_topic_total": 40, "trips_produced_in_window": 27, "trips_with_score": 7, "trips_without_score": 20}
+exit=0

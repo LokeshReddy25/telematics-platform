@@ -1,0 +1,39 @@
+$ docker compose logs model-trainer
+No existing model found, training...
+Generating 10000 synthetic training samples...
+Train samples: 8000 | Test samples: 2000
+Training GradientBoostingRegressor...
+=== Evaluation on held-out test set ===
+MAE : 2.646
+R^2 : 0.975
+=== Feature importances ===
+$ ls -la ml/models
+total 272
+drwxr-xr-x 1 acer 197121      0 Nov 26 11:44 .
+drwxr-xr-x 1 acer 197121      0 Nov 26 11:44 ..
+-rw-r--r-- 1 acer 197121 270935 Nov 26 11:44 risk_model.pkl
+$ docker compose logs kafka-init
+WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+Created topic vehicle.trip.events.
+$ docker compose ps -a
+grafana running Up 23 seconds
+influxdb running Up 29 seconds (healthy)
+kafka running Up 18 seconds (healthy)
+kafka-ui running Up 11 seconds
+zookeeper running Up 29 seconds (healthy)
+kafka-init exited Exited (0) 9 seconds ago
+model-trainer exited Exited (0) 23 seconds ago
+risk-api running Up 23 seconds (healthy)
+simulator running Up 8 seconds
+spark running Up 8 seconds
+
+$ until curl -s "http://localhost:8001/drivers/top-risk?limit=5" | grep -q "\"rank\":1"; do sleep 5; done   (poll started ~11:45:20)
+first scores visible via API at 2026-11-26T11:46:07+05:30 (compose up returned 11:45:07; first InfluxDB point scored_at 2026-11-26T06:16:02.195008Z)
+$ curl -s http://localhost:8001/health
+{"status":"ok","influxdb":"reachable"}
+$ curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/d/telematics-driver-risk/
+200
+$ curl -s -o /dev/null -w "%{http_code}" http://localhost:8001/docs
+200
+$ curl -s -o /dev/null -w "%{http_code}" http://localhost:8080
+200
