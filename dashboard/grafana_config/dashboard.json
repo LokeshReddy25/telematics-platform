@@ -25,14 +25,19 @@
           "unit": "none",
           "min": 0,
           "max": 100,
+          "displayName": "${__field.labels.driver_id}",
           "custom": { "drawStyle": "line", "lineWidth": 2, "fillOpacity": 10, "spanNulls": true }
         },
         "overrides": []
       },
+      "options": {
+        "legend": { "displayMode": "list", "placement": "bottom", "showLegend": true },
+        "tooltip": { "mode": "multi", "sort": "desc" }
+      },
       "targets": [
         {
           "refId": "A",
-          "query": "from(bucket: \"telematics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"driver_risk\")\n  |> filter(fn: (r) => r._field == \"risk_score\")\n  |> group(columns: [\"driver_id\"])\n  |> sort(columns: [\"_time\"])"
+          "query": "from(bucket: \"telematics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"driver_risk\")\n  |> filter(fn: (r) => r._field == \"risk_score\")\n  |> group(columns: [\"driver_id\"])\n  |> keep(columns: [\"_time\", \"_value\", \"driver_id\"])\n  |> sort(columns: [\"_time\"])"
         }
       ]
     },
@@ -43,13 +48,24 @@
       "gridPos": { "h": 9, "w": 8, "x": 0, "y": 9 },
       "datasource": { "type": "influxdb", "uid": "InfluxDB-Telematics" },
       "fieldConfig": {
-        "defaults": { "unit": "short" },
-        "overrides": []
+        "defaults": { "unit": "short", "color": { "mode": "palette-classic" } },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Low" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "green" } }] },
+          { "matcher": { "id": "byName", "options": "Medium" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "yellow" } }] },
+          { "matcher": { "id": "byName", "options": "High" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "orange" } }] },
+          { "matcher": { "id": "byName", "options": "Critical" }, "properties": [{ "id": "color", "value": { "mode": "fixed", "fixedColor": "red" } }] }
+        ]
+      },
+      "options": {
+        "pieType": "pie",
+        "reduceOptions": { "values": false, "calcs": ["lastNotNull"], "fields": "" },
+        "legend": { "displayMode": "table", "placement": "right", "showLegend": true, "values": ["value", "percent"] },
+        "tooltip": { "mode": "single" }
       },
       "targets": [
         {
           "refId": "A",
-          "query": "from(bucket: \"telematics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"driver_risk\")\n  |> filter(fn: (r) => r._field == \"risk_score\")\n  |> group(columns: [\"risk_category\"])\n  |> count()\n  |> group()\n  |> yield(name: \"risk_category_counts\")"
+          "query": "from(bucket: \"telematics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"driver_risk\")\n  |> filter(fn: (r) => r._field == \"risk_score\")\n  |> group(columns: [\"risk_category\"])\n  |> count()\n  |> group()\n  |> keep(columns: [\"risk_category\", \"_value\"])\n  |> map(fn: (r) => ({r with row: \"count\"}))\n  |> pivot(rowKey: [\"row\"], columnKey: [\"risk_category\"], valueColumn: \"_value\")\n  |> drop(columns: [\"row\"])\n  |> yield(name: \"risk_category_counts\")"
         }
       ]
     },
@@ -78,12 +94,15 @@
       "datasource": { "type": "influxdb", "uid": "InfluxDB-Telematics" },
       "fieldConfig": {
         "defaults": { "unit": "none" },
-        "overrides": []
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "avg_risk_score" }, "properties": [{ "id": "displayName", "value": "Avg risk score" }, { "id": "decimals", "value": 2 }] }
+        ]
       },
+      "options": { "showHeader": true, "cellHeight": "sm" },
       "targets": [
         {
           "refId": "A",
-          "query": "from(bucket: \"telematics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"driver_risk\")\n  |> filter(fn: (r) => r._field == \"risk_score\")\n  |> group(columns: [\"driver_id\"])\n  |> mean()\n  |> group()\n  |> sort(columns: [\"_value\"], desc: true)\n  |> limit(n: 5)\n  |> yield(name: \"top5_riskiest_drivers\")"
+          "query": "from(bucket: \"telematics\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r._measurement == \"driver_risk\")\n  |> filter(fn: (r) => r._field == \"risk_score\")\n  |> group(columns: [\"driver_id\"])\n  |> mean()\n  |> group()\n  |> keep(columns: [\"driver_id\", \"_value\"])\n  |> rename(columns: {_value: \"avg_risk_score\"})\n  |> sort(columns: [\"avg_risk_score\"], desc: true)\n  |> limit(n: 5)\n  |> yield(name: \"top5_riskiest_drivers\")"
         }
       ]
     }
