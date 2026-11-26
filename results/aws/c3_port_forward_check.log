@@ -1,0 +1,13 @@
+$ aws ssm start-session --region ap-southeast-2 --target i-02b5a401355a83e97 --document-name AWS-StartPortForwardingSession --parameters portNumber=3000,localPortNumber=3000   (2026-11-26T09:04:40+00:00)
+
+Starting session with SessionId: <redacted>
+Port 3000 opened for sessionId <redacted>.
+Waiting for connections...
+$ curl -s http://localhost:3000/api/health
+{
+  "commit": "701c851be7a930e04fbc6ebb1cd4254da80edd4c",
+  "database": "ok",
+  "version": "10.4.2"
+}
+$ curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/d/telematics-driver-risk/
+200

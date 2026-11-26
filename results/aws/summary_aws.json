@@ -1,0 +1,237 @@
+{
+  "kafka_produce_events_per_sec": null,
+  "kafka_consume_events_per_sec": null,
+  "kafka_throughput_events_per_run": [],
+  "project_producer_speed0_events_per_sec": null,
+  "project_producer_speed0_events_per_run": [],
+  "e2e_event_to_score_median_s": {
+    "runs": 3,
+    "median": 15.562,
+    "min": 15.062,
+    "max": 16.157,
+    "values": [
+      15.062,
+      15.562,
+      16.157
+    ]
+  },
+  "e2e_event_to_score_p95_s": {
+    "runs": 3,
+    "median": 29.446,
+    "min": 29.434,
+    "max": 29.482,
+    "values": [
+      29.482,
+      29.434,
+      29.446
+    ]
+  },
+  "e2e_event_to_score_min_s": {
+    "runs": 3,
+    "median": 0.804,
+    "min": 0.578,
+    "max": 0.943,
+    "values": [
+      0.943,
+      0.578,
+      0.804
+    ]
+  },
+  "e2e_event_to_score_max_s": {
+    "runs": 3,
+    "median": 31.172,
+    "min": 30.918,
+    "max": 31.497,
+    "values": [
+      31.497,
+      31.172,
+      30.918
+    ]
+  },
+  "e2e_trip_complete_median_s": {
+    "runs": 3,
+    "median": 15.879,
+    "min": 12.511,
+    "max": 17.922,
+    "values": [
+      12.511,
+      15.879,
+      17.922
+    ]
+  },
+  "e2e_trip_complete_p95_s": {
+    "runs": 3,
+    "median": 28.12,
+    "min": 27.943,
+    "max": 31.196,
+    "values": [
+      31.196,
+      27.943,
+      28.12
+    ]
+  },
+  "e2e_events_sent": {
+    "runs": 3,
+    "median": 512,
+    "min": 492,
+    "max": 531,
+    "values": [
+      531,
+      512,
+      492
+    ]
+  },
+  "e2e_events_acked": {
+    "runs": 3,
+    "median": 512,
+    "min": 492,
+    "max": 531,
+    "values": [
+      531,
+      512,
+      492
+    ]
+  },
+  "e2e_drivers": {
+    "runs": 3,
+    "median": 5,
+    "min": 5,
+    "max": 5,
+    "values": [
+      5,
+      5,
+      5
+    ]
+  },
+  "e2e_trips_produced": {
+    "runs": 3,
+    "median": 15,
+    "min": 15,
+    "max": 15,
+    "values": [
+      15,
+      15,
+      15
+    ]
+  },
+  "e2e_trips_with_any_score": {
+    "runs": 3,
+    "median": 15,
+    "min": 15,
+    "max": 15,
+    "values": [
+      15,
+      15,
+      15
+    ]
+  },
+  "e2e_scored_records_in_influx": {
+    "runs": 3,
+    "median": 38,
+    "min": 37,
+    "max": 38,
+    "values": [
+      38,
+      38,
+      37
+    ]
+  },
+  "e2e_events_without_matching_score": {
+    "runs": 3,
+    "median": 0,
+    "min": 0,
+    "max": 0,
+    "values": [
+      0,
+      0,
+      0
+    ]
+  },
+  "e2e_clock_offset_ms_applied": [
+    32.5,
+    19.6,
+    18.8
+  ],
+  "spark_batches_total": 22,
+  "spark_batches_with_input": 18,
+  "spark_trigger_execution_ms_batches_with_input": {
+    "runs": 18,
+    "median": 1064.0,
+    "min": 605,
+    "max": 1683,
+    "values": [
+      1680,
+      1683,
+      863,
+      1074,
+      1118,
+      1028,
+      701,
+      1079,
+      605,
+      1054,
+      1281,
+      1078,
+      632,
+      1031,
+      1118,
+      1103,
+      1018,
+      927
+    ]
+  },
+  "spark_add_batch_ms_batches_with_input": {
+    "runs": 18,
+    "median": 961.5,
+    "min": 520,
+    "max": 1546,
+    "values": [
+      1546,
+      1462,
+      769,
+      979,
+      1025,
+      951,
+      624,
+      1008,
+      520,
+      969,
+      1150,
+      995,
+      543,
+      954,
+      925,
+      1038,
+      949,
+      867
+    ]
+  },
+  "spark_input_rows_per_batch_with_input": {
+    "runs": 18,
+    "median": 99.5,
+    "min": 25,
+    "max": 100,
+    "values": [
+      41,
+      100,
+      100,
+      100,
+      99,
+      91,
+      27,
+      100,
+      99,
+      100,
+      100,
+      86,
+      25,
+      100,
+      100,
+      100,
+      99,
+      68
+    ]
+  },
+  "model_mae": null,
+  "model_r2": null
+}

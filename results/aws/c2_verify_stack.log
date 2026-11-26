@@ -1,0 +1,100 @@
+
+### 2026-11-26T08:49:00.806433+00:00 SSM Run Command 1b7d9995-ee2e-4df5-bed5-3a1e2b16ca86 on i-02b5a401355a83e97
+$ #!/bin/bash
+  # verify_stack.sh: run ON the EC2 instance (via SSM Run Command) to check the
+  # deployed stack end to end. Prints evidence only; changes nothing.
+  # Tokens are never printed: the influx CLI uses the config created by the
+  # container's init setup, and the Risk API holds its own token.
+  set -u
+  cd /opt/telematics-platform
+  C="docker compose -f docker-compose.yml -f docker-compose.aws.yml"
+  echo "== time: $(date -u -Is)  uptime: $(uptime -p)"
+  echo "== services"
+  $C ps -a --format '{{.Service}}\t{{.State}}\t{{.Status}}'
+  echo "== published ports on the host (expect 127.0.0.1 only)"
+  ss -ltnH | awk '{print $4}' | sort -u
+  echo "== Kafka: end offsets of vehicle.trip.events, 30 s apart"
+  off() { docker exec telematics-kafka kafka-get-offsets --bootstrap-server localhost:9092 --topic vehicle.trip.events 2>/dev/null | awk -F: '{s+=$3} END {print s+0}'; }
+  o1=$(off); sleep 30; o2=$(off)
+  echo "total offset t0=$o1  t0+30s=$o2  delta=$((o2 - o1))"
+  echo "== Spark: scored windows printed so far"
+  $C logs --no-log-prefix spark 2>/dev/null | grep -c '^\[batch'
+  $C logs --no-log-prefix spark 2>/dev/null | grep '^\[batch' | tail -n 3
+  echo "== InfluxDB: scores written in the last 15 min"
+  docker exec telematics-influxdb influx query --raw=false '
+  from(bucket: "telematics") |> range(start: -15m)
+    |> filter(fn: (r) => r._measurement == "driver_risk" and r._field == "risk_score")
+    |> group() |> count()' 2>&1 | tail -n 3
+  docker exec telematics-influxdb influx query '
+  from(bucket: "telematics") |> range(start: -15m)
+    |> filter(fn: (r) => r._measurement == "driver_risk" and r._field == "risk_score")
+    |> keep(columns: ["trip_id"]) |> group() |> distinct(column: "trip_id") |> count()' 2>&1 | tail -n 3
+  echo "== Risk API (inside the instance, port bound to 127.0.0.1)"
+  curl -s -w ' HTTP %{http_code}\n' http://127.0.0.1:8001/health
+  curl -s -w ' HTTP %{http_code}\n' 'http://127.0.0.1:8001/drivers/top-risk?limit=3'
+  curl -s -o /dev/null -w 'limit=0 -> HTTP %{http_code}\n' 'http://127.0.0.1:8001/drivers/top-risk?limit=0'
+  curl -s -o /dev/null -w 'grafana /api/health -> HTTP %{http_code}\n' http://127.0.0.1:3000/api/health
+  echo "== resources"
+  docker stats --no-stream --format 'table {{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.CPUPerc}}'
+  free -m
+  df -h /
+  
+--- status: Success (exit 0)
+--- stdout:
+== time: 2026-11-26T08:48:18+00:00  uptime: up 13 minutes
+== services
+grafana	running	Up 5 minutes
+influxdb	running	Up 5 minutes (healthy)
+kafka	running	Up 5 minutes (healthy)
+kafka-ui	running	Up 5 minutes
+kafka-init	exited	Exited (0) 5 minutes ago
+model-trainer	exited	Exited (0) 5 minutes ago
+risk-api	running	Up 5 minutes (healthy)
+simulator	running	Up 7 seconds
+spark	running	Up 5 minutes
+zookeeper	running	Up 5 minutes (healthy)
+== published ports on the host (expect 127.0.0.1 only)
+0.0.0.0:22
+127.0.0.1:2181
+127.0.0.1:29092
+127.0.0.1:3000
+127.0.0.1:39941
+127.0.0.1:8001
+127.0.0.1:8080
+127.0.0.1:8086
+[::]:22
+== Kafka: end offsets of vehicle.trip.events, 30 s apart
+total offset t0=1014  t0+30s=1119  delta=105
+== Spark: scored windows printed so far
+71
+[batch 10] driver=driver_0000 trip=d8abfaf9-8642-43ed-a662-c4659d8d4d82 risk_score=34.7 category=Medium harsh_brakes=0 harsh_accels=5
+[batch 10] driver=driver_0004 trip=18a68f9f-3c84-4b9b-9975-7ad0dcd60b37 risk_score=87.85 category=Critical harsh_brakes=13 harsh_accels=17
+[batch 10] driver=driver_0004 trip=18a68f9f-3c84-4b9b-9975-7ad0dcd60b37 risk_score=46.86 category=Medium harsh_brakes=4 harsh_accels=5
+== InfluxDB: scores written in the last 15 min
+                   _start:time                      _stop:time                  _value:int
+------------------------------  ------------------------------  --------------------------
+2026-11-26T08:33:51.494139586Z  2026-11-26T08:48:51.494139586Z                          71
+                _value:int
+--------------------------
+                        30
+== Risk API (inside the instance, port bound to 127.0.0.1)
+{"status":"ok","influxdb":"reachable"} HTTP 200
+{"limit":3,"drivers":[{"rank":1,"driver_id":"driver_0002","risk_score":95.76,"risk_category":"Critical","trip_id":"f7806f98-5693-4b52-a312-b58580d8694b","scored_at":"2026-11-26T08:47:30.999233Z"},{"rank":2,"driver_id":"driver_0004","risk_score":46.86,"risk_category":"Medium","trip_id":"18a68f9f-3c84-4b9b-9975-7ad0dcd60b37","scored_at":"2026-11-26T08:48:30.918606Z"},{"rank":3,"driver_id":"driver_0000","risk_score":34.7,"risk_category":"Medium","trip_id":"d8abfaf9-8642-43ed-a662-c4659d8d4d82","scored_at":"2026-11-26T08:48:30.901820Z"}]} HTTP 200
+limit=0 -> HTTP 422
+grafana /api/health -> HTTP 200
+== resources
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-platform-simulator-1   9.602MiB / 7.597GiB   0.12%     0.24%
+telematics-platform-spark-1       991.1MiB / 7.597GiB   12.74%    0.19%
+telematics-kafka-ui               279.1MiB / 7.597GiB   3.59%     1.74%
+telematics-grafana                41.52MiB / 7.597GiB   0.53%     0.03%
+telematics-kafka                  365.2MiB / 7.597GiB   4.69%     1.58%
+telematics-platform-risk-api-1    48.75MiB / 7.597GiB   0.63%     0.13%
+telematics-influxdb               49.66MiB / 7.597GiB   0.64%     0.03%
+telematics-zookeeper              90.29MiB / 7.597GiB   1.16%     0.07%
+               total        used        free      shared  buff/cache   available
+Mem:            7779        2285         184           1        5309        5208
+Swap:           4095           0        4095
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1   30G   12G   19G  40% /
+

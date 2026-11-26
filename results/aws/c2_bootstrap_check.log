@@ -1,0 +1,60 @@
+
+### 2026-11-26T08:37:17.889675+00:00 SSM Run Command b0bc2722-3256-42de-ae3b-a6752e9964f5 on i-02b5a401355a83e97
+$ set -x; cat /var/lib/telematics-bootstrap.done; tail -n 8 /var/log/telematics-bootstrap.log; docker --version; docker compose version; docker buildx version; swapon --show; free -m; df -h /; ls /opt/telematics-platform | head -30; git -C /opt/telematics-platform log --oneline -1; shutdown --show 2>&1 || true; nproc
+--- status: Success (exit 0)
+--- stdout:
+bootstrap complete 2026-11-26T08:35:40+00:00
++ docker buildx version
+github.com/docker/buildx v0.17.1 257815a6fbaee88976808020bf04274388275ae8
++ git clone --branch main --depth 1 https://github.com/LokeshReddy25/telematics-platform /opt/telematics-platform
+Cloning into '/opt/telematics-platform'...
++ echo IyBkb2NrZXItY29tcG9zZS5hd3MueW1sCiMKIyBPdmVycmlkZSBmb3IgdGhlIHNpbmdsZS1FQzIgZGVtbyAoZGV2b3BzL3RlcnJhZm9ybS1lYzIvKS4gVXNlIGl0IG9uIHRvcCBvZgojIHRoZSByb290IGZpbGU6CiMKIyAgICAgZG9ja2VyIGNvbXBvc2UgLWYgZG9ja2VyLWNvbXBvc2UueW1sIC1mIGRvY2tlci1jb21wb3NlLmF3cy55bWwgdXAgLWQgLS1idWlsZAojCiMgTWVtb3J5OiBubyBsaW1pdHMgYXJlIHNldC4gVGhlIHdob2xlIHN0YWNrIG1lYXN1cmVkIGFib3V0IDEuNzggR2lCIGxvY2FsbHkKIyAocmVzdWx0cy9yYXcvbG9jYWxfbWVtb3J5X2RvY2tlcl9zdGF0cy5sb2cpLCB3ZWxsIHdpdGhpbiB0aGUgOCBHaUIKIyBtN2ktZmxleC5sYXJnZSwgYW5kIHVzZXJfZGF0YSBhbHNvIGFkZHMgNCBHQiBvZiBzd2FwLgojCiMgUG9ydHM6IGV2ZXJ5IHB1Ymxpc2hlZCBwb3J0IGlzIHJlLWJvdW5kIHRvIDEyNy4wLjAuMSwgc28gbm90aGluZyBsaXN0ZW5zIG9uCiMgdGhlIGluc3RhbmNlJ3MgbmV0d29yayBpbnRlcmZhY2UuIFRoZSBzZWN1cml0eSBncm91cCBhbHJlYWR5IGhhcyBubyBpbmJvdW5kCiMgcnVsZXM7IHRoaXMgaXMgYSBzZWNvbmQgbGF5ZXIuIEdyYWZhbmEgYW5kIHRoZSBSaXNrIEFQSSBhcmUgcmVhY2hlZCBvbmx5CiMgdGhyb3VnaCBhbiBTU00gU2Vzc2lvbiBNYW5hZ2VyIHBvcnQtZm9yd2FyZC4KIwojIGAhb3ZlcnJpZGVgIChDb21wb3NlIHYyLjI0LjQrKSByZXBsYWNlcyB0aGUgcG9ydCBsaXN0IGluc3RlYWQgb2YgYXBwZW5kaW5nLgoKc2VydmljZXM6CiAgem9va2VlcGVyOgogICAgcG9ydHM6ICFvdmVycmlkZQogICAgICAtICIxMjcuMC4wLjE6MjE4MToyMTgxIgogIGthZmthOgogICAgcG9ydHM6ICFvdmVycmlkZQogICAgICAtICIxMjcuMC4wLjE6MjkwOTI6MjkwOTIiCiAga2Fma2EtdWk6CiAgICBwb3J0czogIW92ZXJyaWRlCiAgICAgIC0gIjEyNy4wLjAuMTo4MDgwOjgwODAiCiAgaW5mbHV4ZGI6CiAgICBwb3J0czogIW92ZXJyaWRlCiAgICAgIC0gIjEyNy4wLjAuMTo4MDg2OjgwODYiCiAgZ3JhZmFuYToKICAgIHBvcnRzOiAhb3ZlcnJpZGUKICAgICAgLSAiMTI3LjAuMC4xOjMwMDA6MzAwMCIKICByaXNrLWFwaToKICAgIHBvcnRzOiAhb3ZlcnJpZGUKICAgICAgLSAiMTI3LjAuMC4xOjgwMDE6ODAwMCIK
++ base64 -d
+++ date -Is
++ echo 'bootstrap complete 2026-11-26T08:35:40+00:00'
+Docker version 25.0.14, build 0bab007
+Docker Compose version v2.29.7
+github.com/docker/buildx v0.17.1 257815a6fbaee88976808020bf04274388275ae8
+NAME      TYPE SIZE USED PRIO
+/swapfile file   4G   0B   -2
+               total        used        free      shared  buff/cache   available
+Mem:            7779         316        6470           0         992        7209
+Swap:           4095           0        4095
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1   30G  6.3G   24G  21% /
+README.md
+RESULTS_SUMMARY.md
+RUNBOOK.md
+benchmarks
+dashboard
+devops
+docker-compose.aws.yml
+docker-compose.yml
+kafka
+ml
+requirements-dev.txt
+results
+risk_api
+simulator
+spark
+storage
+tests
+cee83ce Merge pull request #1 from LokeshReddy25/feature/risk-api
+Shutdown scheduled for Thu 2026-11-26 13:34:53 UTC, use 'shutdown -c' to cancel.
+2
+
+--- stderr:
+++ cat /var/lib/telematics-bootstrap.done
+++ tail -n 8 /var/log/telematics-bootstrap.log
+++ docker --version
+++ docker compose version
+++ docker buildx version
+++ swapon --show
+++ free -m
+++ df -h /
+++ ls /opt/telematics-platform
+++ head -30
+++ git -C /opt/telematics-platform log --oneline -1
+++ shutdown --show
+++ nproc
+

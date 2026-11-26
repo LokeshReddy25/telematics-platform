@@ -1,0 +1,27 @@
+
+### 2026-11-26T09:24:59.378616+00:00 SSM Run Command f45ac9af-5620-4b44-b084-992d19d7a121 on i-02b5a401355a83e97
+$ echo "== compose up: start $(cat /var/log/compose-up.start), log size $(wc -l < /var/log/compose-up.log) lines"; echo "== image build results (lines naming built images, DONE totals, errors):"; grep -E "naming to|exporting to image|Built$| Built|ERROR|error:|failed" /var/log/compose-up.log | grep -vE "^#[0-9]+ sha256" | tail -n 30; echo "== images on the instance:"; docker images --format "{{.Repository}}:{{.Tag}}  {{.Size}}  created {{.CreatedSince}}"
+--- status: Success (exit 0)
+--- stdout:
+== compose up: start 2026-11-26T08:38:57+00:00, log size 994 lines
+== image build results (lines naming built images, DONE totals, errors):
+#19 [model-trainer] exporting to image
+#19 naming to docker.io/telematics/ml-trainer:local done
+#20 [risk-api] exporting to image
+#20 naming to docker.io/telematics/risk-api:local done
+#35 [spark] exporting to image
+#35 naming to docker.io/telematics/spark-stream-processor:local done
+#45 [simulator] exporting to image
+#45 naming to docker.io/telematics/trip-simulator:local done
+== images on the instance:
+telematics/trip-simulator:local  403MB  created 42 minutes ago
+telematics/spark-stream-processor:local  2.42GB  created 42 minutes ago
+telematics/ml-trainer:local  490MB  created 46 minutes ago
+telematics/risk-api:local  176MB  created 46 minutes ago
+python:3.11-slim  125MB  created 2 days ago
+influxdb:2.7  380MB  created 6 months ago
+grafana/grafana:10.4.2  429MB  created 2 years ago
+provectuslabs/kafka-ui:latest  291MB  created 2 years ago
+confluentinc/cp-kafka:7.5.0  849MB  created 3 years ago
+confluentinc/cp-zookeeper:7.5.0  849MB  created 3 years ago
+

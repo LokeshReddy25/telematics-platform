@@ -197,12 +197,62 @@ formula, so R² shows it learned that formula, not real-world risk. Its
 training distributions also differ from what the simulator produces (see
 the results file).
 
+## AWS deployment
+
+On 2026-11-26 the whole Docker Compose stack ran on **one EC2 instance** in
+**ap-southeast-2 (Sydney)** for just under an hour, and then everything was
+destroyed. It was a **single-instance Docker Compose deployment**: not EKS,
+not MSK, not EMR, and not managed Grafana. Kafka, Spark, InfluxDB and
+Grafana ran as containers on that one host, the same as they do locally.
+
+- **Infrastructure:** [`devops/terraform-ec2/`](devops/terraform-ec2/) has
+  6 resources. They are:
+  - one `m7i-flex.large` instance (2 vCPU, 8 GiB, 30 GB gp3 encrypted
+    root, 4 GB swap)
+  - a security group with **no inbound rules**
+  - an IAM role and instance profile with `AmazonSSMManagedInstanceCore` only
+- **Access:** no SSH and no key pair. All access went through AWS Systems
+  Manager: Run Command for scripts, and a Session Manager port-forward for
+  Grafana. Every published container port was bound to `127.0.0.1`
+  ([`docker-compose.aws.yml`](docker-compose.aws.yml)).
+- **Deployed:** `main` cloned onto the instance and started with
+  `docker compose up -d --build`, running all 10 services. The model was
+  trained on the instance by the `model-trainer` service.
+- **Timeline (UTC):**
+  - `terraform apply` started 08:34:22 and finished 08:34:59 (6 added).
+  - `terraform destroy` started 09:32:07 and finished 09:32:48 (6 destroyed).
+  - Total time, apply start to destroy end: 58 min 26 s.
+  - After the destroy, read-only AWS checks found no instances, volumes,
+    snapshots, Elastic IPs, network interfaces, stack security groups, IAM
+    role or instance profile, or log groups in the region.
+
+| Measured on the EC2 instance | Value |
+|---|---|
+| Event produced → risk score in InfluxDB, median / p95 (3 runs) | 15.562 s / 29.446 s (local: 16.155 s / 29.454 s) |
+| Trips scored per e2e run | 15 / 15 in every run, 0 events without a matching score |
+| Spark micro-batch processing time (18 batches with input) | median 1,064 ms (605–1,683) |
+| Live stack check | Kafka offsets +105 in 30 s; 71 scores for 30 trips in InfluxDB over 15 min; Risk API `/health` 200, `limit=0` → 422; Grafana `/api/health` 200 |
+| Tests on the instance (1 run, `python:3.11-slim`) | `tests/` 17 passed · `risk_api` 46 passed incl. 5 integration tests against the deployed InfluxDB, 100% coverage |
+| Host memory with the full stack running | 2,285–2,370 MiB used of 7,779 MiB (4 readings), swap 0 MiB used; Spark container 829.9–831.5 MiB |
+
+Commands, raw output and method are in
+[results/results.md](results/results.md#aws-deployment) and
+[results/aws/](results/aws/). Account IDs and IP addresses have been removed
+from the logs.
+
+**Estimated cost (not measured from the bill): about $0.13.** This is the
+58 min 26 s run priced at AWS's published Sydney on-demand rates for the
+instance ($0.1197/h), the 30 GB gp3 volume ($0.096 per GB-month) and the
+public IPv4 address ($0.005/h). The actual charge is whatever AWS Billing
+shows.
+
 ## How this maps to production
 
-**Nothing in this repo has been deployed to AWS.** The only Terraform
-stack, `devops/terraform` (7 resource blocks: MSK, EC2, RDS, 3 security
-groups, DB subnet group), passes `terraform validate` but has never been
-applied. The table describes the intended mapping.
+The older Terraform stack, `devops/terraform` (7 resource blocks: MSK,
+EC2, RDS, 3 security groups, DB subnet group), passes `terraform validate`
+but **has never been applied**. The only AWS deployment so far is the
+single-instance one described above. The table describes the intended
+production mapping.
 
 | Local component | AWS/production equivalent | Notes |
 |---|---|---|

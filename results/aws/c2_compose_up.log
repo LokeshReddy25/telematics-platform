@@ -1,0 +1,91 @@
+
+### 2026-11-26T08:38:32.995717+00:00 SSM Run Command 26e6f808-b873-4b7e-b15b-70c15053a9d5 on i-02b5a401355a83e97
+$ cd /opt/telematics-platform && date -u -Is > /var/log/compose-up.start && nohup docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build > /var/log/compose-up.log 2>&1 & echo "started compose up in background at $(cat /var/log/compose-up.start)"
+--- status: TimedOut (exit 137)
+--- stdout:
+started compose up in background at 
+
+
+### 2026-11-26T08:38:49.199719+00:00 SSM Run Command ea512b2e-9879-49bf-a14b-1557556d3325 on i-02b5a401355a83e97
+$ cat /var/log/compose-up.start; echo "--- compose-up.log tail:"; tail -n 15 /var/log/compose-up.log; echo "--- processes:"; pgrep -af "docker compose|docker-compose|buildx" || echo "(no compose/build process running)"; echo "--- containers:"; docker ps -a --format "{{.Names}} {{.Status}}"; docker images --format "{{.Repository}}:{{.Tag}} {{.Size}}"
+--- status: Success (exit 0)
+--- stdout:
+2026-11-26T08:37:32+00:00
+--- compose-up.log tail:
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 76.55MB / 325.39MB 7.4s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 56.62MB / 338.43MB 7.6s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 93.32MB / 325.39MB 8.2s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 76.55MB / 338.43MB 8.7s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 113.25MB / 325.39MB 9.3s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 96.47MB / 338.43MB 9.7s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 133.17MB / 325.39MB 10.3s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 116.39MB / 338.43MB 10.7s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 150.99MB / 325.39MB 11.2s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 136.31MB / 338.43MB 11.7s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 167.77MB / 325.39MB 12.0s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 154.14MB / 338.43MB 12.6s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 187.70MB / 325.39MB 13.1s
+#27 sha256:ec64c199647d05a9e0ccbd73ca96ca55f94ae1e1fc83f5c2df7a58a2f38d4c3d 175.11MB / 338.43MB 13.7s
+#27 sha256:0cf42c60a6cd1271e548d9d765cabfbf5fa658c9287e1528e8c787d6da3d0729 204.47MB / 325.39MB 14.0s
+--- processes:
+(no compose/build process running)
+--- containers:
+telematics/ml-trainer:local 490MB
+telematics/risk-api:local 176MB
+influxdb:2.7 380MB
+grafana/grafana:10.4.2 429MB
+provectuslabs/kafka-ui:latest 291MB
+confluentinc/cp-kafka:7.5.0 849MB
+confluentinc/cp-zookeeper:7.5.0 849MB
+
+
+### 2026-11-26T08:39:02.819222+00:00 SSM Run Command 8fd55e9c-710f-48f8-b942-8683e0690a04 on i-02b5a401355a83e97
+$ date -u -Is > /var/log/compose-up.start; : > /var/log/compose-up.log; systemd-run --unit=telematics-compose-up --working-directory=/opt/telematics-platform --property=StandardOutput=append:/var/log/compose-up.log --property=StandardError=append:/var/log/compose-up.log /usr/bin/docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build; sleep 3; echo "start: $(cat /var/log/compose-up.start)"; systemctl is-active telematics-compose-up
+--- status: Success (exit 0)
+--- stdout:
+start: 2026-11-26T08:38:57+00:00
+active
+
+--- stderr:
+Running as unit: telematics-compose-up.service
+
+
+### 2026-11-26T08:43:48.226534+00:00 SSM Run Command c56094c7-c1c4-4c71-8b72-ba6b7335fc81 on i-02b5a401355a83e97
+$ echo "start: $(cat /var/log/compose-up.start)"; systemctl show -p ExecMainStartTimestamp,ExecMainExitTimestamp,Result,ExecMainStatus telematics-compose-up; grep -E "Container .* (Started|Exited|Healthy|Error)|ERROR|error:" /var/log/compose-up.log | tail -n 25; cd /opt/telematics-platform && docker compose -f docker-compose.yml -f docker-compose.aws.yml ps -a --format "{{.Service}}\t{{.State}}\t{{.Status}}"
+--- status: Success (exit 0)
+--- stdout:
+start: 2026-11-26T08:38:57+00:00
+Result=success
+ExecMainStartTimestamp=
+ExecMainExitTimestamp=
+ExecMainStatus=0
+ Container telematics-platform-model-trainer-1  Started
+ Container telematics-influxdb  Started
+ Container telematics-zookeeper  Started
+ Container telematics-influxdb  Healthy
+ Container telematics-influxdb  Healthy
+ Container telematics-zookeeper  Healthy
+ Container telematics-grafana  Started
+ Container telematics-platform-risk-api-1  Started
+ Container telematics-kafka  Started
+ Container telematics-kafka  Healthy
+ Container telematics-kafka  Healthy
+ Container telematics-kafka-ui  Started
+ Container telematics-platform-kafka-init-1  Started
+ Container telematics-influxdb  Healthy
+ Container telematics-platform-model-trainer-1  Exited
+ Container telematics-platform-kafka-init-1  Exited
+ Container telematics-platform-spark-1  Started
+ Container telematics-platform-kafka-init-1  Exited
+ Container telematics-platform-simulator-1  Started
+grafana	running	Up 44 seconds
+influxdb	running	Up 54 seconds (healthy)
+kafka	running	Up 43 seconds (healthy)
+kafka-ui	running	Up 31 seconds
+kafka-init	exited	Exited (0) 28 seconds ago
+model-trainer	exited	Exited (0) 49 seconds ago
+risk-api	running	Up 43 seconds (healthy)
+simulator	running	Up 27 seconds
+spark	running	Up 28 seconds
+zookeeper	running	Up 54 seconds (healthy)
+

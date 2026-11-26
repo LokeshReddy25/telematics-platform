@@ -1,0 +1,7 @@
+$ docker compose up -d --build   (2026-11-26T13:47:42+05:30)
+ Container telematics-platform-spark-1 Started 
+ Container telematics-platform-kafka-init-1 Waiting 
+ Container telematics-platform-kafka-init-1 Exited 
+ Container telematics-platform-simulator-1 Starting 
+ Container telematics-platform-simulator-1 Started 
+exit=0

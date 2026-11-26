@@ -1,0 +1,33 @@
+# local Docker Desktop (WSL2 VM, 7.61 GiB, 16 CPUs), full root compose stack, ~4 min after up; simulator looping 5 drivers x 3 trips
+$ docker stats --no-stream --format 'table {{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.CPUPerc}}'   (snapshot 1, 2026-11-26T13:51:43+05:30)
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-grafana                69.03MiB / 7.611GiB   0.89%     0.03%
+telematics-influxdb               67.37MiB / 7.611GiB   0.86%     0.16%
+telematics-kafka                  394.2MiB / 7.611GiB   5.06%     1.19%
+telematics-kafka-ui               318.1MiB / 7.611GiB   4.08%     0.09%
+telematics-platform-risk-api-1    53.09MiB / 7.611GiB   0.68%     0.11%
+telematics-platform-simulator-1   14.51MiB / 7.611GiB   0.19%     0.24%
+telematics-platform-spark-1       787.9MiB / 7.611GiB   10.11%    0.23%
+telematics-zookeeper              108MiB / 7.611GiB     1.39%     0.12%
+$ docker stats --no-stream --format 'table {{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.CPUPerc}}'   (snapshot 2, 2026-11-26T13:52:06+05:30)
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-grafana                68.88MiB / 7.611GiB   0.88%     0.05%
+telematics-influxdb               67.31MiB / 7.611GiB   0.86%     0.07%
+telematics-kafka                  401.5MiB / 7.611GiB   5.15%     1.05%
+telematics-kafka-ui               317.8MiB / 7.611GiB   4.08%     0.13%
+telematics-platform-risk-api-1    53.06MiB / 7.611GiB   0.68%     0.15%
+telematics-platform-simulator-1   14.23MiB / 7.611GiB   0.18%     0.29%
+telematics-platform-spark-1       786.7MiB / 7.611GiB   10.09%    0.29%
+telematics-zookeeper              109.8MiB / 7.611GiB   1.41%     0.13%
+$ docker stats --no-stream --format 'table {{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.CPUPerc}}'   (snapshot 3, 2026-11-26T13:52:28+05:30)
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-grafana                69.98MiB / 7.611GiB   0.90%     6.01%
+telematics-influxdb               68.04MiB / 7.611GiB   0.87%     0.95%
+telematics-kafka                  402.3MiB / 7.611GiB   5.16%     1.55%
+telematics-kafka-ui               316MiB / 7.611GiB     4.05%     0.11%
+telematics-platform-risk-api-1    52.9MiB / 7.611GiB    0.68%     0.12%
+telematics-platform-simulator-1   14.06MiB / 7.611GiB   0.18%     0.35%
+telematics-platform-spark-1       789.8MiB / 7.611GiB   10.13%    122.35%
+telematics-zookeeper              107.1MiB / 7.611GiB   1.37%     0.10%
+$ docker compose logs spark | grep -c '^\[batch' (scoring is happening)
+46

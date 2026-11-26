@@ -1,0 +1,37 @@
+# docker-compose.aws.yml
+#
+# Override for the single-EC2 demo (devops/terraform-ec2/). Use it on top of
+# the root file:
+#
+#     docker compose -f docker-compose.yml -f docker-compose.aws.yml up -d --build
+#
+# Memory: no limits are set. The whole stack measured about 1.78 GiB locally
+# (results/raw/local_memory_docker_stats.log), well within the 8 GiB
+# m7i-flex.large, and user_data also adds 4 GB of swap.
+#
+# Ports: every published port is re-bound to 127.0.0.1, so nothing listens on
+# the instance's network interface. The security group already has no inbound
+# rules; this is a second layer. Grafana and the Risk API are reached only
+# through an SSM Session Manager port-forward.
+#
+# `!override` (Compose v2.24.4+) replaces the port list instead of appending.
+
+services:
+  zookeeper:
+    ports: !override
+      - "127.0.0.1:2181:2181"
+  kafka:
+    ports: !override
+      - "127.0.0.1:29092:29092"
+  kafka-ui:
+    ports: !override
+      - "127.0.0.1:8080:8080"
+  influxdb:
+    ports: !override
+      - "127.0.0.1:8086:8086"
+  grafana:
+    ports: !override
+      - "127.0.0.1:3000:3000"
+  risk-api:
+    ports: !override
+      - "127.0.0.1:8001:8000"
