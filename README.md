@@ -3,6 +3,10 @@
 [![CI](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/ci.yml)
 [![Risk API CI](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/risk-api-ci.yml/badge.svg)](https://github.com/LokeshReddy25/telematics-platform/actions/workflows/risk-api-ci.yml)
 
+## Dashboard
+
+![Grafana dashboard showing live driver risk scores from the pipeline](docs/grafana-dashboard.png)
+
 An end-to-end streaming pipeline that turns simulated connected-vehicle trip data into per-trip driver risk scores, in the style of usage-based insurance (UBI). Simulated telemetry flows through **Kafka**. **Spark Structured Streaming** aggregates it in 30-second micro-batches and scores it with a **scikit-learn** Gradient Boosting model trained on synthetic data. Scores are written to **InfluxDB** and shown in **Grafana**, and a **FastAPI** service (`risk_api/`, the only API in this repo) serves them over REST. Everything runs locally with one `docker compose up`. The repo also has Kubernetes manifests (run on a local cluster), Terraform for AWS (validated, **never applied, so nothing is deployed on AWS**) and GitHub Actions CI. Measured numbers are in [Results](#results).
 
 ## Architecture
