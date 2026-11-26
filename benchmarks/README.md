@@ -12,6 +12,7 @@ code. They import the pipeline's own modules and write raw output to
 | `e2e_latency.py` | Event acked by Kafka → risk score written to InfluxDB, per event and per trip |
 | `run_e2e.sh` | Runs `clock_offset.py` + `e2e_latency.py` three times |
 | `feature_skew.py` | Compares live simulator features with the model's synthetic training distributions |
+| `trip_coverage.py` | How many trips produced in a time window got at least one score in InfluxDB |
 | `summarize.py` | Reads every raw log and prints median/min/max as JSON (`results/raw/summary.json`) |
 
 ## Reproduce (from the repo root, Git Bash on Windows)
