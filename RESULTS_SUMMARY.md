@@ -29,7 +29,7 @@ Latency is set by the 30 s Spark trigger, not by Kafka or the model.
 |---|---|---|
 | Kafka + Spark Structured Streaming pipeline, near-real-time scores | **SUPPORTED** | "Near-real-time" = 30 s micro-batches (median 16.155 s). Demo depended on a `trip_generator.py` fix, now committed (below) |
 | Gradient Boosting scoring, InfluxDB, risk levels | **SUPPORTED** | Model trained on synthetic, formula-generated labels. Simulator features don't match training distributions. Categories are per trip window, not per driver |
-| Monitoring + deployment with Grafana, Docker, K8s, Terraform, GitHub Actions, CI/CD | **PARTIAL** | Grafana ✔, Docker ✔, K8s ✔ (local cluster only). Terraform validated, **never applied**. CI ✔, but the **deploy job is an `echo` placeholder (no CD)**. Prometheus is claimed in the old README but **NOT FOUND** |
+| Monitoring + deployment with Grafana, Docker, K8s, Terraform, GitHub Actions, CI/CD | **PARTIAL** | Grafana ✔, Docker ✔, K8s ✔ (local cluster only). Terraform: the MSK stack (`devops/terraform`) validated, **never applied**. *Update:* a separate single-EC2 stack (`devops/terraform-ec2`) was applied once on 2026-11-26, verified, and destroyed the same day (see `results/results.md#aws-deployment`). CI ✔, but the **deploy job is an `echo` placeholder (no CD)**. Prometheus is claimed in the old README but **NOT FOUND** |
 
 ## What was added on this branch
 
@@ -81,7 +81,7 @@ Pipeline code changed only in the first commit: your two fixes to
    `dashboard/grafana_config/dashboard.json`. I didn't touch them.
 5. **Update your resume wording**. Suggestions are at the bottom of
    `results/resume_claims_check.md`. In particular: say "CI" not "CI/CD",
-   "Terraform (validated, not applied)", "micro-batch (30 s)", and "synthetic
+   "Terraform (MSK design validated, not applied; single-EC2 Docker Compose deployment run once and destroyed)", "micro-batch (30 s)", and "synthetic
    training data".
 6. ~~RUNBOOK.md outdated~~. **Done:** rewritten for the single
    `docker compose up` flow (and now committed), including how to remove the
