@@ -1,0 +1,78 @@
+
+### 2026-11-26T09:03:03.268814+00:00 SSM Run Command 9fcff723-2c6f-446c-a406-c61e4bcca478 on i-02b5a401355a83e97
+$ cat > /opt/aws_tests.sh <<'EOF_SCRIPT'
+  #!/bin/bash
+  # aws_tests.sh: run ON the EC2 instance. Runs the repo's test suites in
+  # throwaway python:3.11-slim containers (same Python as CI).
+  #  - tests/ (pipeline): uses the model trained by the model-trainer service.
+  #  - risk_api/: unit tests + integration tests against the deployed InfluxDB.
+  #    The token is read from the running risk-api container and passed as an
+  #    environment variable; it is never printed.
+  set -uo pipefail
+  cd /opt/telematics-platform
+  
+  echo "== pipeline tests (tests/)"
+  docker run --rm -v "$PWD:/src" -w /src python:3.11-slim bash -c \
+    "pip install -q -r ml/requirements.txt pytest==8.3.3 2>&1 | tail -n 1; python -m pytest tests/ -q -p no:cacheprovider"
+  echo "pipeline_exit=$?"
+  
+  echo "== risk_api tests (unit + integration against the deployed InfluxDB)"
+  RISK_API_IT_INFLUXDB_TOKEN="$(docker exec telematics-platform-risk-api-1 printenv INFLUXDB_TOKEN)"
+  export RISK_API_IT_INFLUXDB_TOKEN
+  docker run --rm --network telematics-net -e RISK_API_IT_INFLUXDB_TOKEN \
+    -e RISK_API_IT_INFLUXDB_URL=http://influxdb:8086 \
+    -v "$PWD/risk_api:/src" -w /src python:3.11-slim bash -c \
+    "pip install -q -r requirements-test.txt 2>&1 | tail -n 1; python -m pytest -q -rs -p no:cacheprovider --cov=app --cov-report=term"
+  echo "risk_api_exit=$?"
+  echo "TESTS DONE $(date -u -Is)"
+  EOF_SCRIPT
+  : > /var/log/aws-tests.log
+  systemd-run --unit=telematics-tests --property=StandardOutput=append:/var/log/aws-tests.log --property=StandardError=append:/var/log/aws-tests.log /bin/bash /opt/aws_tests.sh
+  sleep 2; systemctl is-active telematics-tests
+--- status: Success (exit 0)
+--- stdout:
+active
+
+--- stderr:
+Running as unit: telematics-tests.service
+
+
+### 2026-11-26T09:04:02.264550+00:00 SSM Run Command 4b3b9750-f0f0-4409-b9b6-e7e9a713ea90 on i-02b5a401355a83e97
+$ systemctl show -p Result,ExecMainStatus telematics-tests; grep -vE "^\s*$" /var/log/aws-tests.log | grep -vE "notice|WARNING: Running pip"
+--- status: Success (exit 0)
+--- stdout:
+Result=success
+ExecMainStatus=0
+== pipeline tests (tests/)
+Unable to find image 'python:3.11-slim' locally
+3.11-slim: Pulling from library/python
+40748add9f4f: Already exists
+ac4f3e55c849: Already exists
+03bf319e97a9: Already exists
+7cb68d39cd28: Already exists
+Digest: sha256:61e01f72680f86a5279ad510818ab7b2ee9f049822589d4e34e33e044360356c
+Status: Downloaded newer image for python:3.11-slim
+.................                                                        [100%]
+17 passed in 1.08s
+pipeline_exit=0
+== risk_api tests (unit + integration against the deployed InfluxDB)
+..............................................                           [100%]
+=============================== warnings summary ===============================
+../usr/local/lib/python3.11/site-packages/starlette/testclient.py:40
+  /usr/local/lib/python3.11/site-packages/starlette/testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+---------- coverage: platform linux, python 3.11.18-final-0 ----------
+Name                Stmts   Miss  Cover
+---------------------------------------
+app/__init__.py         0      0   100%
+app/config.py          38      0   100%
+app/main.py            78      0   100%
+app/repository.py      45      0   100%
+app/schemas.py         45      0   100%
+---------------------------------------
+TOTAL                 206      0   100%
+46 passed, 1 warning in 0.49s
+risk_api_exit=0
+TESTS DONE 2026-11-26T09:03:26+00:00
+

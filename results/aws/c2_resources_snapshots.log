@@ -1,0 +1,59 @@
+
+### 2026-11-26T09:26:07.000817+00:00 SSM Run Command f7b681ac-96c5-4c9c-ad4b-3bd8f2e35b2c on i-02b5a401355a83e97
+$ for i in 1 2 3; do echo "== snapshot $i  $(date -u -Is)  uptime: $(uptime -p)"; docker stats --no-stream --format "table {{.Name}}\t{{.MemUsage}}\t{{.MemPerc}}\t{{.CPUPerc}}"; free -m; swapon --show; [ $i -lt 3 ] && sleep 20; done; echo "== disk"; df -h /; docker system df
+--- status: Success (exit 0)
+--- stdout:
+== snapshot 1  2026-11-26T09:25:13+00:00  uptime: up 50 minutes
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-platform-simulator-1   9.773MiB / 7.597GiB   0.13%     0.20%
+telematics-platform-spark-1       829.9MiB / 7.597GiB   10.67%    0.16%
+telematics-kafka-ui               281.5MiB / 7.597GiB   3.62%     0.08%
+telematics-grafana                60.62MiB / 7.597GiB   0.78%     0.03%
+telematics-kafka                  386.3MiB / 7.597GiB   4.97%     0.54%
+telematics-platform-risk-api-1    48.77MiB / 7.597GiB   0.63%     0.14%
+telematics-influxdb               68.33MiB / 7.597GiB   0.88%     0.03%
+telematics-zookeeper              92.52MiB / 7.597GiB   1.19%     0.09%
+               total        used        free      shared  buff/cache   available
+Mem:            7779        2362         567           1        4849        5131
+Swap:           4095           0        4095
+NAME      TYPE SIZE USED PRIO
+/swapfile file   4G  12K   -2
+== snapshot 2  2026-11-26T09:25:35+00:00  uptime: up 50 minutes
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-platform-simulator-1   9.516MiB / 7.597GiB   0.12%     0.21%
+telematics-platform-spark-1       831.5MiB / 7.597GiB   10.69%    0.22%
+telematics-kafka-ui               281.6MiB / 7.597GiB   3.62%     0.08%
+telematics-grafana                60.62MiB / 7.597GiB   0.78%     0.07%
+telematics-kafka                  380.7MiB / 7.597GiB   4.89%     0.63%
+telematics-platform-risk-api-1    48.83MiB / 7.597GiB   0.63%     0.12%
+telematics-influxdb               68.66MiB / 7.597GiB   0.88%     2.50%
+telematics-zookeeper              92.73MiB / 7.597GiB   1.19%     3.06%
+               total        used        free      shared  buff/cache   available
+Mem:            7779        2370         559           1        4849        5123
+Swap:           4095           0        4095
+NAME      TYPE SIZE USED PRIO
+/swapfile file   4G  12K   -2
+== snapshot 3  2026-11-26T09:25:58+00:00  uptime: up 51 minutes
+NAME                              MEM USAGE / LIMIT     MEM %     CPU %
+telematics-platform-simulator-1   9.77MiB / 7.597GiB    0.13%     0.20%
+telematics-platform-spark-1       831.5MiB / 7.597GiB   10.69%    0.22%
+telematics-kafka-ui               281.9MiB / 7.597GiB   3.62%     0.09%
+telematics-grafana                60.62MiB / 7.597GiB   0.78%     0.10%
+telematics-kafka                  380.8MiB / 7.597GiB   4.89%     1.54%
+telematics-platform-risk-api-1    48.77MiB / 7.597GiB   0.63%     0.13%
+telematics-influxdb               68.43MiB / 7.597GiB   0.88%     0.02%
+telematics-zookeeper              92.68MiB / 7.597GiB   1.19%     0.08%
+               total        used        free      shared  buff/cache   available
+Mem:            7779        2353         576           1        4849        5141
+Swap:           4095           0        4095
+NAME      TYPE SIZE USED PRIO
+/swapfile file   4G  12K   -2
+== disk
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p1   30G   12G   19G  40% /
+TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE
+Images          10        9         5.312GB   847.1MB (15%)
+Containers      10        8         59.9MB    619.4kB (1%)
+Local Volumes   11        11        285.5MB   0B (0%)
+Build Cache     43        0         34kB      34kB
+

@@ -5,6 +5,8 @@ Reads the raw logs in results/raw/ and prints median / min / max for every
 repeated measurement, so no number in results/results.md is computed by hand.
 
 Usage (from repo root): python benchmarks/summarize.py > results/raw/summary.json
+                        python benchmarks/summarize.py results/aws/raw > results/aws/summary_aws.json
+Sections whose logs are absent from the directory are simply left out.
 """
 
 import glob
@@ -12,9 +14,14 @@ import json
 import os
 import re
 import statistics
+import sys
 from datetime import datetime
 
-RAW = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results", "raw")
+RAW = (
+    sys.argv[1]
+    if len(sys.argv) > 1
+    else os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "results", "raw")
+)
 
 
 def stats(values):

@@ -1,0 +1,230 @@
+$ terraform plan -input=false -out ec2.tfplan   (2026-11-26T13:57:12+05:30)
+data.aws_ssm_parameter.al2023: Reading...
+data.aws_ec2_instance_type_offerings.available: Reading...
+data.aws_iam_policy_document.ec2_assume: Reading...
+data.aws_vpc.default: Reading...
+data.aws_iam_policy_document.ec2_assume: Read complete after 0s [id=2851119427]
+data.aws_ssm_parameter.al2023: Read complete after 2s [id=/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64]
+data.aws_ec2_instance_type_offerings.available: Read complete after 2s [id=ap-southeast-2]
+data.aws_vpc.default: Read complete after 4s [id=vpc-0363e37ddc3463879]
+data.aws_subnets.default_public: Reading...
+data.aws_subnets.default_public: Read complete after 0s [id=ap-southeast-2]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_iam_instance_profile.ssm will be created
+  + resource "aws_iam_instance_profile" "ssm" {
+      + arn         = (known after apply)
+      + create_date = (known after apply)
+      + id          = (known after apply)
+      + name        = "telematics-demo-ssm-profile"
+      + name_prefix = (known after apply)
+      + path        = "/"
+      + role        = "telematics-demo-ssm-role"
+      + tags_all    = {
+          + "AutoTerminate" = "true"
+          + "Owner"         = "lokesh"
+          + "Project"       = "telematics-demo"
+        }
+      + unique_id   = (known after apply)
+    }
+
+  # aws_iam_role.ssm will be created
+  + resource "aws_iam_role" "ssm" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + description           = "telematics demo EC2: Systems Manager access only"
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "telematics-demo-ssm-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "AutoTerminate" = "true"
+          + "Owner"         = "lokesh"
+          + "Project"       = "telematics-demo"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # aws_iam_role_policy_attachment.ssm_core will be created
+  + resource "aws_iam_role_policy_attachment" "ssm_core" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      + role       = "telematics-demo-ssm-role"
+    }
+
+  # aws_instance.app will be created
+  + resource "aws_instance" "app" {
+      + ami                                  = (sensitive value)
+      + arn                                  = (known after apply)
+      + associate_public_ip_address          = true
+      + availability_zone                    = (known after apply)
+      + cpu_core_count                       = (known after apply)
+      + cpu_threads_per_core                 = (known after apply)
+      + disable_api_stop                     = (known after apply)
+      + disable_api_termination              = (known after apply)
+      + ebs_optimized                        = (known after apply)
+      + enable_primary_ipv6                  = (known after apply)
+      + get_password_data                    = false
+      + host_id                              = (known after apply)
+      + host_resource_group_arn              = (known after apply)
+      + iam_instance_profile                 = "telematics-demo-ssm-profile"
+      + id                                   = (known after apply)
+      + instance_initiated_shutdown_behavior = "terminate"
+      + instance_lifecycle                   = (known after apply)
+      + instance_state                       = (known after apply)
+      + instance_type                        = "m7i-flex.large"
+      + ipv6_address_count                   = (known after apply)
+      + ipv6_addresses                       = (known after apply)
+      + key_name                             = (known after apply)
+      + monitoring                           = (known after apply)
+      + outpost_arn                          = (known after apply)
+      + password_data                        = (known after apply)
+      + placement_group                      = (known after apply)
+      + placement_partition_number           = (known after apply)
+      + primary_network_interface_id         = (known after apply)
+      + private_dns                          = (known after apply)
+      + private_ip                           = (known after apply)
+      + public_dns                           = (known after apply)
+      + public_ip                            = (known after apply)
+      + secondary_private_ips                = (known after apply)
+      + security_groups                      = (known after apply)
+      + source_dest_check                    = true
+      + spot_instance_request_id             = (known after apply)
+      + subnet_id                            = "subnet-01b9f4af9afa349a1"
+      + tags                                 = {
+          + "Name" = "telematics-demo-app"
+        }
+      + tags_all                             = {
+          + "AutoTerminate" = "true"
+          + "Name"          = "telematics-demo-app"
+          + "Owner"         = "lokesh"
+          + "Project"       = "telematics-demo"
+        }
+      + tenancy                              = (known after apply)
+      + user_data                            = "987b1d8278f8f164eb2541eb83e9fed3a2b48485"
+      + user_data_base64                     = (known after apply)
+      + user_data_replace_on_change          = true
+      + vpc_security_group_ids               = (known after apply)
+
+      + capacity_reservation_specification (known after apply)
+
+      + cpu_options (known after apply)
+
+      + ebs_block_device (known after apply)
+
+      + enclave_options (known after apply)
+
+      + ephemeral_block_device (known after apply)
+
+      + instance_market_options (known after apply)
+
+      + maintenance_options (known after apply)
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = "disabled"
+          + http_put_response_hop_limit = 1
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = (known after apply)
+        }
+
+      + network_interface (known after apply)
+
+      + private_dns_name_options (known after apply)
+
+      + root_block_device {
+          + delete_on_termination = true
+          + device_name           = (known after apply)
+          + encrypted             = true
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + tags                  = {
+              + "AutoTerminate" = "true"
+              + "Name"          = "telematics-demo-root"
+              + "Owner"         = "lokesh"
+              + "Project"       = "telematics-demo"
+            }
+          + tags_all              = (known after apply)
+          + throughput            = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = 30
+          + volume_type           = "gp3"
+        }
+    }
+
+  # aws_security_group.instance will be created
+  + resource "aws_security_group" "instance" {
+      + arn                    = (known after apply)
+      + description            = "telematics demo: no inbound rules; outbound only"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "telematics-demo-no-inbound"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags_all               = {
+          + "AutoTerminate" = "true"
+          + "Owner"         = "lokesh"
+          + "Project"       = "telematics-demo"
+        }
+      + vpc_id                 = "vpc-0363e37ddc3463879"
+    }
+
+  # aws_vpc_security_group_egress_rule.all_outbound will be created
+  + resource "aws_vpc_security_group_egress_rule" "all_outbound" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "0.0.0.0/0"
+      + description            = "Outbound to the internet (SSM endpoints, package and image registries)"
+      + id                     = (known after apply)
+      + ip_protocol            = "-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "AutoTerminate" = "true"
+          + "Owner"         = "lokesh"
+          + "Project"       = "telematics-demo"
+        }
+    }
+
+Plan: 6 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + ami_id                       = (sensitive value)
+  + auto_terminate_minutes       = 300
+  + availability_zone            = (known after apply)
+  + grafana_port_forward_command = (known after apply)
+  + instance_id                  = (known after apply)
+  + ssm_session_command          = (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: ec2.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "ec2.tfplan"
+exit=0

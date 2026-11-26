@@ -27,6 +27,21 @@ devops/terraform/*.tfvars
 devops/terraform/*.tfplan
 devops/terraform/crash.log
 
+# Same protection for every Terraform directory (e.g. devops/terraform-ec2/):
+# provider binaries, state (contains account IDs, IPs, resource IDs), saved
+# plans, variable files and crash logs are never committed.
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+**/crash.log
+
+# Key material must never be committed.
+*.pem
+*.key
+*.ppk
+
 # Ad-hoc logs generated while running/debugging the stack locally
 *.log
 

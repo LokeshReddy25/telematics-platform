@@ -1,0 +1,5 @@
+$ python benchmarks/clock_offset.py telematics-spark-bench   (2026-11-26T08:49:46+00:00)
+{"offset_ms": 32.5, "uncertainty_ms": 37.1, "samples": [{"rtt_ms": 100.3, "offset_ms": 43.7}, {"rtt_ms": 120.3, "offset_ms": 46.1}, {"rtt_ms": 74.2, "offset_ms": 32.5}, {"rtt_ms": 75.3, "offset_ms": 33.0}, {"rtt_ms": 86.8, "offset_ms": 39.1}, {"rtt_ms": 86.9, "offset_ms": 35.5}, {"rtt_ms": 83.6, "offset_ms": 34.4}]}
+$ python benchmarks/e2e_latency.py --drivers 5 --trips 3 --speed 0.3 --wait 240 --clock-offset-ms 32.5 --progress-file results/raw/spark_progress.jsonl   (2026-11-26T08:49:47+00:00)
+{"run_start_utc": "2026-11-26T08:49:47.694066+00:00", "clock_offset_ms_applied": 32.5, "events_sent": 531, "events_acked": 531, "drivers": 5, "trips_produced": 15, "trips_with_any_score": 15, "trips_missing_score": [], "scored_records_in_influx": 38, "events_without_matching_score": 0, "latency_event_to_score": {"n": 531, "median_s": 15.062, "p95_s": 29.482, "min_s": 0.943, "max_s": 31.497}, "latency_trip_last_event_to_score": {"n": 15, "median_s": 12.511, "p95_s": 31.196, "min_s": 1.405, "max_s": 31.196}}
+exit=0

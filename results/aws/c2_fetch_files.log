@@ -1,0 +1,107 @@
+
+### 2026-11-26T09:01:27.399585+00:00 SSM Run Command 3aa10fe3-0fa3-4f12-81c6-9f47bc319326 on i-02b5a401355a83e97
+$ cat /opt/telematics-platform/results/raw/e2e_latency_run1.log
+--- status: Success (exit 0)
+--- stdout:
+$ python benchmarks/clock_offset.py telematics-spark-bench   (2026-11-26T08:49:46+00:00)
+{"offset_ms": 32.5, "uncertainty_ms": 37.1, "samples": [{"rtt_ms": 100.3, "offset_ms": 43.7}, {"rtt_ms": 120.3, "offset_ms": 46.1}, {"rtt_ms": 74.2, "offset_ms": 32.5}, {"rtt_ms": 75.3, "offset_ms": 33.0}, {"rtt_ms": 86.8, "offset_ms": 39.1}, {"rtt_ms": 86.9, "offset_ms": 35.5}, {"rtt_ms": 83.6, "offset_ms": 34.4}]}
+$ python benchmarks/e2e_latency.py --drivers 5 --trips 3 --speed 0.3 --wait 240 --clock-offset-ms 32.5 --progress-file results/raw/spark_progress.jsonl   (2026-11-26T08:49:47+00:00)
+{"run_start_utc": "2026-11-26T08:49:47.694066+00:00", "clock_offset_ms_applied": 32.5, "events_sent": 531, "events_acked": 531, "drivers": 5, "trips_produced": 15, "trips_with_any_score": 15, "trips_missing_score": [], "scored_records_in_influx": 38, "events_without_matching_score": 0, "latency_event_to_score": {"n": 531, "median_s": 15.062, "p95_s": 29.482, "min_s": 0.943, "max_s": 31.497}, "latency_trip_last_event_to_score": {"n": 15, "median_s": 12.511, "p95_s": 31.196, "min_s": 1.405, "max_s": 31.196}}
+exit=0
+
+
+### 2026-11-26T09:01:40.308357+00:00 SSM Run Command f7f7cfd4-5fe8-4143-b20c-7d3a0b755385 on i-02b5a401355a83e97
+$ cat /opt/telematics-platform/results/raw/e2e_latency_run2.log
+--- status: Success (exit 0)
+--- stdout:
+$ python benchmarks/clock_offset.py telematics-spark-bench   (2026-11-26T08:53:21+00:00)
+{"offset_ms": 19.6, "uncertainty_ms": 24.7, "samples": [{"rtt_ms": 49.3, "offset_ms": 19.6}, {"rtt_ms": 67.9, "offset_ms": 28.1}, {"rtt_ms": 67.3, "offset_ms": 27.6}, {"rtt_ms": 79.2, "offset_ms": 26.1}, {"rtt_ms": 74.8, "offset_ms": 32.1}, {"rtt_ms": 58.5, "offset_ms": 25.7}, {"rtt_ms": 50.6, "offset_ms": 20.7}]}
+$ python benchmarks/e2e_latency.py --drivers 5 --trips 3 --speed 0.3 --wait 240 --clock-offset-ms 19.6 --progress-file results/raw/spark_progress.jsonl   (2026-11-26T08:53:21+00:00)
+{"run_start_utc": "2026-11-26T08:53:22.031379+00:00", "clock_offset_ms_applied": 19.6, "events_sent": 512, "events_acked": 512, "drivers": 5, "trips_produced": 15, "trips_with_any_score": 15, "trips_missing_score": [], "scored_records_in_influx": 38, "events_without_matching_score": 0, "latency_event_to_score": {"n": 512, "median_s": 15.562, "p95_s": 29.434, "min_s": 0.578, "max_s": 31.172}, "latency_trip_last_event_to_score": {"n": 15, "median_s": 15.879, "p95_s": 27.943, "min_s": 3.865, "max_s": 27.943}}
+exit=0
+
+
+### 2026-11-26T09:01:53.345382+00:00 SSM Run Command f74f9318-2667-4604-a389-c066589f22b4 on i-02b5a401355a83e97
+$ cat /opt/telematics-platform/results/raw/e2e_latency_run3.log
+--- status: Success (exit 0)
+--- stdout:
+$ python benchmarks/clock_offset.py telematics-spark-bench   (2026-11-26T08:56:52+00:00)
+{"offset_ms": 18.8, "uncertainty_ms": 22.5, "samples": [{"rtt_ms": 48.1, "offset_ms": 20.1}, {"rtt_ms": 47.4, "offset_ms": 19.8}, {"rtt_ms": 45.0, "offset_ms": 18.8}, {"rtt_ms": 46.8, "offset_ms": 19.8}, {"rtt_ms": 46.0, "offset_ms": 19.3}, {"rtt_ms": 47.7, "offset_ms": 19.7}, {"rtt_ms": 48.2, "offset_ms": 20.4}]}
+$ python benchmarks/e2e_latency.py --drivers 5 --trips 3 --speed 0.3 --wait 240 --clock-offset-ms 18.8 --progress-file results/raw/spark_progress.jsonl   (2026-11-26T08:56:52+00:00)
+{"run_start_utc": "2026-11-26T08:56:52.532698+00:00", "clock_offset_ms_applied": 18.8, "events_sent": 492, "events_acked": 492, "drivers": 5, "trips_produced": 15, "trips_with_any_score": 15, "trips_missing_score": [], "scored_records_in_influx": 37, "events_without_matching_score": 0, "latency_event_to_score": {"n": 492, "median_s": 16.157, "p95_s": 29.446, "min_s": 0.804, "max_s": 30.918}, "latency_trip_last_event_to_score": {"n": 15, "median_s": 17.922, "p95_s": 28.12, "min_s": 1.858, "max_s": 28.12}}
+exit=0
+
+
+### 2026-11-26T09:02:06.641069+00:00 SSM Run Command f558c856-107b-4685-a51d-7cbc00763ddc on i-02b5a401355a83e97
+$ cat /opt/telematics-platform/results/raw/spark_progress.jsonl
+--- status: Success (exit 0)
+--- stdout:
+{"batchId": 0, "timestamp": "2026-11-26T08:49:46.126Z", "numInputRows": 0, "durationMs": {"triggerExecution": 4138, "queryPlanning": 769, "getBatch": 27, "commitOffsets": 27, "latestOffset": 1150, "addBatch": 2055, "walCommit": 74}}
+{"batchId": 1, "timestamp": "2026-11-26T08:50:00.000Z", "numInputRows": 41, "durationMs": {"triggerExecution": 1680, "queryPlanning": 75, "getBatch": 0, "commitOffsets": 25, "latestOffset": 8, "addBatch": 1546, "walCommit": 19}}
+{"batchId": 2, "timestamp": "2026-11-26T08:50:30.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1683, "queryPlanning": 129, "getBatch": 1, "commitOffsets": 30, "latestOffset": 9, "addBatch": 1462, "walCommit": 41}}
+{"batchId": 3, "timestamp": "2026-11-26T08:51:00.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 863, "queryPlanning": 42, "getBatch": 0, "commitOffsets": 23, "latestOffset": 7, "addBatch": 769, "walCommit": 17}}
+{"batchId": 4, "timestamp": "2026-11-26T08:51:30.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1074, "queryPlanning": 49, "getBatch": 0, "commitOffsets": 16, "latestOffset": 6, "addBatch": 979, "walCommit": 17}}
+{"batchId": 5, "timestamp": "2026-11-26T08:52:00.000Z", "numInputRows": 99, "durationMs": {"triggerExecution": 1118, "queryPlanning": 33, "getBatch": 0, "commitOffsets": 33, "latestOffset": 5, "addBatch": 1025, "walCommit": 19}}
+{"batchId": 6, "timestamp": "2026-11-26T08:52:30.000Z", "numInputRows": 91, "durationMs": {"triggerExecution": 1028, "queryPlanning": 33, "getBatch": 0, "commitOffsets": 18, "latestOffset": 7, "addBatch": 951, "walCommit": 16}}
+{"batchId": 7, "timestamp": "2026-11-26T08:53:00.001Z", "numInputRows": 0, "durationMs": {"triggerExecution": 934, "queryPlanning": 96, "getBatch": 0, "commitOffsets": 129, "latestOffset": 24, "addBatch": 634, "walCommit": 46}}
+{"batchId": 8, "timestamp": "2026-11-26T08:53:30.001Z", "numInputRows": 27, "durationMs": {"triggerExecution": 701, "queryPlanning": 39, "getBatch": 0, "commitOffsets": 14, "latestOffset": 5, "addBatch": 624, "walCommit": 16}}
+{"batchId": 9, "timestamp": "2026-11-26T08:54:00.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1079, "queryPlanning": 28, "getBatch": 0, "commitOffsets": 15, "latestOffset": 7, "addBatch": 1008, "walCommit": 16}}
+{"batchId": 10, "timestamp": "2026-11-26T08:54:30.000Z", "numInputRows": 99, "durationMs": {"triggerExecution": 605, "queryPlanning": 35, "getBatch": 0, "commitOffsets": 20, "latestOffset": 6, "addBatch": 520, "walCommit": 19}}
+{"batchId": 11, "timestamp": "2026-11-26T08:55:00.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1054, "queryPlanning": 26, "getBatch": 0, "commitOffsets": 15, "latestOffset": 6, "addBatch": 969, "walCommit": 36}}
+{"batchId": 12, "timestamp": "2026-11-26T08:55:30.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1281, "queryPlanning": 53, "getBatch": 0, "commitOffsets": 15, "latestOffset": 23, "addBatch": 1150, "walCommit": 38}}
+{"batchId": 13, "timestamp": "2026-11-26T08:56:00.000Z", "numInputRows": 86, "durationMs": {"triggerExecution": 1078, "queryPlanning": 37, "getBatch": 0, "commitOffsets": 18, "latestOffset": 6, "addBatch": 995, "walCommit": 16}}
+{"batchId": 14, "timestamp": "2026-11-26T08:56:30.000Z", "numInputRows": 0, "durationMs": {"triggerExecution": 266, "queryPlanning": 18, "getBatch": 0, "commitOffsets": 21, "latestOffset": 5, "addBatch": 203, "walCommit": 16}}
+{"batchId": 15, "timestamp": "2026-11-26T08:57:00.000Z", "numInputRows": 25, "durationMs": {"triggerExecution": 632, "queryPlanning": 30, "getBatch": 0, "commitOffsets": 28, "latestOffset": 10, "addBatch": 543, "walCommit": 19}}
+{"batchId": 16, "timestamp": "2026-11-26T08:57:30.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1031, "queryPlanning": 32, "getBatch": 1, "commitOffsets": 21, "latestOffset": 5, "addBatch": 954, "walCommit": 15}}
+{"batchId": 17, "timestamp": "2026-11-26T08:58:00.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1118, "queryPlanning": 62, "getBatch": 1, "commitOffsets": 57, "latestOffset": 14, "addBatch": 925, "walCommit": 52}}
+{"batchId": 18, "timestamp": "2026-11-26T08:58:30.000Z", "numInputRows": 100, "durationMs": {"triggerExecution": 1103, "queryPlanning": 26, "getBatch": 0, "commitOffsets": 17, "latestOffset": 5, "addBatch": 1038, "walCommit": 15}}
+{"batchId": 19, "timestamp": "2026-11-26T08:59:00.000Z", "numInputRows": 99, "durationMs": {"triggerExecution": 1018, "queryPlanning": 27, "getBatch": 0, "commitOffsets": 19, "latestOffset": 5, "addBatch": 949, "walCommit": 16}}
+{"batchId": 20, "timestamp": "2026-11-26T08:59:30.000Z", "numInputRows": 68, "durationMs": {"triggerExecution": 927, "queryPlanning": 17, "getBatch": 0, "commitOffsets": 17, "latestOffset": 5, "addBatch": 867, "walCommit": 18}}
+{"batchId": 21, "timestamp": "2026-11-26T09:00:00.000Z", "numInputRows": 0, "durationMs": {"triggerExecution": 289, "queryPlanning": 19, "getBatch": 0, "commitOffsets": 19, "latestOffset": 5, "addBatch": 229, "walCommit": 15}}
+
+
+### 2026-11-26T09:02:18.664892+00:00 SSM Run Command 7d756885-7d41-4920-816d-b3b0557e366c on i-02b5a401355a83e97
+$ grep -vE '^#[0-9]+ ' /var/log/aws-e2e.log | tail -n 40
+--- status: Success (exit 0)
+--- stdout:
++ sleep 5
++ for i in $(seq 1 60)
++ docker logs telematics-spark-bench
++ grep -q 'Streaming query started'
++ sleep 5
++ for i in $(seq 1 60)
++ docker logs telematics-spark-bench
++ grep -q 'Streaming query started'
++ break
++ docker logs telematics-spark-bench
++ grep 'Streaming query started'
+Streaming query started. Reading from kafka=kafka:9092 topic=vehicle.trip.events, window=60 seconds, checkpoint=/tmp/telematics-checkpoints
++ bash benchmarks/run_e2e.sh
+ALL_DONE
++ docker rm -f telematics-spark-bench
+telematics-spark-bench
++ docker compose -f docker-compose.yml -f docker-compose.aws.yml start spark simulator
+ Container telematics-zookeeper  Waiting
+ Container telematics-platform-model-trainer-1  Starting
+ Container telematics-platform-model-trainer-1  Started
+ Container telematics-zookeeper  Healthy
+ Container telematics-kafka  Waiting
+ Container telematics-kafka  Healthy
+ Container telematics-platform-kafka-init-1  Starting
+ Container telematics-platform-kafka-init-1  Started
+ Container telematics-platform-model-trainer-1  Waiting
+ Container telematics-influxdb  Waiting
+ Container telematics-platform-kafka-init-1  Waiting
+ Container telematics-influxdb  Healthy
+ Container telematics-platform-model-trainer-1  Exited
+ Container telematics-platform-kafka-init-1  Exited
+ Container telematics-platform-spark-1  Starting
+ Container telematics-platform-spark-1  Started
+ Container telematics-platform-kafka-init-1  Waiting
+ Container telematics-platform-kafka-init-1  Exited
+ Container telematics-platform-simulator-1  Starting
+ Container telematics-platform-simulator-1  Started
+++ date -u -Is
++ echo 'E2E BENCHMARK DONE 2026-11-26T09:00:26+00:00'
+E2E BENCHMARK DONE 2026-11-26T09:00:26+00:00
+

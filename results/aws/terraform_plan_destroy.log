@@ -1,0 +1,260 @@
+### 2026-11-26T09:30:58+00:00 terraform plan -destroy -no-color -input=false -out=destroy.tfplan
+data.aws_vpc.default: Reading...
+data.aws_ec2_instance_type_offerings.available: Reading...
+data.aws_iam_policy_document.ec2_assume: Reading...
+data.aws_ssm_parameter.al2023: Reading...
+data.aws_iam_policy_document.ec2_assume: Read complete after 0s [id=2851119427]
+aws_iam_role.ssm: Refreshing state... [id=telematics-demo-ssm-role]
+data.aws_ec2_instance_type_offerings.available: Read complete after 2s [id=ap-southeast-2]
+aws_iam_role_policy_attachment.ssm_core: Refreshing state... [id=telematics-demo-ssm-role-20261126083428581400000001]
+aws_iam_instance_profile.ssm: Refreshing state... [id=telematics-demo-ssm-profile]
+data.aws_ssm_parameter.al2023: Read complete after 2s [id=/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64]
+data.aws_vpc.default: Read complete after 3s [id=vpc-0363e37ddc3463879]
+aws_security_group.instance: Refreshing state... [id=sg-0a73688a042f4b640]
+data.aws_subnets.default_public: Reading...
+aws_vpc_security_group_egress_rule.all_outbound: Refreshing state... [id=sgr-0f32f015fa4d01fea]
+data.aws_subnets.default_public: Read complete after 1s [id=ap-southeast-2]
+aws_instance.app: Refreshing state... [id=i-02b5a401355a83e97]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # aws_iam_instance_profile.ssm will be destroyed
+  - resource "aws_iam_instance_profile" "ssm" {
+      - arn         = "arn:aws:iam::<ACCOUNT-ID>:instance-profile/telematics-demo-ssm-profile" -> null
+      - create_date = "2026-11-26T08:34:28Z" -> null
+      - id          = "telematics-demo-ssm-profile" -> null
+      - name        = "telematics-demo-ssm-profile" -> null
+      - path        = "/" -> null
+      - role        = "telematics-demo-ssm-role" -> null
+      - tags        = {} -> null
+      - tags_all    = {
+          - "AutoTerminate" = "true"
+          - "Owner"         = "lokesh"
+          - "Project"       = "telematics-demo"
+        } -> null
+      - unique_id   = "AIPATFOKAQLQRH62ZZAKS" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_iam_role.ssm will be destroyed
+  - resource "aws_iam_role" "ssm" {
+      - arn                   = "arn:aws:iam::<ACCOUNT-ID>:role/telematics-demo-ssm-role" -> null
+      - assume_role_policy    = jsonencode(
+            {
+              - Statement = [
+                  - {
+                      - Action    = "sts:AssumeRole"
+                      - Effect    = "Allow"
+                      - Principal = {
+                          - Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              - Version   = "2012-10-17"
+            }
+        ) -> null
+      - create_date           = "2026-11-26T08:34:27Z" -> null
+      - description           = "telematics demo EC2: Systems Manager access only" -> null
+      - force_detach_policies = false -> null
+      - id                    = "telematics-demo-ssm-role" -> null
+      - managed_policy_arns   = [
+          - "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+        ] -> null
+      - max_session_duration  = 3600 -> null
+      - name                  = "telematics-demo-ssm-role" -> null
+      - path                  = "/" -> null
+      - tags                  = {} -> null
+      - tags_all              = {
+          - "AutoTerminate" = "true"
+          - "Owner"         = "lokesh"
+          - "Project"       = "telematics-demo"
+        } -> null
+      - unique_id             = "AROATFOKAQLQV74CGXNMG" -> null
+        # (2 unchanged attributes hidden)
+    }
+
+  # aws_iam_role_policy_attachment.ssm_core will be destroyed
+  - resource "aws_iam_role_policy_attachment" "ssm_core" {
+      - id         = "telematics-demo-ssm-role-20261126083428581400000001" -> null
+      - policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" -> null
+      - role       = "telematics-demo-ssm-role" -> null
+    }
+
+  # aws_instance.app will be destroyed
+  - resource "aws_instance" "app" {
+      - ami                                  = (sensitive value) -> null
+      - arn                                  = "arn:aws:ec2:ap-southeast-2:<ACCOUNT-ID>:instance/i-02b5a401355a83e97" -> null
+      - associate_public_ip_address          = true -> null
+      - availability_zone                    = "ap-southeast-2c" -> null
+      - cpu_core_count                       = 1 -> null
+      - cpu_threads_per_core                 = 2 -> null
+      - disable_api_stop                     = false -> null
+      - disable_api_termination              = false -> null
+      - ebs_optimized                        = false -> null
+      - get_password_data                    = false -> null
+      - hibernation                          = false -> null
+      - iam_instance_profile                 = "telematics-demo-ssm-profile" -> null
+      - id                                   = "i-02b5a401355a83e97" -> null
+      - instance_initiated_shutdown_behavior = "terminate" -> null
+      - instance_state                       = "running" -> null
+      - instance_type                        = "m7i-flex.large" -> null
+      - ipv6_address_count                   = 0 -> null
+      - ipv6_addresses                       = [] -> null
+      - monitoring                           = false -> null
+      - placement_partition_number           = 0 -> null
+      - primary_network_interface_id         = "eni-03ef11c38e2e61442" -> null
+      - private_dns                          = "ip-<REDACTED>.ap-southeast-2.compute.internal" -> null
+      - private_ip                           = "<IP>" -> null
+      - public_dns                           = "ec2-16-176-211-8.ap-southeast-2.compute.amazonaws.com" -> null
+      - public_ip                            = "<IP>" -> null
+      - secondary_private_ips                = [] -> null
+      - security_groups                      = [
+          - "telematics-demo-no-inbound",
+        ] -> null
+      - source_dest_check                    = true -> null
+      - subnet_id                            = "subnet-01b9f4af9afa349a1" -> null
+      - tags                                 = {
+          - "Name" = "telematics-demo-app"
+        } -> null
+      - tags_all                             = {
+          - "AutoTerminate" = "true"
+          - "Name"          = "telematics-demo-app"
+          - "Owner"         = "lokesh"
+          - "Project"       = "telematics-demo"
+        } -> null
+      - tenancy                              = "default" -> null
+      - user_data                            = "987b1d8278f8f164eb2541eb83e9fed3a2b48485" -> null
+      - user_data_replace_on_change          = true -> null
+      - vpc_security_group_ids               = [
+          - "sg-0a73688a042f4b640",
+        ] -> null
+        # (7 unchanged attributes hidden)
+
+      - capacity_reservation_specification {
+          - capacity_reservation_preference = "open" -> null
+        }
+
+      - cpu_options {
+          - core_count       = 1 -> null
+          - threads_per_core = 2 -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - enclave_options {
+          - enabled = false -> null
+        }
+
+      - maintenance_options {
+          - auto_recovery = "default" -> null
+        }
+
+      - metadata_options {
+          - http_endpoint               = "enabled" -> null
+          - http_protocol_ipv6          = "disabled" -> null
+          - http_put_response_hop_limit = 1 -> null
+          - http_tokens                 = "required" -> null
+          - instance_metadata_tags      = "disabled" -> null
+        }
+
+      - private_dns_name_options {
+          - enable_resource_name_dns_a_record    = false -> null
+          - enable_resource_name_dns_aaaa_record = false -> null
+          - hostname_type                        = "ip-name" -> null
+        }
+
+      - root_block_device {
+          - delete_on_termination = true -> null
+          - device_name           = "/dev/xvda" -> null
+          - encrypted             = true -> null
+          - iops                  = 3000 -> null
+          - kms_key_id            = "arn:aws:kms:ap-southeast-2:<ACCOUNT-ID>:key/60ebfab8-4d88-4a36-827e-5096413ab622" -> null
+          - tags                  = {
+              - "AutoTerminate" = "true"
+              - "Name"          = "telematics-demo-root"
+              - "Owner"         = "lokesh"
+              - "Project"       = "telematics-demo"
+            } -> null
+          - tags_all              = {
+              - "AutoTerminate" = "true"
+              - "Name"          = "telematics-demo-root"
+              - "Owner"         = "lokesh"
+              - "Project"       = "telematics-demo"
+            } -> null
+          - throughput            = 125 -> null
+          - volume_id             = "vol-06ea2eb87bc0141b1" -> null
+          - volume_size           = 30 -> null
+          - volume_type           = "gp3" -> null
+        }
+    }
+
+  # aws_security_group.instance will be destroyed
+  - resource "aws_security_group" "instance" {
+      - arn                    = "arn:aws:ec2:ap-southeast-2:<ACCOUNT-ID>:security-group/sg-0a73688a042f4b640" -> null
+      - description            = "telematics demo: no inbound rules; outbound only" -> null
+      - egress                 = [
+          - {
+              - cidr_blocks      = [
+                  - "0.0.0.0/0",
+                ]
+              - description      = "Outbound to the internet (SSM endpoints, package and image registries)"
+              - from_port        = 0
+              - ipv6_cidr_blocks = []
+              - prefix_list_ids  = []
+              - protocol         = "-1"
+              - security_groups  = []
+              - self             = false
+              - to_port          = 0
+            },
+        ] -> null
+      - id                     = "sg-0a73688a042f4b640" -> null
+      - ingress                = [] -> null
+      - name                   = "telematics-demo-no-inbound" -> null
+      - owner_id               = "<ACCOUNT-ID>" -> null
+      - revoke_rules_on_delete = false -> null
+      - tags                   = {} -> null
+      - tags_all               = {
+          - "AutoTerminate" = "true"
+          - "Owner"         = "lokesh"
+          - "Project"       = "telematics-demo"
+        } -> null
+      - vpc_id                 = "vpc-0363e37ddc3463879" -> null
+        # (1 unchanged attribute hidden)
+    }
+
+  # aws_vpc_security_group_egress_rule.all_outbound will be destroyed
+  - resource "aws_vpc_security_group_egress_rule" "all_outbound" {
+      - arn                    = "arn:aws:ec2:ap-southeast-2:<ACCOUNT-ID>:security-group-rule/sgr-0f32f015fa4d01fea" -> null
+      - cidr_ipv4              = "0.0.0.0/0" -> null
+      - description            = "Outbound to the internet (SSM endpoints, package and image registries)" -> null
+      - id                     = "sgr-0f32f015fa4d01fea" -> null
+      - ip_protocol            = "-1" -> null
+      - security_group_id      = "sg-0a73688a042f4b640" -> null
+      - security_group_rule_id = "sgr-0f32f015fa4d01fea" -> null
+      - tags_all               = {
+          - "AutoTerminate" = "true"
+          - "Owner"         = "lokesh"
+          - "Project"       = "telematics-demo"
+        } -> null
+    }
+
+Plan: 0 to add, 0 to change, 6 to destroy.
+
+Changes to Outputs:
+  - ami_id                       = (sensitive value) -> null
+  - auto_terminate_minutes       = 300 -> null
+  - availability_zone            = "ap-southeast-2c" -> null
+  - grafana_port_forward_command = "aws ssm start-session --region ap-southeast-2 --target i-02b5a401355a83e97 --document-name AWS-StartPortForwardingSession --parameters portNumber=3000,localPortNumber=3000" -> null
+  - instance_id                  = "i-02b5a401355a83e97" -> null
+  - ssm_session_command          = "aws ssm start-session --region ap-southeast-2 --target i-02b5a401355a83e97" -> null
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to: destroy.tfplan
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "destroy.tfplan"
+exit=0

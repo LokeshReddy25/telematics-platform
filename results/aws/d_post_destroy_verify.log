@@ -1,0 +1,66 @@
+### 2026-11-26T09:33:04+00:00 post-destroy verification, region ap-southeast-2 (read-only calls)
+$ aws ec2 describe-instances --filters Name=instance-state-name,Values=pending,running,shutting-down,stopping,stopped --query "Reservations[].Instances[].InstanceId"
+[]
+$ aws ec2 describe-instances --instance-ids i-02b5a401355a83e97 --query "Reservations[].Instances[].[InstanceId,State.Name,StateTransitionReason]"
+[
+    [
+        "i-02b5a401355a83e97",
+        "terminated",
+        "User initiated (2026-11-26 09:32:15 GMT)"
+    ]
+]
+$ aws ec2 describe-volumes --query "Volumes[].[VolumeId,State,Size]"
+[]
+$ aws ec2 describe-snapshots --owner-ids self --query "Snapshots[].SnapshotId"
+[]
+$ aws ec2 describe-images --owners self --query "Images[].ImageId"
+[]
+$ aws ec2 describe-addresses --query "Addresses[].PublicIp"
+[]
+$ aws ec2 describe-security-groups --query "SecurityGroups[].[GroupId,GroupName]"   (default VPC group is expected)
+[
+    [
+        "sg-08d2627eb627b5042",
+        "default"
+    ]
+]
+$ aws ec2 describe-network-interfaces --query "NetworkInterfaces[].NetworkInterfaceId"
+[]
+$ aws iam get-role --role-name telematics-demo-ssm-role
+
+aws: [ERROR]: An error occurred (NoSuchEntity) when calling the GetRole operation: The role with name telematics-demo-ssm-role cannot be found.
+$ aws iam get-instance-profile --instance-profile-name telematics-demo-ssm-profile
+
+aws: [ERROR]: An error occurred (NoSuchEntity) when calling the GetInstanceProfile operation: Instance Profile telematics-demo-ssm-profile cannot be found.
+$ aws iam list-roles --query "Roles[?starts_with(RoleName, \`telematics\`)].RoleName"
+[]
+$ aws iam list-instance-profiles --query "InstanceProfiles[].InstanceProfileName"
+[]
+$ aws logs describe-log-groups --query "logGroups[].logGroupName"
+[]
+$ aws ssm describe-sessions --state Active --query "Sessions[].SessionId"
+[
+    "<SSM-SESSION-ID>"
+]
+$ aws resourcegroupstaggingapi get-resources --tag-filters Key=Project,Values=telematics-demo --query "ResourceTagMappingList[].ResourceARN"
+[
+    "arn:aws:ec2:ap-southeast-2:<ACCOUNT-ID>:instance/i-02b5a401355a83e97",
+    "arn:aws:ec2:ap-southeast-2:<ACCOUNT-ID>:volume/vol-06ea2eb87bc0141b1",
+    "arn:aws:ec2:ap-southeast-2:<ACCOUNT-ID>:security-group-rule/sgr-0f32f015fa4d01fea"
+]
+### 2026-11-26T09:34:04+00:00 follow-up checks
+$ aws ssm describe-sessions --state Active --query "Sessions[].[Target,StartDate,DocumentName,Status]"
+[
+    [
+        "i-02b5a401355a83e97",
+        "2026-11-26T14:47:49.641000+05:30",
+        "AWS-StartPortForwardingSession",
+        "Connected"
+    ]
+]
+$ aws ec2 describe-volumes --volume-ids vol-06ea2eb87bc0141b1
+
+aws: [ERROR]: An error occurred (InvalidVolume.NotFound) when calling the DescribeVolumes operation: The volume 'vol-06ea2eb87bc0141b1' does not exist.
+$ aws ec2 describe-security-group-rules --security-group-rule-ids sgr-0f32f015fa4d01fea
+
+aws: [ERROR]: An error occurred (InvalidSecurityGroupRuleId.NotFound) when calling the DescribeSecurityGroupRules operation: The security group rule ID 'sgr-0f32f015fa4d01fea' does not exist
