@@ -1,16 +1,25 @@
 # docker-compose.yml (project root)
 #
-# Brings up the rest of the local stack that sits downstream of Kafka:
-# InfluxDB (the time-series sink storage/influxdb_writer.py writes to) and
-# Grafana (the dashboard defined in dashboard/grafana_config/). Kept as a
-# separate compose file from kafka/docker-compose.yml -- rather than one
-# giant file -- so the Kafka layer (Phase 3 of the build) stays a clean,
-# independent unit, while this file adds the storage/visualisation layer on
-# top of it via the shared `telematics-net` Docker network.
+# The whole local stack from one command:
 #
-# Run order:
-#   1) docker compose -f kafka/docker-compose.yml up -d   (creates telematics-net)
-#   2) docker compose up -d                                 (this file, joins telematics-net)
+#     docker compose up -d --build
+#
+# Kafka + Zookeeper + Kafka UI come from kafka/docker-compose.yml via
+# `include`, so that file still works on its own too. This file adds:
+#   model-trainer  trains ml/models/risk_model.pkl if it is missing, then exits
+#   kafka-init     creates the vehicle.trip.events topic, then exits
+#   spark          the Structured Streaming job (devops/Dockerfile.spark)
+#   simulator      the trip producer; restarts after each batch so data keeps flowing
+#   influxdb       time-series sink for scored trips
+#   grafana        the provisioned driver-risk dashboard (http://localhost:3000)
+#   risk-api       REST API over the scores in InfluxDB (http://localhost:8001/docs)
+#
+# Note: this project now owns the Kafka containers. If you previously started
+# kafka/docker-compose.yml on its own, stop it first
+# (docker compose -f kafka/docker-compose.yml down), or the container names clash.
+
+include:
+  - kafka/docker-compose.yml
 
 services:
   influxdb:
@@ -66,13 +75,95 @@ services:
     networks:
       - telematics-net
 
-networks:
-  # Declared as `external` because kafka/docker-compose.yml is the one that
-  # actually creates this network -- it must be started first.
-  telematics-net:
-    name: telematics-net
-    external: true
+  # One-shot: trains the model into ./ml/models if risk_model.pkl is not
+  # there yet (the .pkl is gitignored, so a fresh clone has none).
+  model-trainer:
+    build:
+      context: .
+      dockerfile: devops/Dockerfile.ml
+    image: telematics/ml-trainer:local
+    volumes:
+      - ./ml/models:/app/models
+    restart: "no"
+
+  # One-shot: creates the topic before Spark subscribes to it (otherwise
+  # Spark can fail with UnknownTopicOrPartitionException).
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      kafka:
+        condition: service_healthy
+    entrypoint: ["kafka-topics"]
+    command:
+      [
+        "--bootstrap-server", "kafka:9092", "--create", "--if-not-exists",
+        "--topic", "vehicle.trip.events", "--partitions", "3", "--replication-factor", "1",
+      ]
+    restart: "no"
+    networks:
+      - telematics-net
+
+  spark:
+    build:
+      context: .
+      dockerfile: devops/Dockerfile.spark
+    image: telematics/spark-stream-processor:local
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      model-trainer:
+        condition: service_completed_successfully
+      influxdb:
+        condition: service_healthy
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      INFLUXDB_URL: http://influxdb:8086
+    volumes:
+      # Use the model produced by model-trainer, not whatever was baked in at build time.
+      - ./ml/models:/app/ml/models:ro
+      # Cache the Kafka connector jars that spark-submit --packages downloads.
+      - spark-ivy:/root/.ivy2
+    restart: unless-stopped
+    networks:
+      - telematics-net
+
+  # Produces 5 drivers x 3 trips, exits, and is restarted, mirroring the
+  # Kubernetes deployment. Spark reads from the latest offset, so events sent
+  # before Spark's query has started (about the first minute) are not scored.
+  simulator:
+    build:
+      context: .
+      dockerfile: devops/Dockerfile.simulator
+    image: telematics/trip-simulator:local
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      spark:
+        condition: service_started
+    command: ["--bootstrap", "kafka:9092", "--drivers", "5", "--trips", "3", "--speed", "0.3"]
+    restart: unless-stopped
+    networks:
+      - telematics-net
+
+  risk-api:
+    build: ./risk_api
+    image: telematics/risk-api:local
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    environment:
+      INFLUXDB_URL: http://influxdb:8086
+      INFLUXDB_ORG: telematics-org
+      INFLUXDB_BUCKET: telematics
+      # Local-dev token created by the influxdb service above. Override it by
+      # exporting INFLUXDB_TOKEN before `docker compose up`.
+      INFLUXDB_TOKEN: ${INFLUXDB_TOKEN:-telematics-dev-token}
+    ports:
+      - "8001:8000"
+    networks:
+      - telematics-net
 
 volumes:
   influxdb-data:
   grafana-data:
+  spark-ivy:

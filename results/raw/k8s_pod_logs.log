@@ -1,0 +1,13 @@
+$ kubectl logs -n telematics deploy/spark-stream-processor --tail=8
+2026-11-26 05:49:30,780 [INFO] Wrote scored trip to InfluxDB: driver=driver_0003 trip=f010dbad-d6c8-4b26-92ed-916f7f836513 risk=32.92 (Medium)
+[batch 734] driver=driver_0003 trip=f010dbad-d6c8-4b26-92ed-916f7f836513 risk_score=32.92 category=Medium harsh_brakes=0 harsh_accels=2
+2026-11-26 05:50:00,114 [INFO] Received command c on object id p0
+2026-11-26 05:50:01,042 [INFO] Wrote scored trip to InfluxDB: driver=driver_0003 trip=f010dbad-d6c8-4b26-92ed-916f7f836513 risk=38.13 (Medium)
+[batch 735] driver=driver_0003 trip=f010dbad-d6c8-4b26-92ed-916f7f836513 risk_score=38.13 category=Medium harsh_brakes=0 harsh_accels=4
+2026-11-26 05:50:30,360 [INFO] Received command c on object id p0
+2026-11-26 05:51:00,202 [INFO] Received command c on object id p0
+2026-11-26 05:51:30,296 [INFO] Received command c on object id p0
+$ kubectl logs -n telematics deploy/trip-simulator --tail=3
+2026-11-26 05:51:08,065 [INFO] Produced 825 events so far (topic=vehicle.trip.events)
+2026-11-26 05:51:20,575 [INFO] Produced 850 events so far (topic=vehicle.trip.events)
+2026-11-26 05:51:33,079 [INFO] Produced 875 events so far (topic=vehicle.trip.events)

@@ -30,12 +30,11 @@ devops/terraform/crash.log
 # Ad-hoc logs generated while running/debugging the stack locally
 *.log
 
-# API deploy stack (deploy/terraform/): same rule as devops/terraform/ --
-# keep the .tf source and the lock file, never commit state, saved plans,
-# crash logs, or *.tfvars (that's where db_password and jwt_secret live).
-deploy/terraform/.terraform/
-deploy/terraform/*.tfstate
-deploy/terraform/*.tfstate.*
-deploy/terraform/*.tfvars
-deploy/terraform/*.tfplan
-deploy/terraform/crash.log
+# Benchmark evidence: raw logs under results/ ARE committed (they back every
+# number in results/results.md), overriding the *.log rule above.
+!results/**/*.log
+
+# Coverage output
+.coverage
+coverage.xml
+htmlcov/

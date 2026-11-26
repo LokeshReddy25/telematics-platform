@@ -1,0 +1,86 @@
+$ grep -nE "^  [a-zA-Z0-9_-]+:$" docker-compose.yml kafka/docker-compose.yml api/docker-compose.yml
+docker-compose.yml:16:  influxdb:
+docker-compose.yml:43:  grafana:
+docker-compose.yml:72:  telematics-net:
+docker-compose.yml:77:  influxdb-data:
+docker-compose.yml:78:  grafana-data:
+kafka/docker-compose.yml:20:  zookeeper:
+kafka/docker-compose.yml:44:  kafka:
+kafka/docker-compose.yml:81:  kafka-ui:
+kafka/docker-compose.yml:97:  telematics-net:
+kafka/docker-compose.yml:102:  zookeeper-data:
+kafka/docker-compose.yml:103:  zookeeper-log:
+kafka/docker-compose.yml:104:  kafka-data:
+api/docker-compose.yml:17:  postgres:
+api/docker-compose.yml:33:  api:
+api/docker-compose.yml:45:  pgdata:
+
+$ ls devops/k8s/*.yaml | wc -l
+5
+
+$ grep -c "^kind:" devops/k8s/*.yaml
+devops/k8s/configmap.yaml:3
+devops/k8s/influxdb-deployment.yaml:2
+devops/k8s/kafka-deployment.yaml:2
+devops/k8s/simulator-deployment.yaml:1
+devops/k8s/spark-deployment.yaml:1
+
+$ grep -h "^kind:" devops/k8s/*.yaml | sort | uniq -c
+      1 kind: ConfigMap
+      4 kind: Deployment
+      1 kind: Namespace
+      1 kind: Secret
+      2 kind: Service
+
+$ grep -nE "^resource \"" devops/terraform/*.tf
+devops/terraform/main.tf:57:resource "aws_security_group" "spark_ec2" {
+devops/terraform/main.tf:93:resource "aws_security_group" "msk" {
+devops/terraform/main.tf:131:resource "aws_security_group" "rds" {
+devops/terraform/main.tf:166:resource "aws_msk_cluster" "telematics" {
+devops/terraform/main.tf:252:resource "aws_instance" "spark" {
+devops/terraform/main.tf:292:resource "aws_db_subnet_group" "telematics" {
+devops/terraform/main.tf:306:resource "aws_db_instance" "metadata_store" {
+
+$ grep -cE "^resource \"" devops/terraform/*.tf
+devops/terraform/main.tf:7
+devops/terraform/outputs.tf:0
+devops/terraform/variables.tf:0
+
+$ grep -nE "^resource \"" deploy/terraform/*.tf
+deploy/terraform/main.tf:63:resource "aws_vpc" "api" {
+deploy/terraform/main.tf:74:resource "aws_internet_gateway" "api" {
+deploy/terraform/main.tf:83:resource "aws_route_table" "public" {
+deploy/terraform/main.tf:101:resource "aws_subnet" "public" {
+deploy/terraform/main.tf:114:resource "aws_route_table_association" "public" {
+deploy/terraform/main.tf:125:resource "aws_security_group" "alb" {
+deploy/terraform/main.tf:154:resource "aws_security_group" "ecs" {
+deploy/terraform/main.tf:184:resource "aws_security_group" "rds" {
+deploy/terraform/main.tf:217:resource "aws_ecr_repository" "api" {
+deploy/terraform/main.tf:232:resource "aws_ecr_lifecycle_policy" "api" {
+deploy/terraform/main.tf:258:resource "aws_db_subnet_group" "api" {
+deploy/terraform/main.tf:274:resource "aws_db_instance" "api" {
+deploy/terraform/main.tf:309:resource "aws_secretsmanager_secret" "database_url" {
+deploy/terraform/main.tf:319:resource "aws_secretsmanager_secret_version" "database_url" {
+deploy/terraform/main.tf:330:resource "aws_secretsmanager_secret" "jwt_secret" {
+deploy/terraform/main.tf:340:resource "aws_secretsmanager_secret_version" "jwt_secret" {
+deploy/terraform/main.tf:356:resource "aws_cloudwatch_log_group" "api" {
+deploy/terraform/main.tf:366:resource "aws_ecs_cluster" "api" {
+deploy/terraform/main.tf:375:resource "aws_iam_role" "ecs_execution" {
+deploy/terraform/main.tf:397:resource "aws_iam_role_policy_attachment" "ecs_execution" {
+deploy/terraform/main.tf:405:resource "aws_iam_role_policy" "ecs_execution_secrets" {
+deploy/terraform/main.tf:431:resource "aws_ecs_task_definition" "api" {
+deploy/terraform/main.tf:492:resource "aws_ecs_service" "api" {
+deploy/terraform/main.tf:530:resource "aws_lb" "api" {
+deploy/terraform/main.tf:543:resource "aws_lb_target_group" "api" {
+deploy/terraform/main.tf:565:resource "aws_lb_listener" "http" {
+
+$ grep -cE "^resource \"" deploy/terraform/*.tf
+deploy/terraform/main.tf:26
+deploy/terraform/outputs.tf:0
+deploy/terraform/variables.tf:0
+
+$ grep -nE "^(data|module) \"|backend" devops/terraform/*.tf deploy/terraform/*.tf
+devops/terraform/main.tf:233:data "aws_ami" "amazon_linux" {
+deploy/terraform/main.tf:59:data "aws_availability_zones" "available" {
+deploy/terraform/main.tf:348:data "aws_kms_key" "secretsmanager" {
+

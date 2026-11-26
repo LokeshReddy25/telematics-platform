@@ -1,0 +1,91 @@
+# .github/workflows/risk-api-ci.yml
+#
+# CI for the Driver Risk Score API (risk_api/):
+#   unit         pytest with InfluxDB mocked, plus a coverage report
+#   integration  pytest against a throwaway InfluxDB 2.7 service container
+#   build        Docker image build (no push)
+# There is no deploy step.
+
+name: Risk API CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "risk_api/**"
+      - ".github/workflows/risk-api-ci.yml"
+  pull_request:
+    branches: ["**"]
+    paths:
+      - "risk_api/**"
+      - ".github/workflows/risk-api-ci.yml"
+
+jobs:
+  unit:
+    name: Unit tests + coverage
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: risk_api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-test.txt
+      - name: Run unit tests
+        run: python -m pytest -m "not integration" -v --cov=app --cov-report=term-missing --cov-report=xml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: risk-api-coverage
+          path: risk_api/coverage.xml
+
+  integration:
+    name: Integration test (real InfluxDB)
+    runs-on: ubuntu-latest
+    env:
+      # Throwaway token for a container that only lives for this job.
+      # Generated per run, so nothing reusable is committed.
+      IT_TOKEN: ci-${{ github.run_id }}-${{ github.run_attempt }}
+    services:
+      influxdb:
+        image: influxdb:2.7
+        ports:
+          - 8086:8086
+        env:
+          DOCKER_INFLUXDB_INIT_MODE: setup
+          DOCKER_INFLUXDB_INIT_USERNAME: ci
+          DOCKER_INFLUXDB_INIT_PASSWORD: ci-password-${{ github.run_id }}
+          DOCKER_INFLUXDB_INIT_ORG: telematics-org
+          DOCKER_INFLUXDB_INIT_BUCKET: telematics
+          DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ci-${{ github.run_id }}-${{ github.run_attempt }}
+        options: >-
+          --health-cmd "curl -f http://localhost:8086/health"
+          --health-interval 5s --health-timeout 5s --health-retries 12
+    defaults:
+      run:
+        working-directory: risk_api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements-test.txt
+      - name: Run integration tests
+        env:
+          RISK_API_IT_INFLUXDB_URL: http://localhost:8086
+          RISK_API_IT_INFLUXDB_TOKEN: ${{ env.IT_TOKEN }}
+        run: python -m pytest -m integration -v -rs
+
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    needs: [unit, integration]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./risk_api
+          push: false
+          tags: telematics/risk-api:ci

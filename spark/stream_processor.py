@@ -68,9 +68,18 @@ EVENT_SCHEMA = StructType(
 
 
 def build_spark_session() -> SparkSession:
-    """Create the SparkSession configured for local/containerised streaming."""
+    """Create the SparkSession configured for local/containerised streaming.
+
+    spark.jars.packages pulls in the Kafka connector at session-build time so
+    `python stream_processor.py` works standalone -- devops/Dockerfile.spark
+    achieves the same thing via `spark-submit --packages` instead, since the
+    container entrypoint invokes spark-submit directly rather than `python`.
+    """
     return (
-        SparkSession.builder.appName("TelematicsRiskScoring").config("spark.sql.shuffle.partitions", "4").getOrCreate()
+        SparkSession.builder.appName("TelematicsRiskScoring")
+        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0")
+        .config("spark.sql.shuffle.partitions", "4")
+        .getOrCreate()
     )
 
 

@@ -1,0 +1,6 @@
+# Runtime dependencies for the Driver Risk Score API (risk_api/).
+# Versions match what was installed and tested on the dev machine.
+fastapi==0.115.6
+pydantic==2.14.4
+uvicorn[standard]==0.34.0
+influxdb-client==1.40.0

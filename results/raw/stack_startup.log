@@ -1,0 +1,29 @@
+$ docker compose -f kafka/docker-compose.yml up -d  (2026-11-26T11:18:27+05:30)
+ Container telematics-zookeeper Starting 
+ Container telematics-zookeeper Started 
+ Container telematics-zookeeper Waiting 
+ Container telematics-zookeeper Healthy 
+ Container telematics-kafka Starting 
+ Container telematics-kafka Started 
+ Container telematics-kafka Waiting 
+ Container telematics-kafka Error dependency kafka failed to start
+dependency failed to start: container telematics-kafka exited (1)
+$ docker compose up -d
+ Container telematics-grafana Recreate 
+ Container telematics-grafana Recreated 
+ Container telematics-influxdb Starting 
+ Container telematics-influxdb Started 
+ Container telematics-influxdb Waiting 
+ Container telematics-influxdb Healthy 
+ Container telematics-grafana Starting 
+ Container telematics-grafana Started 
+$ docker compose -f kafka/docker-compose.yml up -d   (retry after stale ZK node, 2026-11-26T11:19:05+05:30)
+ Container telematics-zookeeper Running 
+ Container telematics-zookeeper Waiting 
+ Container telematics-zookeeper Healthy 
+ Container telematics-kafka Starting 
+ Container telematics-kafka Started 
+ Container telematics-kafka Waiting 
+ Container telematics-kafka Healthy 
+ Container telematics-kafka-ui Starting 
+ Container telematics-kafka-ui Started 

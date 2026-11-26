@@ -1,0 +1,14 @@
+$ kubectl apply --dry-run=server -f devops/k8s/risk-api-deployment.yaml
+deployment.apps/risk-api created (server dry run)
+service/risk-api-service created (server dry run)
+exit=0
+$ kubectl get deploy,svc -n telematics   (confirm nothing was created)
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/influxdb                 1/1     1            1           126d
+deployment.apps/kafka                    1/1     1            1           126d
+deployment.apps/spark-stream-processor   1/1     1            1           126d
+deployment.apps/trip-simulator           1/1     1            1           126d
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/influxdb-service   ClusterIP   10.96.135.133   <none>        8086/TCP   126d
+service/kafka-service      ClusterIP   10.96.228.37    <none>        9092/TCP   126d

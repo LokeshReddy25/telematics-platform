@@ -1,0 +1,77 @@
+$ cd risk_api && RISK_API_IT_INFLUXDB_URL=http://localhost:8086 RISK_API_IT_INFLUXDB_TOKEN=<local compose dev token> python -m pytest -v --cov=app --cov-report=term-missing   (2026-11-26T11:40:00+05:30)
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.3.3, pluggy-1.6.0 -- C:\Users\acer\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: c:\Users\acer\Desktop\Car\telematics-platform\risk_api
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.16.0, cov-5.0.0
+collecting ... collected 46 items
+
+tests/test_api.py::test_health_ok PASSED                                 [  2%]
+tests/test_api.py::test_health_degraded_returns_503 PASSED               [  4%]
+tests/test_api.py::test_driver_risk_summarises_history PASSED            [  6%]
+tests/test_api.py::test_driver_risk_unknown_driver_404 PASSED            [  8%]
+tests/test_api.py::test_driver_risk_rejects_bad_id_before_querying PASSED [ 10%]
+tests/test_api.py::test_driver_risk_influx_down_503 PASSED               [ 13%]
+tests/test_api.py::test_top_risk_default_limit_is_5 PASSED               [ 15%]
+tests/test_api.py::test_top_risk_respects_limit PASSED                   [ 17%]
+tests/test_api.py::test_top_risk_empty_is_200_not_404 PASSED             [ 19%]
+tests/test_api.py::test_top_risk_invalid_limits_422 PASSED               [ 21%]
+tests/test_api.py::test_top_risk_influx_down_503 PASSED                  [ 23%]
+tests/test_api.py::test_trip_returns_history_oldest_first PASSED         [ 26%]
+tests/test_api.py::test_trip_unknown_404 PASSED                          [ 28%]
+tests/test_api.py::test_trip_bad_id_422 PASSED                           [ 30%]
+tests/test_api.py::test_trip_influx_down_503 PASSED                      [ 32%]
+tests/test_api.py::test_unknown_route_uses_error_format PASSED           [ 34%]
+tests/test_api.py::test_wrong_method_405 PASSED                          [ 36%]
+tests/test_api.py::test_openapi_lists_all_endpoints PASSED               [ 39%]
+tests/test_integration.py::test_health_against_real_influx PASSED        [ 41%]
+tests/test_integration.py::test_driver_risk_against_real_influx PASSED   [ 43%]
+tests/test_integration.py::test_top_risk_against_real_influx PASSED      [ 45%]
+tests/test_integration.py::test_trip_against_real_influx PASSED          [ 47%]
+tests/test_integration.py::test_not_found_against_real_influx PASSED     [ 50%]
+tests/test_repository_and_config.py::test_driver_history_builds_filtered_pivot_query_and_flattens_records PASSED [ 52%]
+tests/test_repository_and_config.py::test_trip_history_filters_on_trip_id PASSED [ 54%]
+tests/test_repository_and_config.py::test_top_risk_query_takes_latest_per_driver_and_limits PASSED [ 56%]
+tests/test_repository_and_config.py::test_repository_rejects_unsafe_ids[x") or true or ("] PASSED [ 58%]
+tests/test_repository_and_config.py::test_repository_rejects_unsafe_ids[] PASSED [ 60%]
+tests/test_repository_and_config.py::test_repository_rejects_unsafe_ids[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa] PASSED [ 63%]
+tests/test_repository_and_config.py::test_repository_rejects_unsafe_ids[has space] PASSED [ 65%]
+tests/test_repository_and_config.py::test_repository_rejects_unsafe_ids[None] PASSED [ 67%]
+tests/test_repository_and_config.py::test_top_risk_rejects_bad_limit[0] PASSED [ 69%]
+tests/test_repository_and_config.py::test_top_risk_rejects_bad_limit[101] PASSED [ 71%]
+tests/test_repository_and_config.py::test_top_risk_rejects_bad_limit[5] PASSED [ 73%]
+tests/test_repository_and_config.py::test_top_risk_rejects_bad_limit[None] PASSED [ 76%]
+tests/test_repository_and_config.py::test_query_failure_becomes_repository_error PASSED [ 78%]
+tests/test_repository_and_config.py::test_ping_true_false_and_exception PASSED [ 80%]
+tests/test_repository_and_config.py::test_close_closes_client PASSED     [ 82%]
+tests/test_repository_and_config.py::test_settings_require_token PASSED  [ 84%]
+tests/test_repository_and_config.py::test_settings_defaults_and_overrides PASSED [ 86%]
+tests/test_repository_and_config.py::test_settings_reject_invalid_values[env0] PASSED [ 89%]
+tests/test_repository_and_config.py::test_settings_reject_invalid_values[env1] PASSED [ 91%]
+tests/test_repository_and_config.py::test_settings_reject_invalid_values[env2] PASSED [ 93%]
+tests/test_repository_and_config.py::test_settings_reject_invalid_values[env3] PASSED [ 95%]
+tests/test_repository_and_config.py::test_settings_reject_invalid_values[env4] PASSED [ 97%]
+tests/test_repository_and_config.py::test_app_startup_fails_fast_without_token PASSED [100%]
+
+============================== warnings summary ===============================
+..\..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\testclient.py:40
+  C:\Users\acer\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                Stmts   Miss  Cover   Missing
+-------------------------------------------------
+app\__init__.py         0      0   100%
+app\config.py          38      0   100%
+app\main.py            78      0   100%
+app\repository.py      45      0   100%
+app\schemas.py         45      0   100%
+-------------------------------------------------
+TOTAL                 206      0   100%
+
+======================== 46 passed, 1 warning in 1.13s ========================
+exit=0

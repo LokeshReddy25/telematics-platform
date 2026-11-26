@@ -1,0 +1,1133 @@
+# fresh clone of feature/risk-api @ efb198e in tp-fresh/ (no ml/models, no uncommitted changes)
+$ docker compose up -d --build   (start 2026-11-26T11:42:22+05:30)
+ Image telematics/risk-api:local Building 
+ Image telematics/ml-trainer:local Building 
+ Image telematics/spark-stream-processor:local Building 
+ Image telematics/trip-simulator:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 2.70kB done
+#1 DONE 0.0s
+
+#2 [risk-api internal] load build definition from Dockerfile
+#2 transferring dockerfile: 833B 0.0s done
+#2 DONE 0.1s
+
+#3 [model-trainer internal] load build definition from Dockerfile.ml
+#3 transferring dockerfile: 1.26kB 0.0s done
+#3 DONE 0.1s
+
+#4 [model-trainer internal] load metadata for docker.io/library/python:3.11-slim
+#4 ...
+
+#5 [spark internal] load build definition from Dockerfile.spark
+#5 transferring dockerfile: 2.08kB 0.0s done
+#5 DONE 0.1s
+
+#6 [simulator internal] load build definition from Dockerfile.simulator
+#6 transferring dockerfile: 1.44kB 0.0s done
+#6 DONE 0.1s
+
+#4 [simulator internal] load metadata for docker.io/library/python:3.11-slim
+#4 DONE 0.9s
+
+#7 [risk-api internal] load .dockerignore
+#7 transferring context: 2B done
+#7 DONE 0.0s
+
+#8 [model-trainer internal] load .dockerignore
+#8 transferring context: 2B done
+#8 DONE 0.0s
+
+#9 [model-trainer 1/6] FROM docker.io/library/python:3.11-slim@sha256:61e01f72680f86a5279ad510818ab7b2ee9f049822589d4e34e33e044360356c
+#9 resolve docker.io/library/python:3.11-slim@sha256:61e01f72680f86a5279ad510818ab7b2ee9f049822589d4e34e33e044360356c 0.0s done
+#9 CACHED
+
+#10 [simulator internal] load build context
+#10 transferring context: 16.56kB 0.0s done
+#10 DONE 0.1s
+
+#11 [risk-api internal] load build context
+#11 transferring context: 16.26kB 0.0s done
+#11 DONE 0.1s
+
+#12 [model-trainer 2/6] WORKDIR /app
+#12 DONE 0.1s
+
+#13 [risk-api 2/6] WORKDIR /srv
+#13 CACHED
+
+#14 [model-trainer internal] load build context
+#14 transferring context: 14.96kB 0.0s done
+#14 DONE 0.1s
+
+#15 [risk-api 3/6] COPY requirements.txt .
+#15 DONE 0.0s
+
+#16 [model-trainer 3/6] COPY ml/requirements.txt ./requirements.txt
+#16 DONE 0.0s
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 ...
+
+#18 [spark internal] load metadata for docker.io/apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu
+#18 DONE 1.5s
+
+#8 [spark internal] load .dockerignore
+#8 transferring context: 2B done
+#8 DONE 0.0s
+
+#19 [spark 1/8] FROM docker.io/apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu@sha256:8d2288e0d19b4e1362c8af4adc278ae59020cc8d812326ce3bc6e0279e4b34e0
+#19 resolve docker.io/apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu@sha256:8d2288e0d19b4e1362c8af4adc278ae59020cc8d812326ce3bc6e0279e4b34e0 0.0s done
+#19 DONE 0.0s
+
+#20 [spark internal] load build context
+#20 transferring context: 26.89kB 0.0s done
+#20 DONE 0.1s
+
+#21 [spark 2/8] WORKDIR /app
+#21 CACHED
+
+#22 [spark 3/8] RUN apt-get update && apt-get install -y --no-install-recommends python3-pip     && rm -rf /var/lib/apt/lists/*
+#22 CACHED
+
+#23 [spark 4/8] COPY spark/requirements.txt ./spark-requirements.txt
+#23 DONE 0.0s
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 0.638 Hit:1 http://deb.debian.org/debian trixie InRelease
+#24 0.647 Get:2 http://deb.debian.org/debian trixie-updates InRelease [47.3 kB]
+#24 0.704 Get:3 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
+#24 0.731 Get:4 http://deb.debian.org/debian trixie/main amd64 Packages [9679 kB]
+#24 1.416 Get:5 http://deb.debian.org/debian trixie-updates/main amd64 Packages [1108 B]
+#24 1.433 Get:6 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [311 kB]
+#24 2.224 Fetched 10.1 MB in 2s (5126 kB/s)
+#24 2.224 Reading package lists...
+#24 2.897 Reading package lists...
+#24 3.816 Building dependency tree...
+#24 4.008 Reading state information...
+#24 4.285 The following additional packages will be installed:
+#24 4.285   binutils binutils-common binutils-x86-64-linux-gnu comerr-dev cpp cpp-14
+#24 4.285   cpp-14-x86-64-linux-gnu cpp-x86-64-linux-gnu gcc-14 gcc-14-x86-64-linux-gnu
+#24 4.286   gcc-x86-64-linux-gnu krb5-multidev libasan8 libatomic1 libbinutils
+#24 4.286   libbrotli-dev libbrotli1 libc-dev-bin libc6-dev libcc1-0 libcom-err2
+#24 4.286   libcrypt-dev libctf-nobfd0 libctf0 libcurl4-openssl-dev libcurl4t64
+#24 4.286   libevent-2.1-7t64 libgcc-14-dev libgmp-dev libgmpxx4ldbl libgnutls-dane0t64
+#24 4.286   libgnutls-openssl27t64 libgnutls28-dev libgnutls30t64 libgomp1 libgprofng0
+#24 4.287   libgssapi-krb5-2 libgssrpc4t64 libhwasan0 libidn2-0 libidn2-dev libisl23
+#24 4.287   libitm1 libjansson4 libk5crypto3 libkadm5clnt-mit12 libkadm5srv-mit12
+#24 4.287   libkdb5-10t64 libkeyutils1 libkrb5-3 libkrb5-dev libkrb5support0 libldap-dev
+#24 4.287   libldap2 liblsan0 liblz4-dev libmpc3 libmpfr6 libnghttp2-14 libnghttp2-dev
+#24 4.288   libnghttp3-9 libnghttp3-dev libp11-kit-dev libp11-kit0 libpkgconf3
+#24 4.288   libproc2-0 libpsl-dev libpsl5t64 libquadmath0 librdkafka++1 librdkafka1
+#24 4.289   librtmp-dev librtmp1 libsasl2-2 libsasl2-dev libsasl2-modules-db libsframe1
+#24 4.289   libssh2-1-dev libssh2-1t64 libssl-dev libtasn1-6 libtasn1-6-dev libtsan2
+#24 4.289   libubsan1 libunbound8 libunistring5 libxxhash-dev libzstd-dev libzstd1
+#24 4.290   linux-libc-dev nettle-dev pkgconf pkgconf-bin rpcsvc-proto zlib1g-dev
+#24 4.293 Suggested packages:
+#24 4.293   binutils-doc gprofng-gui binutils-gold doc-base cpp-doc gcc-14-locales
+#24 4.293   cpp-14-doc gcc-multilib make manpages-dev autoconf automake libtool flex
+#24 4.293   bison gdb gcc-doc gcc-14-multilib gcc-14-doc gdb-x86-64-linux-gnu krb5-doc
+#24 4.293   libc-devtools glibc-doc dpkg-dev libcurl4-doc libidn-dev gmp-doc
+#24 4.293   libgmp10-doc libmpfr-dev dns-root-data gnutls-bin gnutls-doc krb5-user
+#24 4.293   libnghttp2-doc p11-kit-doc libssl-doc
+#24 4.293 Recommended packages:
+#24 4.293   manpages manpages-dev krb5-locales libldap-common publicsuffix
+#24 4.293   libsasl2-modules libtasn1-doc psmisc linux-sysctl-defaults
+#24 4.823 The following NEW packages will be installed:
+#24 4.823   binutils binutils-common binutils-x86-64-linux-gnu comerr-dev cpp cpp-14
+#24 4.823   cpp-14-x86-64-linux-gnu cpp-x86-64-linux-gnu gcc gcc-14
+#24 4.823   gcc-14-x86-64-linux-gnu gcc-x86-64-linux-gnu krb5-multidev libasan8
+#24 4.823   libatomic1 libbinutils libbrotli-dev libbrotli1 libc-dev-bin libc6-dev
+#24 4.823   libcc1-0 libcom-err2 libcrypt-dev libctf-nobfd0 libctf0 libcurl4-openssl-dev
+#24 4.824   libcurl4t64 libevent-2.1-7t64 libgcc-14-dev libgmp-dev libgmpxx4ldbl
+#24 4.824   libgnutls-dane0t64 libgnutls-openssl27t64 libgnutls28-dev libgnutls30t64
+#24 4.824   libgomp1 libgprofng0 libgssapi-krb5-2 libgssrpc4t64 libhwasan0 libidn2-0
+#24 4.824   libidn2-dev libisl23 libitm1 libjansson4 libk5crypto3 libkadm5clnt-mit12
+#24 4.824   libkadm5srv-mit12 libkdb5-10t64 libkeyutils1 libkrb5-3 libkrb5-dev
+#24 4.824   libkrb5support0 libldap-dev libldap2 liblsan0 liblz4-dev libmpc3 libmpfr6
+#24 4.824   libnghttp2-14 libnghttp2-dev libnghttp3-9 libnghttp3-dev libp11-kit-dev
+#24 4.824   libp11-kit0 libpkgconf3 libproc2-0 libpsl-dev libpsl5t64 libquadmath0
+#24 4.825   librdkafka++1 librdkafka-dev librdkafka1 librtmp-dev librtmp1 libsasl2-2
+#24 4.825   libsasl2-dev libsasl2-modules-db libsframe1 libssh2-1-dev libssh2-1t64
+#24 4.825   libssl-dev libtasn1-6 libtasn1-6-dev libtsan2 libubsan1 libunbound8
+#24 4.825   libunistring5 libxxhash-dev libzstd-dev linux-libc-dev nettle-dev pkgconf
+#24 4.826   pkgconf-bin procps rpcsvc-proto zlib1g-dev
+#24 4.828 The following packages will be upgraded:
+#24 4.829   libzstd1
+#24 4.974 1 upgraded, 97 newly installed, 0 to remove and 2 not upgraded.
+#24 4.974 Need to get 78.0 MB of archives.
+#24 4.974 After this operation, 288 MB of additional disk space will be used.
+#24 4.974 Get:1 http://deb.debian.org/debian-security trixie-security/main amd64 libzstd1 amd64 1.5.7+dfsg-1+deb13u1 [304 kB]
+#24 5.215 Get:2 http://deb.debian.org/debian trixie/main amd64 libproc2-0 amd64 2:4.0.4-9 [65.6 kB]
+#24 5.235 Get:3 http://deb.debian.org/debian trixie/main amd64 procps amd64 2:4.0.4-9 [882 kB]
+#24 5.986 Get:4 http://deb.debian.org/debian trixie/main amd64 libsframe1 amd64 2.44-3 [78.4 kB]
+#24 6.043 Get:5 http://deb.debian.org/debian trixie/main amd64 binutils-common amd64 2.44-3 [2509 kB]
+#24 ...
+
+#25 [risk-api 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#25 2.031 Collecting fastapi==0.115.6 (from -r requirements.txt (line 3))
+#25 2.140   Downloading fastapi-0.115.6-py3-none-any.whl.metadata (27 kB)
+#25 2.310 Collecting pydantic==2.14.4 (from -r requirements.txt (line 4))
+#25 2.328   Downloading pydantic-2.14.4-py3-none-any.whl.metadata (143 kB)
+#25 2.364      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 144.0/144.0 kB 4.2 MB/s eta 0:00:00
+#25 2.411 Collecting uvicorn==0.34.0 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 2.428   Downloading uvicorn-0.34.0-py3-none-any.whl.metadata (6.5 kB)
+#25 2.479 Collecting influxdb-client==1.40.0 (from -r requirements.txt (line 6))
+#25 2.502   Downloading influxdb_client-1.40.0-py3-none-any.whl.metadata (63 kB)
+#25 2.507      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 64.0/64.0 kB 19.2 MB/s eta 0:00:00
+#25 2.605 Collecting starlette<0.42.0,>=0.40.0 (from fastapi==0.115.6->-r requirements.txt (line 3))
+#25 2.627   Downloading starlette-0.41.3-py3-none-any.whl.metadata (6.0 kB)
+#25 2.696 Collecting typing-extensions>=4.8.0 (from fastapi==0.115.6->-r requirements.txt (line 3))
+#25 2.713   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#25 2.743 Collecting annotated-types>=0.6.0 (from pydantic==2.14.4->-r requirements.txt (line 4))
+#25 2.762   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#25 3.987 Collecting pydantic-core==2.50.5 (from pydantic==2.14.4->-r requirements.txt (line 4))
+#25 4.007   Downloading pydantic_core-2.50.5-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (6.6 kB)
+#25 4.045 Collecting typing-inspection>=0.4.4 (from pydantic==2.14.4->-r requirements.txt (line 4))
+#25 4.067   Downloading typing_inspection-0.4.5-py3-none-any.whl.metadata (2.6 kB)
+#25 4.117 Collecting click>=7.0 (from uvicorn==0.34.0->uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 4.134   Downloading click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+#25 4.161 Collecting h11>=0.8 (from uvicorn==0.34.0->uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 4.181   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#25 4.230 Collecting reactivex>=4.0.4 (from influxdb-client==1.40.0->-r requirements.txt (line 6))
+#25 4.249   Downloading reactivex-6.1.1-py3-none-any.whl.metadata (6.4 kB)
+#25 4.358 Collecting certifi>=14.05.14 (from influxdb-client==1.40.0->-r requirements.txt (line 6))
+#25 4.375   Downloading certifi-2026.11.20-py3-none-any.whl.metadata (2.5 kB)
+#25 4.404 Collecting python-dateutil>=2.5.3 (from influxdb-client==1.40.0->-r requirements.txt (line 6))
+#25 4.421   Downloading python_dateutil-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+#25 4.425 Requirement already satisfied: setuptools>=21.0.0 in /usr/local/lib/python3.11/site-packages (from influxdb-client==1.40.0->-r requirements.txt (line 6)) (79.0.1)
+#25 4.471 Collecting urllib3>=1.26.0 (from influxdb-client==1.40.0->-r requirements.txt (line 6))
+#25 4.514   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+#25 4.601 Collecting httptools>=0.6.3 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 4.620   Downloading httptools-0.9.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (3.5 kB)
+#25 4.658 Collecting python-dotenv>=0.13 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 4.677   Downloading python_dotenv-1.2.4-py3-none-any.whl.metadata (29 kB)
+#25 4.772 Collecting pyyaml>=5.1 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 4.788   Downloading pyyaml-6.0.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.3 kB)
+#25 4.848 Collecting uvloop!=0.15.0,!=0.15.1,>=0.14.0 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 4.873   Downloading uvloop-0.23.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (5.1 kB)
+#25 5.035 Collecting watchfiles>=0.13 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 5.058   Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.9 kB)
+#25 5.265 Collecting websockets>=10.4 (from uvicorn[standard]==0.34.0->-r requirements.txt (line 5))
+#25 5.288   Downloading websockets-17.4-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#25 5.423 Collecting tzdata (from python-dateutil>=2.5.3->influxdb-client==1.40.0->-r requirements.txt (line 6))
+#25 5.447   Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+#25 5.594 Collecting anyio<5,>=3.4.0 (from starlette<0.42.0,>=0.40.0->fastapi==0.115.6->-r requirements.txt (line 3))
+#25 5.614   Downloading anyio-4.16.0-py3-none-any.whl.metadata (4.7 kB)
+#25 5.718 Collecting idna>=2.8 (from anyio<5,>=3.4.0->starlette<0.42.0,>=0.40.0->fastapi==0.115.6->-r requirements.txt (line 3))
+#25 5.739   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#25 5.787 Downloading fastapi-0.115.6-py3-none-any.whl (94 kB)
+#25 5.797    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 94.8/94.8 kB 13.9 MB/s eta 0:00:00
+#25 5.818 Downloading pydantic-2.14.4-py3-none-any.whl (494 kB)
+#25 5.866    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 494.9/494.9 kB 11.6 MB/s eta 0:00:00
+#25 5.887 Downloading uvicorn-0.34.0-py3-none-any.whl (62 kB)
+#25 5.895    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.3/62.3 kB 10.8 MB/s eta 0:00:00
+#25 5.916 Downloading influxdb_client-1.40.0-py3-none-any.whl (744 kB)
+#25 5.999    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 744.1/744.1 kB 9.3 MB/s eta 0:00:00
+#25 6.018 Downloading pydantic_core-2.50.5-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (2.3 MB)
+#25 6.357    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.3/2.3 MB 6.7 MB/s eta 0:00:00
+#25 6.377 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#25 6.398 Downloading certifi-2026.11.20-py3-none-any.whl (127 kB)
+#25 6.427    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 127.9/127.9 kB 4.4 MB/s eta 0:00:00
+#25 6.448 Downloading click-8.5.1-py3-none-any.whl (126 kB)
+#25 6.474    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 126.2/126.2 kB 5.2 MB/s eta 0:00:00
+#25 6.494 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#25 6.518 Downloading httptools-0.9.0-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (499 kB)
+#25 6.648    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 499.1/499.1 kB 4.0 MB/s eta 0:00:00
+#25 6.670 Downloading python_dateutil-4.0.0-py3-none-any.whl (92 kB)
+#25 6.684    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 92.9/92.9 kB 8.1 MB/s eta 0:00:00
+#25 6.703 Downloading python_dotenv-1.2.4-py3-none-any.whl (23 kB)
+#25 6.729 Downloading pyyaml-6.0.4-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (828 kB)
+#25 6.917    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 828.0/828.0 kB 4.4 MB/s eta 0:00:00
+#25 6.937 Downloading reactivex-6.1.1-py3-none-any.whl (261 kB)
+#25 6.980    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 261.0/261.0 kB 6.2 MB/s eta 0:00:00
+#25 6.998 Downloading starlette-0.41.3-py3-none-any.whl (73 kB)
+#25 7.014    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.2/73.2 kB 5.3 MB/s eta 0:00:00
+#25 7.033 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#25 7.041    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 19.0 MB/s eta 0:00:00
+#25 7.060 Downloading typing_inspection-0.4.5-py3-none-any.whl (14 kB)
+#25 7.079 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+#25 7.103    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 135.7/135.7 kB 6.3 MB/s eta 0:00:00
+#25 7.125 Downloading uvloop-0.23.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (4.0 MB)
+#25 ...
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 7.765 Get:6 http://deb.debian.org/debian trixie/main amd64 libbinutils amd64 2.44-3 [534 kB]
+#24 8.054 Get:7 http://deb.debian.org/debian trixie/main amd64 libgprofng0 amd64 2.44-3 [808 kB]
+#24 8.422 Get:8 http://deb.debian.org/debian trixie/main amd64 libctf-nobfd0 amd64 2.44-3 [156 kB]
+#24 8.489 Get:9 http://deb.debian.org/debian trixie/main amd64 libctf0 amd64 2.44-3 [88.6 kB]
+#24 8.520 Get:10 http://deb.debian.org/debian trixie/main amd64 libjansson4 amd64 2.14-2+b3 [39.8 kB]
+#24 8.537 Get:11 http://deb.debian.org/debian trixie/main amd64 binutils-x86-64-linux-gnu amd64 2.44-3 [1014 kB]
+#24 8.858 Get:12 http://deb.debian.org/debian trixie/main amd64 binutils amd64 2.44-3 [265 kB]
+#24 8.932 Get:13 http://deb.debian.org/debian trixie/main amd64 libc-dev-bin amd64 2.41-12+deb13u5 [60.5 kB]
+#24 8.951 Get:14 http://deb.debian.org/debian-security trixie-security/main amd64 linux-libc-dev all 6.12.118-1 [3102 kB]
+#24 9.780 Get:15 http://deb.debian.org/debian trixie/main amd64 libcrypt-dev amd64 1:4.4.38-1 [119 kB]
+#24 9.836 Get:16 http://deb.debian.org/debian trixie/main amd64 rpcsvc-proto amd64 1.4.3-1 [63.3 kB]
+#24 9.862 Get:17 http://deb.debian.org/debian trixie/main amd64 libc6-dev amd64 2.41-12+deb13u5 [1991 kB]
+#24 10.54 Get:18 http://deb.debian.org/debian trixie/main amd64 libcom-err2 amd64 1.47.2-3+b12 [25.0 kB]
+#24 10.55 Get:19 http://deb.debian.org/debian trixie/main amd64 comerr-dev amd64 2.1-1.47.2-3+b12 [56.7 kB]
+#24 10.57 Get:20 http://deb.debian.org/debian trixie/main amd64 libisl23 amd64 0.27-1 [659 kB]
+#24 ...
+
+#26 [spark 5/8] RUN pip install --no-cache-dir -r spark-requirements.txt
+#26 1.454 Collecting pyspark==3.5.0
+#26 1.851   Downloading pyspark-3.5.0.tar.gz (316.9 MB)
+#26 ...
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 10.74 Get:21 http://deb.debian.org/debian trixie/main amd64 libmpfr6 amd64 4.2.2-1 [729 kB]
+#24 10.93 Get:22 http://deb.debian.org/debian trixie/main amd64 libmpc3 amd64 1.3.1-1+b3 [52.2 kB]
+#24 10.94 Get:23 http://deb.debian.org/debian trixie/main amd64 cpp-14-x86-64-linux-gnu amd64 14.2.0-19 [11.0 MB]
+#24 ...
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 2.160 Collecting scikit-learn==1.4.0 (from -r requirements.txt (line 1))
+#17 2.454   Downloading scikit_learn-1.4.0-1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (11 kB)
+#17 2.652 Collecting pandas==2.1.4 (from -r requirements.txt (line 2))
+#17 2.672   Downloading pandas-2.1.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (18 kB)
+#17 3.067 Collecting numpy==1.26.3 (from -r requirements.txt (line 3))
+#17 3.093   Downloading numpy-1.26.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (61 kB)
+#17 3.119      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 61.2/61.2 kB 3.1 MB/s eta 0:00:00
+#17 3.395 Collecting scipy>=1.6.0 (from scikit-learn==1.4.0->-r requirements.txt (line 1))
+#17 3.629   Downloading scipy-1.17.1-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#17 3.635      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.1/62.1 kB 20.3 MB/s eta 0:00:00
+#17 3.689 Collecting joblib>=1.2.0 (from scikit-learn==1.4.0->-r requirements.txt (line 1))
+#17 3.708   Downloading joblib-1.6.0-py3-none-any.whl.metadata (6.5 kB)
+#17 3.741 Collecting threadpoolctl>=2.0.0 (from scikit-learn==1.4.0->-r requirements.txt (line 1))
+#17 3.764   Downloading threadpoolctl-3.8.0-py3-none-any.whl.metadata (29 kB)
+#17 3.929 Collecting python-dateutil>=2.8.2 (from pandas==2.1.4->-r requirements.txt (line 2))
+#17 3.949   Downloading python_dateutil-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+#17 4.048 Collecting pytz>=2020.1 (from pandas==2.1.4->-r requirements.txt (line 2))
+#17 4.067   Downloading pytz-2026.6-py2.py3-none-any.whl.metadata (22 kB)
+#17 4.109 Collecting tzdata>=2022.1 (from pandas==2.1.4->-r requirements.txt (line 2))
+#17 4.127   Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+#17 4.180 Collecting cloudpickle>=3.0 (from joblib>=1.2.0->scikit-learn==1.4.0->-r requirements.txt (line 1))
+#17 4.198   Downloading cloudpickle-3.1.3-py3-none-any.whl.metadata (7.1 kB)
+#17 4.234 INFO: pip is looking at multiple versions of scipy to determine which version is compatible with other requirements. This could take a while.
+#17 4.239 Collecting scipy>=1.6.0 (from scikit-learn==1.4.0->-r requirements.txt (line 1))
+#17 4.501   Downloading scipy-1.17.0-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (62 kB)
+#17 4.509      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.1/62.1 kB 9.7 MB/s eta 0:00:00
+#17 4.573   Downloading scipy-1.16.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (62 kB)
+#17 4.583      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 62.0/62.0 kB 7.0 MB/s eta 0:00:00
+#17 4.861 Downloading scikit_learn-1.4.0-1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.1 MB)
+#17 8.933    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 2.9 MB/s eta 0:00:00
+#17 8.954 Downloading pandas-2.1.4-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.2 MB)
+#17 ...
+
+#25 [risk-api 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#25 8.038    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 4.3 MB/s eta 0:00:00
+#25 8.058 Downloading watchfiles-1.3.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (458 kB)
+#25 8.166    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 458.4/458.4 kB 4.3 MB/s eta 0:00:00
+#25 8.188 Downloading websockets-17.4-cp311-cp311-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (226 kB)
+#25 8.235    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 226.0/226.0 kB 4.9 MB/s eta 0:00:00
+#25 8.258 Downloading anyio-4.16.0-py3-none-any.whl (134 kB)
+#25 8.286    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.5/134.5 kB 4.9 MB/s eta 0:00:00
+#25 8.305 Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+#25 8.381    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 348.2/348.2 kB 4.7 MB/s eta 0:00:00
+#25 8.400 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#25 8.413    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.6/69.6 kB 8.0 MB/s eta 0:00:00
+#25 8.594 Installing collected packages: websockets, uvloop, urllib3, tzdata, typing-extensions, pyyaml, python-dotenv, idna, httptools, h11, click, certifi, annotated-types, uvicorn, typing-inspection, reactivex, python-dateutil, pydantic-core, anyio, watchfiles, starlette, pydantic, influxdb-client, fastapi
+#25 11.84 Successfully installed annotated-types-0.8.0 anyio-4.16.0 certifi-2026.11.20 click-8.5.1 fastapi-0.115.6 h11-0.16.0 httptools-0.9.0 idna-3.20 influxdb-client-1.40.0 pydantic-2.14.4 pydantic-core-2.50.5 python-dateutil-4.0.0 python-dotenv-1.2.4 pyyaml-6.0.4 reactivex-6.1.1 starlette-0.41.3 typing-extensions-4.16.0 typing-inspection-0.4.5 tzdata-2026.6 urllib3-2.8.0 uvicorn-0.34.0 uvloop-0.23.0 watchfiles-1.3.0 websockets-17.4
+#25 11.84 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#25 12.03 
+#25 12.03 [notice] A new release of pip is available: 24.0 -> 26.3
+#25 12.03 [notice] To update, run: pip install --upgrade pip
+#25 DONE 12.7s
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 12.52    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.2/12.2 MB 3.2 MB/s eta 0:00:00
+#17 ...
+
+#27 [risk-api 5/6] COPY app ./app
+#27 DONE 0.1s
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 12.76 Downloading numpy-1.26.3-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.3 MB)
+#17 ...
+
+#28 [risk-api 6/6] RUN useradd --system --uid 10001 api
+#28 0.216 useradd warning: api's uid 10001 is greater than SYS_UID_MAX 999
+#28 DONE 0.3s
+
+#29 [risk-api] exporting to image
+#29 exporting layers
+#29 exporting layers 2.3s done
+#29 exporting manifest sha256:d4813cdc0d5e5ee788959709a662693a9c97d6e8adc33f3d546d65a183486dd7 0.0s done
+#29 exporting config sha256:3729e16f5dde967f3612992468db68954da6424115dc99d661b3bec3e461cdac 0.0s done
+#29 exporting attestation manifest sha256:b96aa5cce9db49095323de1b02edb3ebfb5ec279ef5ab3f0526034d08c5baf5a 0.0s done
+#29 exporting manifest list sha256:2b35e595cb5b3769d838159ad51adaa24b105320e4648458f7b0d056eeec987b
+#29 exporting manifest list sha256:2b35e595cb5b3769d838159ad51adaa24b105320e4648458f7b0d056eeec987b 0.0s done
+#29 naming to docker.io/telematics/risk-api:local done
+#29 unpacking to docker.io/telematics/risk-api:local
+#29 unpacking to docker.io/telematics/risk-api:local 1.1s done
+#29 DONE 3.6s
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 13.49 Get:24 http://deb.debian.org/debian trixie/main amd64 cpp-14 amd64 14.2.0-19 [1280 B]
+#24 13.49 Get:25 http://deb.debian.org/debian trixie/main amd64 cpp-x86-64-linux-gnu amd64 4:14.2.0-1 [4840 B]
+#24 13.49 Get:26 http://deb.debian.org/debian trixie/main amd64 cpp amd64 4:14.2.0-1 [1568 B]
+#24 13.49 Get:27 http://deb.debian.org/debian trixie/main amd64 libcc1-0 amd64 14.2.0-19 [42.8 kB]
+#24 13.50 Get:28 http://deb.debian.org/debian trixie/main amd64 libgomp1 amd64 14.2.0-19 [137 kB]
+#24 13.53 Get:29 http://deb.debian.org/debian trixie/main amd64 libitm1 amd64 14.2.0-19 [26.0 kB]
+#24 13.53 Get:30 http://deb.debian.org/debian trixie/main amd64 libatomic1 amd64 14.2.0-19 [9308 B]
+#24 13.53 Get:31 http://deb.debian.org/debian trixie/main amd64 libasan8 amd64 14.2.0-19 [2725 kB]
+#24 14.38 Get:32 http://deb.debian.org/debian trixie/main amd64 liblsan0 amd64 14.2.0-19 [1204 kB]
+#24 14.78 Get:33 http://deb.debian.org/debian trixie/main amd64 libtsan2 amd64 14.2.0-19 [2460 kB]
+#24 15.43 Get:34 http://deb.debian.org/debian trixie/main amd64 libubsan1 amd64 14.2.0-19 [1074 kB]
+#24 15.67 Get:35 http://deb.debian.org/debian trixie/main amd64 libhwasan0 amd64 14.2.0-19 [1488 kB]
+#24 15.97 Get:36 http://deb.debian.org/debian trixie/main amd64 libquadmath0 amd64 14.2.0-19 [145 kB]
+#24 16.00 Get:37 http://deb.debian.org/debian trixie/main amd64 libgcc-14-dev amd64 14.2.0-19 [2672 kB]
+#24 16.51 Get:38 http://deb.debian.org/debian trixie/main amd64 gcc-14-x86-64-linux-gnu amd64 14.2.0-19 [21.4 MB]
+#24 ...
+
+#30 [risk-api] resolving provenance for metadata file
+#30 DONE 0.0s
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 ...
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 17.42    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.3/18.3 MB 4.1 MB/s eta 0:00:00
+#17 17.44 Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+#17 17.48    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 306.1/306.1 kB 7.4 MB/s eta 0:00:00
+#17 17.50 Downloading python_dateutil-4.0.0-py3-none-any.whl (92 kB)
+#17 17.52    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 92.9/92.9 kB 8.0 MB/s eta 0:00:00
+#17 17.54 Downloading pytz-2026.6-py2.py3-none-any.whl (506 kB)
+#17 17.61    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 506.3/506.3 kB 6.9 MB/s eta 0:00:00
+#17 17.85 Downloading scipy-1.16.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (35.9 MB)
+#17 ...
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 22.16 Get:39 http://deb.debian.org/debian trixie/main amd64 gcc-14 amd64 14.2.0-19 [540 kB]
+#24 22.26 Get:40 http://deb.debian.org/debian trixie/main amd64 gcc-x86-64-linux-gnu amd64 4:14.2.0-1 [1436 B]
+#24 22.26 Get:41 http://deb.debian.org/debian trixie/main amd64 gcc amd64 4:14.2.0-1 [5136 B]
+#24 22.26 Get:42 http://deb.debian.org/debian-security trixie-security/main amd64 libkrb5support0 amd64 1.21.3-5+deb13u2 [34.0 kB]
+#24 22.27 Get:43 http://deb.debian.org/debian-security trixie-security/main amd64 libk5crypto3 amd64 1.21.3-5+deb13u2 [82.0 kB]
+#24 22.28 Get:44 http://deb.debian.org/debian trixie/main amd64 libkeyutils1 amd64 1.6.3-6 [9456 B]
+#24 22.29 Get:45 http://deb.debian.org/debian-security trixie-security/main amd64 libkrb5-3 amd64 1.21.3-5+deb13u2 [328 kB]
+#24 22.35 Get:46 http://deb.debian.org/debian-security trixie-security/main amd64 libgssapi-krb5-2 amd64 1.21.3-5+deb13u2 [139 kB]
+#24 22.38 Get:47 http://deb.debian.org/debian-security trixie-security/main amd64 libgssrpc4t64 amd64 1.21.3-5+deb13u2 [61.2 kB]
+#24 22.39 Get:48 http://deb.debian.org/debian-security trixie-security/main amd64 libkadm5clnt-mit12 amd64 1.21.3-5+deb13u2 [43.4 kB]
+#24 22.40 Get:49 http://deb.debian.org/debian-security trixie-security/main amd64 libkdb5-10t64 amd64 1.21.3-5+deb13u2 [43.5 kB]
+#24 22.41 Get:50 http://deb.debian.org/debian-security trixie-security/main amd64 libkadm5srv-mit12 amd64 1.21.3-5+deb13u2 [55.2 kB]
+#24 22.42 Get:51 http://deb.debian.org/debian-security trixie-security/main amd64 krb5-multidev amd64 1.21.3-5+deb13u2 [127 kB]
+#24 22.45 Get:52 http://deb.debian.org/debian trixie/main amd64 libbrotli1 amd64 1.1.0-2+deb13u1 [304 kB]
+#24 22.50 Get:53 http://deb.debian.org/debian trixie/main amd64 libbrotli-dev amd64 1.1.0-2+deb13u1 [396 kB]
+#24 22.57 Get:54 http://deb.debian.org/debian trixie/main amd64 libunistring5 amd64 1.3-2 [477 kB]
+#24 22.65 Get:55 http://deb.debian.org/debian trixie/main amd64 libidn2-0 amd64 2.3.8-2 [109 kB]
+#24 22.67 Get:56 http://deb.debian.org/debian trixie/main amd64 libsasl2-modules-db amd64 2.1.28+dfsg1-9 [19.8 kB]
+#24 22.67 Get:57 http://deb.debian.org/debian trixie/main amd64 libsasl2-2 amd64 2.1.28+dfsg1-9 [57.5 kB]
+#24 22.68 Get:58 http://deb.debian.org/debian trixie/main amd64 libldap2 amd64 2.6.10+dfsg-1 [194 kB]
+#24 22.71 Get:59 http://deb.debian.org/debian trixie/main amd64 libnghttp2-14 amd64 1.64.0-1.1+deb13u2 [75.4 kB]
+#24 22.72 Get:60 http://deb.debian.org/debian trixie/main amd64 libnghttp3-9 amd64 1.8.0-1 [67.7 kB]
+#24 22.74 Get:61 http://deb.debian.org/debian trixie/main amd64 libpsl5t64 amd64 0.21.2-1.1+b1 [57.2 kB]
+#24 22.74 Get:62 http://deb.debian.org/debian trixie/main amd64 libp11-kit0 amd64 0.25.5-3 [425 kB]
+#24 22.81 Get:63 http://deb.debian.org/debian trixie/main amd64 libtasn1-6 amd64 4.20.0-2+deb13u1 [50.1 kB]
+#24 22.81 Get:64 http://deb.debian.org/debian trixie/main amd64 libgnutls30t64 amd64 3.8.9-3+deb13u4 [1469 kB]
+#24 23.03 Get:65 http://deb.debian.org/debian trixie/main amd64 librtmp1 amd64 2.4+20151223.gitfa8646d.1-2+b5 [58.8 kB]
+#24 23.04 Get:66 http://deb.debian.org/debian trixie/main amd64 libssh2-1t64 amd64 1.11.1-1+deb13u2 [245 kB]
+#24 23.08 Get:67 http://deb.debian.org/debian trixie/main amd64 libcurl4t64 amd64 8.14.1-2+deb13u7 [392 kB]
+#24 23.13 Get:68 http://deb.debian.org/debian trixie/main amd64 libidn2-dev amd64 2.3.8-2 [103 kB]
+#24 23.14 Get:69 http://deb.debian.org/debian-security trixie-security/main amd64 libkrb5-dev amd64 1.21.3-5+deb13u2 [16.9 kB]
+#24 23.15 Get:70 http://deb.debian.org/debian trixie/main amd64 libldap-dev amd64 2.6.10+dfsg-1 [312 kB]
+#24 23.20 Get:71 http://deb.debian.org/debian trixie/main amd64 libpkgconf3 amd64 1.8.1-4 [36.4 kB]
+#24 23.21 Get:72 http://deb.debian.org/debian trixie/main amd64 pkgconf-bin amd64 1.8.1-4 [30.2 kB]
+#24 23.21 Get:73 http://deb.debian.org/debian trixie/main amd64 pkgconf amd64 1.8.1-4 [26.2 kB]
+#24 23.22 Get:74 http://deb.debian.org/debian trixie/main amd64 libnghttp2-dev amd64 1.64.0-1.1+deb13u2 [117 kB]
+#24 23.24 Get:75 http://deb.debian.org/debian trixie/main amd64 libnghttp3-dev amd64 1.8.0-1 [91.3 kB]
+#24 23.25 Get:76 http://deb.debian.org/debian trixie/main amd64 libpsl-dev amd64 0.21.2-1.1+b1 [77.6 kB]
+#24 23.26 Get:77 http://deb.debian.org/debian trixie/main amd64 libgmpxx4ldbl amd64 2:6.3.0+dfsg-3 [329 kB]
+#24 23.32 Get:78 http://deb.debian.org/debian trixie/main amd64 libgmp-dev amd64 2:6.3.0+dfsg-3 [642 kB]
+#24 23.41 Get:79 http://deb.debian.org/debian trixie/main amd64 libevent-2.1-7t64 amd64 2.1.13-stable-1~deb13u1 [183 kB]
+#24 23.44 Get:80 http://deb.debian.org/debian trixie/main amd64 libunbound8 amd64 1.26.2-0+deb13u1 [644 kB]
+#24 23.54 Get:81 http://deb.debian.org/debian trixie/main amd64 libgnutls-dane0t64 amd64 3.8.9-3+deb13u4 [456 kB]
+#24 23.60 Get:82 http://deb.debian.org/debian trixie/main amd64 libgnutls-openssl27t64 amd64 3.8.9-3+deb13u4 [456 kB]
+#24 23.68 Get:83 http://deb.debian.org/debian trixie/main amd64 libp11-kit-dev amd64 0.25.5-3 [208 kB]
+#24 23.71 Get:84 http://deb.debian.org/debian trixie/main amd64 libtasn1-6-dev amd64 4.20.0-2+deb13u1 [99.3 kB]
+#24 23.73 Get:85 http://deb.debian.org/debian trixie/main amd64 nettle-dev amd64 3.10.1-1 [1318 kB]
+#24 24.32 Get:86 http://deb.debian.org/debian trixie/main amd64 libgnutls28-dev amd64 3.8.9-3+deb13u4 [1411 kB]
+#24 24.80 Get:87 http://deb.debian.org/debian trixie/main amd64 zlib1g-dev amd64 1:1.3.dfsg+really1.3.1-1+deb13u1 [920 kB]
+#24 25.05 Get:88 http://deb.debian.org/debian trixie/main amd64 librtmp-dev amd64 2.4+20151223.gitfa8646d.1-2+b5 [68.0 kB]
+#24 25.06 Get:89 http://deb.debian.org/debian trixie/main amd64 libssl-dev amd64 3.5.9-1~deb13u1 [2976 kB]
+#24 25.86 Get:90 http://deb.debian.org/debian trixie/main amd64 libssh2-1-dev amd64 1.11.1-1+deb13u2 [394 kB]
+#24 26.03 Get:91 http://deb.debian.org/debian-security trixie-security/main amd64 libzstd-dev amd64 1.5.7+dfsg-1+deb13u1 [372 kB]
+#24 26.18 Get:92 http://deb.debian.org/debian trixie/main amd64 libcurl4-openssl-dev amd64 8.14.1-2+deb13u7 [511 kB]
+#24 26.33 Get:93 http://deb.debian.org/debian trixie/main amd64 libxxhash-dev amd64 0.8.3-2 [81.0 kB]
+#24 26.35 Get:94 http://deb.debian.org/debian trixie/main amd64 liblz4-dev amd64 1.10.0-4 [88.4 kB]
+#24 26.38 Get:95 http://deb.debian.org/debian trixie/main amd64 librdkafka1 amd64 2.8.0-1 [810 kB]
+#24 26.60 Get:96 http://deb.debian.org/debian trixie/main amd64 librdkafka++1 amd64 2.8.0-1 [77.1 kB]
+#24 26.65 Get:97 http://deb.debian.org/debian trixie/main amd64 libsasl2-dev amd64 2.1.28+dfsg1-9 [234 kB]
+#24 26.91 Get:98 http://deb.debian.org/debian trixie/main amd64 librdkafka-dev amd64 2.8.0-1 [1034 kB]
+#24 27.32 debconf: unable to initialize frontend: Dialog
+#24 27.32 debconf: (TERM is not set, so the dialog frontend is not usable.)
+#24 27.32 debconf: falling back to frontend: Readline
+#24 27.32 debconf: unable to initialize frontend: Readline
+#24 27.32 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC entries checked: /etc/perl /usr/local/lib/x86_64-linux-gnu/perl/5.40.1 /usr/local/share/perl/5.40.1 /usr/lib/x86_64-linux-gnu/perl5/5.40 /usr/share/perl5 /usr/lib/x86_64-linux-gnu/perl-base /usr/lib/x86_64-linux-gnu/perl/5.40 /usr/share/perl/5.40 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 8, <STDIN> line 98.)
+#24 27.32 debconf: falling back to frontend: Teletype
+#24 27.33 debconf: unable to initialize frontend: Teletype
+#24 27.33 debconf: (This frontend requires a controlling tty.)
+#24 27.33 debconf: falling back to frontend: Noninteractive
+#24 29.82 Fetched 78.0 MB in 22s (3498 kB/s)
+#24 29.84 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5657 files and directories currently installed.)
+#24 29.85 Preparing to unpack .../libzstd1_1.5.7+dfsg-1+deb13u1_amd64.deb ...
+#24 29.87 Unpacking libzstd1:amd64 (1.5.7+dfsg-1+deb13u1) over (1.5.7+dfsg-1) ...
+#24 29.93 Setting up libzstd1:amd64 (1.5.7+dfsg-1+deb13u1) ...
+#24 29.97 Selecting previously unselected package libproc2-0:amd64.
+#24 29.97 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 5657 files and directories currently installed.)
+#24 29.97 Preparing to unpack .../00-libproc2-0_2%3a4.0.4-9_amd64.deb ...
+#24 29.98 Unpacking libproc2-0:amd64 (2:4.0.4-9) ...
+#24 30.04 Selecting previously unselected package procps.
+#24 30.04 Preparing to unpack .../01-procps_2%3a4.0.4-9_amd64.deb ...
+#24 30.07 Unpacking procps (2:4.0.4-9) ...
+#24 30.18 Selecting previously unselected package libsframe1:amd64.
+#24 30.18 Preparing to unpack .../02-libsframe1_2.44-3_amd64.deb ...
+#24 30.19 Unpacking libsframe1:amd64 (2.44-3) ...
+#24 30.24 Selecting previously unselected package binutils-common:amd64.
+#24 30.24 Preparing to unpack .../03-binutils-common_2.44-3_amd64.deb ...
+#24 30.25 Unpacking binutils-common:amd64 (2.44-3) ...
+#24 30.46 Selecting previously unselected package libbinutils:amd64.
+#24 30.46 Preparing to unpack .../04-libbinutils_2.44-3_amd64.deb ...
+#24 30.46 Unpacking libbinutils:amd64 (2.44-3) ...
+#24 30.53 Selecting previously unselected package libgprofng0:amd64.
+#24 30.53 Preparing to unpack .../05-libgprofng0_2.44-3_amd64.deb ...
+#24 30.54 Unpacking libgprofng0:amd64 (2.44-3) ...
+#24 30.64 Selecting previously unselected package libctf-nobfd0:amd64.
+#24 30.64 Preparing to unpack .../06-libctf-nobfd0_2.44-3_amd64.deb ...
+#24 30.65 Unpacking libctf-nobfd0:amd64 (2.44-3) ...
+#24 30.69 Selecting previously unselected package libctf0:amd64.
+#24 30.69 Preparing to unpack .../07-libctf0_2.44-3_amd64.deb ...
+#24 30.69 Unpacking libctf0:amd64 (2.44-3) ...
+#24 30.73 Selecting previously unselected package libjansson4:amd64.
+#24 30.73 Preparing to unpack .../08-libjansson4_2.14-2+b3_amd64.deb ...
+#24 30.74 Unpacking libjansson4:amd64 (2.14-2+b3) ...
+#24 30.77 Selecting previously unselected package binutils-x86-64-linux-gnu.
+#24 30.77 Preparing to unpack .../09-binutils-x86-64-linux-gnu_2.44-3_amd64.deb ...
+#24 30.78 Unpacking binutils-x86-64-linux-gnu (2.44-3) ...
+#24 30.91 Selecting previously unselected package binutils.
+#24 30.91 Preparing to unpack .../10-binutils_2.44-3_amd64.deb ...
+#24 30.91 Unpacking binutils (2.44-3) ...
+#24 30.97 Selecting previously unselected package libc-dev-bin.
+#24 30.97 Preparing to unpack .../11-libc-dev-bin_2.41-12+deb13u5_amd64.deb ...
+#24 30.97 Unpacking libc-dev-bin (2.41-12+deb13u5) ...
+#24 31.02 Selecting previously unselected package linux-libc-dev.
+#24 31.02 Preparing to unpack .../12-linux-libc-dev_6.12.118-1_all.deb ...
+#24 31.02 Unpacking linux-libc-dev (6.12.118-1) ...
+#24 31.31 Selecting previously unselected package libcrypt-dev:amd64.
+#24 31.31 Preparing to unpack .../13-libcrypt-dev_1%3a4.4.38-1_amd64.deb ...
+#24 31.32 Unpacking libcrypt-dev:amd64 (1:4.4.38-1) ...
+#24 31.38 Selecting previously unselected package rpcsvc-proto.
+#24 31.38 Preparing to unpack .../14-rpcsvc-proto_1.4.3-1_amd64.deb ...
+#24 31.38 Unpacking rpcsvc-proto (1.4.3-1) ...
+#24 31.42 Selecting previously unselected package libc6-dev:amd64.
+#24 31.42 Preparing to unpack .../15-libc6-dev_2.41-12+deb13u5_amd64.deb ...
+#24 31.42 Unpacking libc6-dev:amd64 (2.41-12+deb13u5) ...
+#24 31.63 Selecting previously unselected package libcom-err2:amd64.
+#24 31.63 Preparing to unpack .../16-libcom-err2_1.47.2-3+b12_amd64.deb ...
+#24 31.63 Unpacking libcom-err2:amd64 (1.47.2-3+b12) ...
+#24 31.69 Selecting previously unselected package comerr-dev:amd64.
+#24 31.69 Preparing to unpack .../17-comerr-dev_2.1-1.47.2-3+b12_amd64.deb ...
+#24 31.70 Unpacking comerr-dev:amd64 (2.1-1.47.2-3+b12) ...
+#24 31.75 Selecting previously unselected package libisl23:amd64.
+#24 31.75 Preparing to unpack .../18-libisl23_0.27-1_amd64.deb ...
+#24 31.76 Unpacking libisl23:amd64 (0.27-1) ...
+#24 31.86 Selecting previously unselected package libmpfr6:amd64.
+#24 31.86 Preparing to unpack .../19-libmpfr6_4.2.2-1_amd64.deb ...
+#24 31.87 Unpacking libmpfr6:amd64 (4.2.2-1) ...
+#24 31.96 Selecting previously unselected package libmpc3:amd64.
+#24 31.96 Preparing to unpack .../20-libmpc3_1.3.1-1+b3_amd64.deb ...
+#24 31.97 Unpacking libmpc3:amd64 (1.3.1-1+b3) ...
+#24 32.01 Selecting previously unselected package cpp-14-x86-64-linux-gnu.
+#24 32.01 Preparing to unpack .../21-cpp-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#24 32.01 Unpacking cpp-14-x86-64-linux-gnu (14.2.0-19) ...
+#24 32.61 Selecting previously unselected package cpp-14.
+#24 32.61 Preparing to unpack .../22-cpp-14_14.2.0-19_amd64.deb ...
+#24 32.61 Unpacking cpp-14 (14.2.0-19) ...
+#24 32.65 Selecting previously unselected package cpp-x86-64-linux-gnu.
+#24 32.66 Preparing to unpack .../23-cpp-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#24 32.66 Unpacking cpp-x86-64-linux-gnu (4:14.2.0-1) ...
+#24 32.71 Selecting previously unselected package cpp.
+#24 32.71 Preparing to unpack .../24-cpp_4%3a14.2.0-1_amd64.deb ...
+#24 32.73 Unpacking cpp (4:14.2.0-1) ...
+#24 32.76 Selecting previously unselected package libcc1-0:amd64.
+#24 32.76 Preparing to unpack .../25-libcc1-0_14.2.0-19_amd64.deb ...
+#24 32.77 Unpacking libcc1-0:amd64 (14.2.0-19) ...
+#24 32.80 Selecting previously unselected package libgomp1:amd64.
+#24 32.80 Preparing to unpack .../26-libgomp1_14.2.0-19_amd64.deb ...
+#24 32.81 Unpacking libgomp1:amd64 (14.2.0-19) ...
+#24 32.85 Selecting previously unselected package libitm1:amd64.
+#24 32.85 Preparing to unpack .../27-libitm1_14.2.0-19_amd64.deb ...
+#24 32.86 Unpacking libitm1:amd64 (14.2.0-19) ...
+#24 32.91 Selecting previously unselected package libatomic1:amd64.
+#24 32.91 Preparing to unpack .../28-libatomic1_14.2.0-19_amd64.deb ...
+#24 32.92 Unpacking libatomic1:amd64 (14.2.0-19) ...
+#24 32.95 Selecting previously unselected package libasan8:amd64.
+#24 32.95 Preparing to unpack .../29-libasan8_14.2.0-19_amd64.deb ...
+#24 32.96 Unpacking libasan8:amd64 (14.2.0-19) ...
+#24 33.14 Selecting previously unselected package liblsan0:amd64.
+#24 33.15 Preparing to unpack .../30-liblsan0_14.2.0-19_amd64.deb ...
+#24 33.15 Unpacking liblsan0:amd64 (14.2.0-19) ...
+#24 33.26 Selecting previously unselected package libtsan2:amd64.
+#24 33.26 Preparing to unpack .../31-libtsan2_14.2.0-19_amd64.deb ...
+#24 33.27 Unpacking libtsan2:amd64 (14.2.0-19) ...
+#24 33.49 Selecting previously unselected package libubsan1:amd64.
+#24 33.49 Preparing to unpack .../32-libubsan1_14.2.0-19_amd64.deb ...
+#24 33.49 Unpacking libubsan1:amd64 (14.2.0-19) ...
+#24 33.58 Selecting previously unselected package libhwasan0:amd64.
+#24 33.58 Preparing to unpack .../33-libhwasan0_14.2.0-19_amd64.deb ...
+#24 33.58 Unpacking libhwasan0:amd64 (14.2.0-19) ...
+#24 33.70 Selecting previously unselected package libquadmath0:amd64.
+#24 33.70 Preparing to unpack .../34-libquadmath0_14.2.0-19_amd64.deb ...
+#24 33.71 Unpacking libquadmath0:amd64 (14.2.0-19) ...
+#24 33.75 Selecting previously unselected package libgcc-14-dev:amd64.
+#24 33.75 Preparing to unpack .../35-libgcc-14-dev_14.2.0-19_amd64.deb ...
+#24 33.75 Unpacking libgcc-14-dev:amd64 (14.2.0-19) ...
+#24 33.93 Selecting previously unselected package gcc-14-x86-64-linux-gnu.
+#24 33.93 Preparing to unpack .../36-gcc-14-x86-64-linux-gnu_14.2.0-19_amd64.deb ...
+#24 33.94 Unpacking gcc-14-x86-64-linux-gnu (14.2.0-19) ...
+#24 34.76 Selecting previously unselected package gcc-14.
+#24 34.76 Preparing to unpack .../37-gcc-14_14.2.0-19_amd64.deb ...
+#24 34.77 Unpacking gcc-14 (14.2.0-19) ...
+#24 34.82 Selecting previously unselected package gcc-x86-64-linux-gnu.
+#24 34.82 Preparing to unpack .../38-gcc-x86-64-linux-gnu_4%3a14.2.0-1_amd64.deb ...
+#24 34.82 Unpacking gcc-x86-64-linux-gnu (4:14.2.0-1) ...
+#24 34.86 Selecting previously unselected package gcc.
+#24 34.86 Preparing to unpack .../39-gcc_4%3a14.2.0-1_amd64.deb ...
+#24 34.87 Unpacking gcc (4:14.2.0-1) ...
+#24 34.92 Selecting previously unselected package libkrb5support0:amd64.
+#24 34.92 Preparing to unpack .../40-libkrb5support0_1.21.3-5+deb13u2_amd64.deb ...
+#24 34.93 Unpacking libkrb5support0:amd64 (1.21.3-5+deb13u2) ...
+#24 34.99 Selecting previously unselected package libk5crypto3:amd64.
+#24 34.99 Preparing to unpack .../41-libk5crypto3_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.00 Unpacking libk5crypto3:amd64 (1.21.3-5+deb13u2) ...
+#24 35.05 Selecting previously unselected package libkeyutils1:amd64.
+#24 35.05 Preparing to unpack .../42-libkeyutils1_1.6.3-6_amd64.deb ...
+#24 35.06 Unpacking libkeyutils1:amd64 (1.6.3-6) ...
+#24 35.11 Selecting previously unselected package libkrb5-3:amd64.
+#24 35.11 Preparing to unpack .../43-libkrb5-3_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.12 Unpacking libkrb5-3:amd64 (1.21.3-5+deb13u2) ...
+#24 35.22 Selecting previously unselected package libgssapi-krb5-2:amd64.
+#24 35.22 Preparing to unpack .../44-libgssapi-krb5-2_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.22 Unpacking libgssapi-krb5-2:amd64 (1.21.3-5+deb13u2) ...
+#24 35.27 Selecting previously unselected package libgssrpc4t64:amd64.
+#24 35.28 Preparing to unpack .../45-libgssrpc4t64_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.28 Unpacking libgssrpc4t64:amd64 (1.21.3-5+deb13u2) ...
+#24 35.32 Selecting previously unselected package libkadm5clnt-mit12:amd64.
+#24 35.32 Preparing to unpack .../46-libkadm5clnt-mit12_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.33 Unpacking libkadm5clnt-mit12:amd64 (1.21.3-5+deb13u2) ...
+#24 35.38 Selecting previously unselected package libkdb5-10t64:amd64.
+#24 35.38 Preparing to unpack .../47-libkdb5-10t64_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.38 Unpacking libkdb5-10t64:amd64 (1.21.3-5+deb13u2) ...
+#24 35.44 Selecting previously unselected package libkadm5srv-mit12:amd64.
+#24 35.44 Preparing to unpack .../48-libkadm5srv-mit12_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.45 Unpacking libkadm5srv-mit12:amd64 (1.21.3-5+deb13u2) ...
+#24 35.50 Selecting previously unselected package krb5-multidev:amd64.
+#24 35.50 Preparing to unpack .../49-krb5-multidev_1.21.3-5+deb13u2_amd64.deb ...
+#24 35.51 Unpacking krb5-multidev:amd64 (1.21.3-5+deb13u2) ...
+#24 35.58 Selecting previously unselected package libbrotli1:amd64.
+#24 35.58 Preparing to unpack .../50-libbrotli1_1.1.0-2+deb13u1_amd64.deb ...
+#24 35.59 Unpacking libbrotli1:amd64 (1.1.0-2+deb13u1) ...
+#24 35.64 Selecting previously unselected package libbrotli-dev:amd64.
+#24 35.64 Preparing to unpack .../51-libbrotli-dev_1.1.0-2+deb13u1_amd64.deb ...
+#24 35.65 Unpacking libbrotli-dev:amd64 (1.1.0-2+deb13u1) ...
+#24 35.70 Selecting previously unselected package libunistring5:amd64.
+#24 35.70 Preparing to unpack .../52-libunistring5_1.3-2_amd64.deb ...
+#24 35.71 Unpacking libunistring5:amd64 (1.3-2) ...
+#24 35.78 Selecting previously unselected package libidn2-0:amd64.
+#24 35.78 Preparing to unpack .../53-libidn2-0_2.3.8-2_amd64.deb ...
+#24 35.79 Unpacking libidn2-0:amd64 (2.3.8-2) ...
+#24 35.83 Selecting previously unselected package libsasl2-modules-db:amd64.
+#24 35.83 Preparing to unpack .../54-libsasl2-modules-db_2.1.28+dfsg1-9_amd64.deb ...
+#24 35.84 Unpacking libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#24 35.87 Selecting previously unselected package libsasl2-2:amd64.
+#24 35.87 Preparing to unpack .../55-libsasl2-2_2.1.28+dfsg1-9_amd64.deb ...
+#24 35.87 Unpacking libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#24 35.91 Selecting previously unselected package libldap2:amd64.
+#24 35.91 Preparing to unpack .../56-libldap2_2.6.10+dfsg-1_amd64.deb ...
+#24 35.92 Unpacking libldap2:amd64 (2.6.10+dfsg-1) ...
+#24 35.97 Selecting previously unselected package libnghttp2-14:amd64.
+#24 35.97 Preparing to unpack .../57-libnghttp2-14_1.64.0-1.1+deb13u2_amd64.deb ...
+#24 35.98 Unpacking libnghttp2-14:amd64 (1.64.0-1.1+deb13u2) ...
+#24 36.03 Selecting previously unselected package libnghttp3-9:amd64.
+#24 36.03 Preparing to unpack .../58-libnghttp3-9_1.8.0-1_amd64.deb ...
+#24 36.04 Unpacking libnghttp3-9:amd64 (1.8.0-1) ...
+#24 36.08 Selecting previously unselected package libpsl5t64:amd64.
+#24 36.08 Preparing to unpack .../59-libpsl5t64_0.21.2-1.1+b1_amd64.deb ...
+#24 36.09 Unpacking libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#24 36.13 Selecting previously unselected package libp11-kit0:amd64.
+#24 36.13 Preparing to unpack .../60-libp11-kit0_0.25.5-3_amd64.deb ...
+#24 36.14 Unpacking libp11-kit0:amd64 (0.25.5-3) ...
+#24 36.21 Selecting previously unselected package libtasn1-6:amd64.
+#24 36.21 Preparing to unpack .../61-libtasn1-6_4.20.0-2+deb13u1_amd64.deb ...
+#24 36.22 Unpacking libtasn1-6:amd64 (4.20.0-2+deb13u1) ...
+#24 36.26 Selecting previously unselected package libgnutls30t64:amd64.
+#24 36.26 Preparing to unpack .../62-libgnutls30t64_3.8.9-3+deb13u4_amd64.deb ...
+#24 36.27 Unpacking libgnutls30t64:amd64 (3.8.9-3+deb13u4) ...
+#24 36.36 Selecting previously unselected package librtmp1:amd64.
+#24 36.36 Preparing to unpack .../63-librtmp1_2.4+20151223.gitfa8646d.1-2+b5_amd64.deb ...
+#24 36.36 Unpacking librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#24 36.40 Selecting previously unselected package libssh2-1t64:amd64.
+#24 36.40 Preparing to unpack .../64-libssh2-1t64_1.11.1-1+deb13u2_amd64.deb ...
+#24 36.41 Unpacking libssh2-1t64:amd64 (1.11.1-1+deb13u2) ...
+#24 36.47 Selecting previously unselected package libcurl4t64:amd64.
+#24 36.47 Preparing to unpack .../65-libcurl4t64_8.14.1-2+deb13u7_amd64.deb ...
+#24 36.48 Unpacking libcurl4t64:amd64 (8.14.1-2+deb13u7) ...
+#24 36.54 Selecting previously unselected package libidn2-dev:amd64.
+#24 36.54 Preparing to unpack .../66-libidn2-dev_2.3.8-2_amd64.deb ...
+#24 36.55 Unpacking libidn2-dev:amd64 (2.3.8-2) ...
+#24 36.58 Selecting previously unselected package libkrb5-dev:amd64.
+#24 36.58 Preparing to unpack .../67-libkrb5-dev_1.21.3-5+deb13u2_amd64.deb ...
+#24 36.59 Unpacking libkrb5-dev:amd64 (1.21.3-5+deb13u2) ...
+#24 36.62 Selecting previously unselected package libldap-dev:amd64.
+#24 36.63 Preparing to unpack .../68-libldap-dev_2.6.10+dfsg-1_amd64.deb ...
+#24 36.63 Unpacking libldap-dev:amd64 (2.6.10+dfsg-1) ...
+#24 36.68 Selecting previously unselected package libpkgconf3:amd64.
+#24 36.68 Preparing to unpack .../69-libpkgconf3_1.8.1-4_amd64.deb ...
+#24 36.68 Unpacking libpkgconf3:amd64 (1.8.1-4) ...
+#24 36.73 Selecting previously unselected package pkgconf-bin.
+#24 36.73 Preparing to unpack .../70-pkgconf-bin_1.8.1-4_amd64.deb ...
+#24 36.73 Unpacking pkgconf-bin (1.8.1-4) ...
+#24 36.77 Selecting previously unselected package pkgconf:amd64.
+#24 36.77 Preparing to unpack .../71-pkgconf_1.8.1-4_amd64.deb ...
+#24 36.78 Unpacking pkgconf:amd64 (1.8.1-4) ...
+#24 36.81 Selecting previously unselected package libnghttp2-dev:amd64.
+#24 36.81 Preparing to unpack .../72-libnghttp2-dev_1.64.0-1.1+deb13u2_amd64.deb ...
+#24 36.81 Unpacking libnghttp2-dev:amd64 (1.64.0-1.1+deb13u2) ...
+#24 36.84 Selecting previously unselected package libnghttp3-dev:amd64.
+#24 36.84 Preparing to unpack .../73-libnghttp3-dev_1.8.0-1_amd64.deb ...
+#24 36.85 Unpacking libnghttp3-dev:amd64 (1.8.0-1) ...
+#24 36.88 Selecting previously unselected package libpsl-dev:amd64.
+#24 36.88 Preparing to unpack .../74-libpsl-dev_0.21.2-1.1+b1_amd64.deb ...
+#24 36.89 Unpacking libpsl-dev:amd64 (0.21.2-1.1+b1) ...
+#24 36.92 Selecting previously unselected package libgmpxx4ldbl:amd64.
+#24 36.92 Preparing to unpack .../75-libgmpxx4ldbl_2%3a6.3.0+dfsg-3_amd64.deb ...
+#24 36.93 Unpacking libgmpxx4ldbl:amd64 (2:6.3.0+dfsg-3) ...
+#24 36.96 Selecting previously unselected package libgmp-dev:amd64.
+#24 36.96 Preparing to unpack .../76-libgmp-dev_2%3a6.3.0+dfsg-3_amd64.deb ...
+#24 36.97 Unpacking libgmp-dev:amd64 (2:6.3.0+dfsg-3) ...
+#24 37.03 Selecting previously unselected package libevent-2.1-7t64:amd64.
+#24 ...
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 26.88    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.9/35.9 MB 4.7 MB/s eta 0:00:00
+#17 26.90 Downloading threadpoolctl-3.8.0-py3-none-any.whl (32 kB)
+#17 26.92 Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+#17 26.97    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 348.2/348.2 kB 7.1 MB/s eta 0:00:00
+#17 26.99 Downloading cloudpickle-3.1.3-py3-none-any.whl (22 kB)
+#17 27.29 Installing collected packages: pytz, tzdata, threadpoolctl, numpy, cloudpickle, scipy, python-dateutil, joblib, scikit-learn, pandas
+#17 ...
+
+#24 [simulator 2/6] RUN apt-get update && apt-get install -y --no-install-recommends     gcc     librdkafka-dev     procps     && rm -rf /var/lib/apt/lists/*
+#24 37.03 Preparing to unpack .../77-libevent-2.1-7t64_2.1.13-stable-1~deb13u1_amd64.deb ...
+#24 37.04 Unpacking libevent-2.1-7t64:amd64 (2.1.13-stable-1~deb13u1) ...
+#24 37.09 Selecting previously unselected package libunbound8:amd64.
+#24 37.09 Preparing to unpack .../78-libunbound8_1.26.2-0+deb13u1_amd64.deb ...
+#24 37.10 Unpacking libunbound8:amd64 (1.26.2-0+deb13u1) ...
+#24 37.16 Selecting previously unselected package libgnutls-dane0t64:amd64.
+#24 37.16 Preparing to unpack .../79-libgnutls-dane0t64_3.8.9-3+deb13u4_amd64.deb ...
+#24 37.16 Unpacking libgnutls-dane0t64:amd64 (3.8.9-3+deb13u4) ...
+#24 37.20 Selecting previously unselected package libgnutls-openssl27t64:amd64.
+#24 37.20 Preparing to unpack .../80-libgnutls-openssl27t64_3.8.9-3+deb13u4_amd64.deb ...
+#24 37.20 Unpacking libgnutls-openssl27t64:amd64 (3.8.9-3+deb13u4) ...
+#24 37.24 Selecting previously unselected package libp11-kit-dev:amd64.
+#24 37.24 Preparing to unpack .../81-libp11-kit-dev_0.25.5-3_amd64.deb ...
+#24 37.24 Unpacking libp11-kit-dev:amd64 (0.25.5-3) ...
+#24 37.28 Selecting previously unselected package libtasn1-6-dev:amd64.
+#24 37.28 Preparing to unpack .../82-libtasn1-6-dev_4.20.0-2+deb13u1_amd64.deb ...
+#24 37.28 Unpacking libtasn1-6-dev:amd64 (4.20.0-2+deb13u1) ...
+#24 37.32 Selecting previously unselected package nettle-dev:amd64.
+#24 37.32 Preparing to unpack .../83-nettle-dev_3.10.1-1_amd64.deb ...
+#24 37.32 Unpacking nettle-dev:amd64 (3.10.1-1) ...
+#24 37.41 Selecting previously unselected package libgnutls28-dev:amd64.
+#24 37.41 Preparing to unpack .../84-libgnutls28-dev_3.8.9-3+deb13u4_amd64.deb ...
+#24 37.42 Unpacking libgnutls28-dev:amd64 (3.8.9-3+deb13u4) ...
+#24 37.51 Selecting previously unselected package zlib1g-dev:amd64.
+#24 37.51 Preparing to unpack .../85-zlib1g-dev_1%3a1.3.dfsg+really1.3.1-1+deb13u1_amd64.deb ...
+#24 37.52 Unpacking zlib1g-dev:amd64 (1:1.3.dfsg+really1.3.1-1+deb13u1) ...
+#24 37.56 Selecting previously unselected package librtmp-dev:amd64.
+#24 37.56 Preparing to unpack .../86-librtmp-dev_2.4+20151223.gitfa8646d.1-2+b5_amd64.deb ...
+#24 37.56 Unpacking librtmp-dev:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#24 37.59 Selecting previously unselected package libssl-dev:amd64.
+#24 37.59 Preparing to unpack .../87-libssl-dev_3.5.9-1~deb13u1_amd64.deb ...
+#24 37.59 Unpacking libssl-dev:amd64 (3.5.9-1~deb13u1) ...
+#24 37.78 Selecting previously unselected package libssh2-1-dev:amd64.
+#24 37.78 Preparing to unpack .../88-libssh2-1-dev_1.11.1-1+deb13u2_amd64.deb ...
+#24 37.79 Unpacking libssh2-1-dev:amd64 (1.11.1-1+deb13u2) ...
+#24 37.83 Selecting previously unselected package libzstd-dev:amd64.
+#24 37.83 Preparing to unpack .../89-libzstd-dev_1.5.7+dfsg-1+deb13u1_amd64.deb ...
+#24 37.83 Unpacking libzstd-dev:amd64 (1.5.7+dfsg-1+deb13u1) ...
+#24 37.88 Selecting previously unselected package libcurl4-openssl-dev:amd64.
+#24 37.88 Preparing to unpack .../90-libcurl4-openssl-dev_8.14.1-2+deb13u7_amd64.deb ...
+#24 37.89 Unpacking libcurl4-openssl-dev:amd64 (8.14.1-2+deb13u7) ...
+#24 37.95 Selecting previously unselected package libxxhash-dev:amd64.
+#24 37.95 Preparing to unpack .../91-libxxhash-dev_0.8.3-2_amd64.deb ...
+#24 37.96 Unpacking libxxhash-dev:amd64 (0.8.3-2) ...
+#24 38.01 Selecting previously unselected package liblz4-dev:amd64.
+#24 38.01 Preparing to unpack .../92-liblz4-dev_1.10.0-4_amd64.deb ...
+#24 38.02 Unpacking liblz4-dev:amd64 (1.10.0-4) ...
+#24 38.06 Selecting previously unselected package librdkafka1:amd64.
+#24 38.07 Preparing to unpack .../93-librdkafka1_2.8.0-1_amd64.deb ...
+#24 38.07 Unpacking librdkafka1:amd64 (2.8.0-1) ...
+#24 38.13 Selecting previously unselected package librdkafka++1:amd64.
+#24 38.13 Preparing to unpack .../94-librdkafka++1_2.8.0-1_amd64.deb ...
+#24 38.14 Unpacking librdkafka++1:amd64 (2.8.0-1) ...
+#24 38.17 Selecting previously unselected package libsasl2-dev.
+#24 38.17 Preparing to unpack .../95-libsasl2-dev_2.1.28+dfsg1-9_amd64.deb ...
+#24 38.17 Unpacking libsasl2-dev (2.1.28+dfsg1-9) ...
+#24 38.22 Selecting previously unselected package librdkafka-dev:amd64.
+#24 38.22 Preparing to unpack .../96-librdkafka-dev_2.8.0-1_amd64.deb ...
+#24 38.23 Unpacking librdkafka-dev:amd64 (2.8.0-1) ...
+#24 38.35 Setting up libkeyutils1:amd64 (1.6.3-6) ...
+#24 38.37 Setting up libzstd-dev:amd64 (1.5.7+dfsg-1+deb13u1) ...
+#24 38.38 Setting up libbrotli1:amd64 (1.1.0-2+deb13u1) ...
+#24 38.39 Setting up binutils-common:amd64 (2.44-3) ...
+#24 38.40 Setting up libnghttp2-14:amd64 (1.64.0-1.1+deb13u2) ...
+#24 38.42 Setting up linux-libc-dev (6.12.118-1) ...
+#24 38.43 Setting up libctf-nobfd0:amd64 (2.44-3) ...
+#24 38.45 Setting up libevent-2.1-7t64:amd64 (2.1.13-stable-1~deb13u1) ...
+#24 38.46 Setting up libcom-err2:amd64 (1.47.2-3+b12) ...
+#24 38.47 Setting up libgomp1:amd64 (14.2.0-19) ...
+#24 38.49 Setting up libsframe1:amd64 (2.44-3) ...
+#24 38.51 Setting up libjansson4:amd64 (2.14-2+b3) ...
+#24 38.53 Setting up libkrb5support0:amd64 (1.21.3-5+deb13u2) ...
+#24 38.55 Setting up libsasl2-modules-db:amd64 (2.1.28+dfsg1-9) ...
+#24 38.56 Setting up libunbound8:amd64 (1.26.2-0+deb13u1) ...
+#24 38.58 Setting up libpkgconf3:amd64 (1.8.1-4) ...
+#24 38.59 Setting up libgmpxx4ldbl:amd64 (2:6.3.0+dfsg-3) ...
+#24 38.62 Setting up rpcsvc-proto (1.4.3-1) ...
+#24 38.63 Setting up libmpfr6:amd64 (4.2.2-1) ...
+#24 38.64 Setting up libquadmath0:amd64 (14.2.0-19) ...
+#24 38.66 Setting up libp11-kit0:amd64 (0.25.5-3) ...
+#24 38.68 Setting up libproc2-0:amd64 (2:4.0.4-9) ...
+#24 38.70 Setting up libunistring5:amd64 (1.3-2) ...
+#24 38.72 Setting up libssl-dev:amd64 (3.5.9-1~deb13u1) ...
+#24 38.73 Setting up libmpc3:amd64 (1.3.1-1+b3) ...
+#24 38.75 Setting up libatomic1:amd64 (14.2.0-19) ...
+#24 38.76 Setting up pkgconf-bin (1.8.1-4) ...
+#24 38.78 Setting up libk5crypto3:amd64 (1.21.3-5+deb13u2) ...
+#24 38.79 Setting up libsasl2-2:amd64 (2.1.28+dfsg1-9) ...
+#24 38.81 Setting up libnghttp3-9:amd64 (1.8.0-1) ...
+#24 38.82 Setting up libxxhash-dev:amd64 (0.8.3-2) ...
+#24 38.83 Setting up libnghttp3-dev:amd64 (1.8.0-1) ...
+#24 38.85 Setting up libubsan1:amd64 (14.2.0-19) ...
+#24 38.87 Setting up libhwasan0:amd64 (14.2.0-19) ...
+#24 38.88 Setting up libcrypt-dev:amd64 (1:4.4.38-1) ...
+#24 38.90 Setting up libasan8:amd64 (14.2.0-19) ...
+#24 38.91 Setting up procps (2:4.0.4-9) ...
+#24 38.95 Setting up libtasn1-6:amd64 (4.20.0-2+deb13u1) ...
+#24 38.97 Setting up libkrb5-3:amd64 (1.21.3-5+deb13u2) ...
+#24 38.98 Setting up libssh2-1t64:amd64 (1.11.1-1+deb13u2) ...
+#24 38.99 Setting up libtsan2:amd64 (14.2.0-19) ...
+#24 39.01 Setting up libbinutils:amd64 (2.44-3) ...
+#24 39.03 Setting up libisl23:amd64 (0.27-1) ...
+#24 39.05 Setting up libc-dev-bin (2.41-12+deb13u5) ...
+#24 39.07 Setting up libtasn1-6-dev:amd64 (4.20.0-2+deb13u1) ...
+#24 39.09 Setting up libcc1-0:amd64 (14.2.0-19) ...
+#24 39.10 Setting up libldap2:amd64 (2.6.10+dfsg-1) ...
+#24 39.12 Setting up libbrotli-dev:amd64 (1.1.0-2+deb13u1) ...
+#24 39.13 Setting up liblsan0:amd64 (14.2.0-19) ...
+#24 39.15 Setting up libp11-kit-dev:amd64 (0.25.5-3) ...
+#24 39.17 Setting up libitm1:amd64 (14.2.0-19) ...
+#24 39.19 Setting up libctf0:amd64 (2.44-3) ...
+#24 39.21 Setting up libgmp-dev:amd64 (2:6.3.0+dfsg-3) ...
+#24 39.22 Setting up nettle-dev:amd64 (3.10.1-1) ...
+#24 39.24 Setting up libidn2-0:amd64 (2.3.8-2) ...
+#24 39.26 Setting up pkgconf:amd64 (1.8.1-4) ...
+#24 39.28 Setting up libgprofng0:amd64 (2.44-3) ...
+#24 39.30 Setting up libldap-dev:amd64 (2.6.10+dfsg-1) ...
+#24 39.31 Setting up libgssapi-krb5-2:amd64 (1.21.3-5+deb13u2) ...
+#24 39.33 Setting up liblz4-dev:amd64 (1.10.0-4) ...
+#24 39.34 Setting up cpp-14-x86-64-linux-gnu (14.2.0-19) ...
+#24 39.35 Setting up libidn2-dev:amd64 (2.3.8-2) ...
+#24 39.36 Setting up cpp-14 (14.2.0-19) ...
+#24 39.37 Setting up libc6-dev:amd64 (2.41-12+deb13u5) ...
+#24 39.38 Setting up libgcc-14-dev:amd64 (14.2.0-19) ...
+#24 39.40 Setting up binutils-x86-64-linux-gnu (2.44-3) ...
+#24 39.41 Setting up cpp-x86-64-linux-gnu (4:14.2.0-1) ...
+#24 39.43 Setting up libgnutls30t64:amd64 (3.8.9-3+deb13u4) ...
+#24 39.45 Setting up libgnutls-openssl27t64:amd64 (3.8.9-3+deb13u4) ...
+#24 39.46 Setting up libnghttp2-dev:amd64 (1.64.0-1.1+deb13u2) ...
+#24 39.47 Setting up libpsl5t64:amd64 (0.21.2-1.1+b1) ...
+#24 39.49 Setting up binutils (2.44-3) ...
+#24 39.50 Setting up libpsl-dev:amd64 (0.21.2-1.1+b1) ...
+#24 39.51 Setting up libsasl2-dev (2.1.28+dfsg1-9) ...
+#24 39.53 Setting up libgnutls-dane0t64:amd64 (3.8.9-3+deb13u4) ...
+#24 39.54 Setting up librtmp1:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#24 39.55 Setting up libgssrpc4t64:amd64 (1.21.3-5+deb13u2) ...
+#24 39.56 Setting up comerr-dev:amd64 (2.1-1.47.2-3+b12) ...
+#24 39.58 Setting up zlib1g-dev:amd64 (1:1.3.dfsg+really1.3.1-1+deb13u1) ...
+#24 39.59 Setting up cpp (4:14.2.0-1) ...
+#24 39.62 Setting up gcc-14-x86-64-linux-gnu (14.2.0-19) ...
+#24 39.63 Setting up libkadm5clnt-mit12:amd64 (1.21.3-5+deb13u2) ...
+#24 39.64 Setting up libgnutls28-dev:amd64 (3.8.9-3+deb13u4) ...
+#24 39.67 Setting up gcc-x86-64-linux-gnu (4:14.2.0-1) ...
+#24 39.68 Setting up libcurl4t64:amd64 (8.14.1-2+deb13u7) ...
+#24 39.69 Setting up libkdb5-10t64:amd64 (1.21.3-5+deb13u2) ...
+#24 39.71 Setting up gcc-14 (14.2.0-19) ...
+#24 39.72 Setting up librtmp-dev:amd64 (2.4+20151223.gitfa8646d.1-2+b5) ...
+#24 39.74 Setting up libssh2-1-dev:amd64 (1.11.1-1+deb13u2) ...
+#24 39.76 Setting up librdkafka1:amd64 (2.8.0-1) ...
+#24 39.78 Setting up libkadm5srv-mit12:amd64 (1.21.3-5+deb13u2) ...
+#24 39.79 Setting up krb5-multidev:amd64 (1.21.3-5+deb13u2) ...
+#24 39.81 Setting up librdkafka++1:amd64 (2.8.0-1) ...
+#24 39.82 Setting up gcc (4:14.2.0-1) ...
+#24 39.85 Setting up libkrb5-dev:amd64 (1.21.3-5+deb13u2) ...
+#24 39.86 Setting up libcurl4-openssl-dev:amd64 (8.14.1-2+deb13u7) ...
+#24 39.88 Setting up librdkafka-dev:amd64 (2.8.0-1) ...
+#24 39.90 Processing triggers for libc-bin (2.41-12+deb13u5) ...
+#24 DONE 40.3s
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 ...
+
+#31 [simulator 3/6] WORKDIR /app
+#31 DONE 0.1s
+
+#32 [simulator 4/6] COPY simulator/requirements.txt ./requirements.txt
+#32 DONE 0.0s
+
+#33 [simulator 5/6] RUN pip install --no-cache-dir -r requirements.txt
+#33 ...
+
+#17 [model-trainer 4/6] RUN pip install --no-cache-dir -r requirements.txt
+#17 41.62 Successfully installed cloudpickle-3.1.3 joblib-1.6.0 numpy-1.26.3 pandas-2.1.4 python-dateutil-4.0.0 pytz-2026.6 scikit-learn-1.4.0 scipy-1.16.3 threadpoolctl-3.8.0 tzdata-2026.6
+#17 41.62 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#17 41.77 
+#17 41.77 [notice] A new release of pip is available: 24.0 -> 26.3
+#17 41.77 [notice] To update, run: pip install --upgrade pip
+#17 DONE 42.1s
+
+#34 [model-trainer 5/6] COPY ml/ ./
+#34 DONE 0.1s
+
+#26 [spark 5/8] RUN pip install --no-cache-dir -r spark-requirements.txt
+#26 ...
+
+#35 [model-trainer 6/6] RUN printf '#!/bin/sh\nset -e\nif [ ! -f "/app/models/risk_model.pkl" ]; then\n  echo "No existing model found, training..."\n  python train_model.py\nelse\n  echo "Model already exists at /app/models/risk_model.pkl, skipping training."\nfi\nexec "$@"\n' > /app/entrypoint.sh     && chmod +x /app/entrypoint.sh
+#35 DONE 0.2s
+
+#26 [spark 5/8] RUN pip install --no-cache-dir -r spark-requirements.txt
+#26 ...
+
+#36 [model-trainer] exporting to image
+#36 exporting layers
+#36 ...
+
+#33 [simulator 5/6] RUN pip install --no-cache-dir -r requirements.txt
+#33 2.327 Collecting confluent-kafka==2.3.0 (from -r requirements.txt (line 1))
+#33 2.660   Downloading confluent_kafka-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (2.3 kB)
+#33 2.726 Downloading confluent_kafka-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (4.0 MB)
+#33 3.222    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.0/4.0 MB 8.3 MB/s eta 0:00:00
+#33 3.290 Installing collected packages: confluent-kafka
+#33 3.413 Successfully installed confluent-kafka-2.3.0
+#33 3.413 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#33 3.615 
+#33 3.615 [notice] A new release of pip is available: 24.0 -> 26.3
+#33 3.615 [notice] To update, run: pip install --upgrade pip
+#33 DONE 3.8s
+
+#37 [simulator 6/6] COPY simulator/ ./
+#37 DONE 0.1s
+
+#38 [simulator] exporting to image
+#38 exporting layers 10.9s done
+#38 exporting manifest sha256:e6047e42c81d8c01c046640a19ca744fda285c3fda8bafcaf94bf7aaedae43e8 0.0s done
+#38 exporting config sha256:d04dd0568e5635271b1c8b77a9233f5859869ddb802d1787a041a1e0ddbec78b 0.0s done
+#38 exporting attestation manifest sha256:cb908bdaf88c690cfbf9cf4332b1a99a465bb3ed582e40d15c2d4abc8ebf32dc 0.0s done
+#38 exporting manifest list sha256:056ea5445ed401b981e58efe9e9a44171af4265c87d025f0cf74d7100b6eaa7a 0.0s done
+#38 naming to docker.io/telematics/trip-simulator:local done
+#38 unpacking to docker.io/telematics/trip-simulator:local
+#38 ...
+
+#36 [model-trainer] exporting to image
+#36 exporting layers 14.6s done
+#36 exporting manifest sha256:7526c3bc1cfb294bd4c0526b666f5beca0a83b6f295eae46d72c97585c6e22ae 0.0s done
+#36 exporting config sha256:cc5a8c40daabac35bfd963196ce59d776441c4240c0cd373ec6cdf440c478834 0.0s done
+#36 exporting attestation manifest sha256:6fb6eddbe4f8a2ea35c05b8ae2a7038eada78f600243d0ce25230a689c15eaf9 0.0s done
+#36 exporting manifest list sha256:62ae66413dd8ac4359faa08a5ed81800a9ea1e226091ef89e716ed7d09098490
+#36 exporting manifest list sha256:62ae66413dd8ac4359faa08a5ed81800a9ea1e226091ef89e716ed7d09098490 0.0s done
+#36 naming to docker.io/telematics/ml-trainer:local done
+#36 unpacking to docker.io/telematics/ml-trainer:local
+#36 ...
+
+#38 [simulator] exporting to image
+#38 unpacking to docker.io/telematics/trip-simulator:local 3.0s done
+#38 DONE 14.0s
+
+#39 [simulator] resolving provenance for metadata file
+#39 DONE 0.0s
+
+#36 [model-trainer] exporting to image
+#36 unpacking to docker.io/telematics/ml-trainer:local 4.5s done
+#36 DONE 19.3s
+
+#26 [spark 5/8] RUN pip install --no-cache-dir -r spark-requirements.txt
+#26 ...
+
+#40 [model-trainer] resolving provenance for metadata file
+#40 DONE 0.0s
+
+#26 [spark 5/8] RUN pip install --no-cache-dir -r spark-requirements.txt
+#26 64.63      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 316.9/316.9 MB 4.9 MB/s eta 0:00:00
+#26 70.35   Preparing metadata (setup.py): started
+#26 70.82   Preparing metadata (setup.py): finished with status 'done'
+#26 71.45 Collecting scikit-learn==1.4.0
+#26 71.71   Downloading scikit_learn-1.4.0-1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.1 MB)
+#26 73.77      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.1/12.1 MB 5.3 MB/s eta 0:00:00
+#26 74.46 Collecting pandas==2.1.4
+#26 74.49   Downloading pandas-2.1.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (12.3 MB)
+#26 75.50      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.3/12.3 MB 11.6 MB/s eta 0:00:00
+#26 76.24 Collecting numpy==1.26.3
+#26 76.26   Downloading numpy-1.26.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (18.2 MB)
+#26 77.78      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 18.2/18.2 MB 11.8 MB/s eta 0:00:00
+#26 78.15 Collecting influxdb-client==1.40.0
+#26 78.17   Downloading influxdb_client-1.40.0-py3-none-any.whl (744 kB)
+#26 78.24      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 744.1/744.1 KB 11.2 MB/s eta 0:00:00
+#26 78.55 Collecting py4j==0.10.9.7
+#26 78.57   Downloading py4j-0.10.9.7-py2.py3-none-any.whl (200 kB)
+#26 78.59      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200.5/200.5 KB 15.7 MB/s eta 0:00:00
+#26 78.97 Collecting joblib>=1.2.0
+#26 79.00   Downloading joblib-1.6.0-py3-none-any.whl (306 kB)
+#26 79.03      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 306.1/306.1 KB 11.8 MB/s eta 0:00:00
+#26 79.63 Collecting scipy>=1.6.0
+#26 79.65   Downloading scipy-1.15.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (37.7 MB)
+#26 82.96      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 37.7/37.7 MB 10.6 MB/s eta 0:00:00
+#26 83.26 Collecting threadpoolctl>=2.0.0
+#26 83.29   Downloading threadpoolctl-3.8.0-py3-none-any.whl (32 kB)
+#26 83.72 Collecting pytz>=2020.1
+#26 83.75   Downloading pytz-2026.6-py2.py3-none-any.whl (506 kB)
+#26 83.79      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 506.3/506.3 KB 13.6 MB/s eta 0:00:00
+#26 84.08 Collecting python-dateutil>=2.8.2
+#26 84.10   Downloading python_dateutil-3.0.0-py2.py3-none-any.whl (94 kB)
+#26 84.12      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 94.7/94.7 KB 9.8 MB/s eta 0:00:00
+#26 84.40 Collecting tzdata>=2022.1
+#26 84.42   Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+#26 84.45      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 348.2/348.2 KB 13.1 MB/s eta 0:00:00
+#26 84.47 Requirement already satisfied: setuptools>=21.0.0 in /usr/lib/python3/dist-packages (from influxdb-client==1.40.0->-r spark-requirements.txt (line 5)) (59.6.0)
+#26 84.75 Collecting urllib3>=1.26.0
+#26 84.78   Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+#26 84.78      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 135.7/135.7 KB 22.5 MB/s eta 0:00:00
+#26 85.04 Collecting reactivex>=4.0.4
+#26 85.07   Downloading reactivex-5.1.0-py3-none-any.whl (257 kB)
+#26 85.08      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 257.3/257.3 KB 18.2 MB/s eta 0:00:00
+#26 85.35 Collecting certifi>=14.05.14
+#26 85.37   Downloading certifi-2026.11.20-py3-none-any.whl (127 kB)
+#26 85.39      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 127.9/127.9 KB 8.7 MB/s eta 0:00:00
+#26 85.67 Collecting cloudpickle>=3.0
+#26 85.70   Downloading cloudpickle-3.1.3-py3-none-any.whl (22 kB)
+#26 86.02 Collecting six>=1.6
+#26 86.05   Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#26 86.13 Collecting typing-extensions<5,>=4.15.0
+#26 86.16   Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#26 86.16      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 KB 23.4 MB/s eta 0:00:00
+#26 86.24 Building wheels for collected packages: pyspark
+#26 86.25   Building wheel for pyspark (setup.py): started
+#26 100.1   Building wheel for pyspark (setup.py): finished with status 'done'
+#26 100.4   Created wheel for pyspark: filename=pyspark-3.5.0-py2.py3-none-any.whl size=317425364 sha256=92cdc9880592af7d4a393c5e73aa6a67b5c7df54bf9e6394c2242051300d65ce
+#26 100.4   Stored in directory: /tmp/pip-ephem-wheel-cache-itrwbur2/wheels/41/4e/10/c2cf2467f71c678cfc8a6b9ac9241e5e44a01940da8fbb17fc
+#26 100.4 Successfully built pyspark
+#26 100.6 Installing collected packages: pytz, py4j, urllib3, tzdata, typing-extensions, threadpoolctl, six, pyspark, numpy, cloudpickle, certifi, scipy, reactivex, python-dateutil, joblib, scikit-learn, pandas, influxdb-client
+#26 114.4 Successfully installed certifi-2026.11.20 cloudpickle-3.1.3 influxdb-client-1.40.0 joblib-1.6.0 numpy-1.26.3 pandas-2.1.4 py4j-0.10.9.7 pyspark-3.5.0 python-dateutil-3.0.0 pytz-2026.6 reactivex-5.1.0 scikit-learn-1.4.0 scipy-1.15.3 six-1.17.0 threadpoolctl-3.8.0 typing-extensions-4.16.0 tzdata-2026.6 urllib3-2.8.0
+#26 114.4 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+#26 DONE 115.0s
+
+#41 [spark 6/8] COPY spark/ ./spark/
+#41 DONE 0.1s
+
+#42 [spark 7/8] COPY ml/ ./ml/
+#42 DONE 0.0s
+
+#43 [spark 8/8] COPY storage/ ./storage/
+#43 DONE 0.0s
+
+#44 [spark] exporting to image
+#44 exporting layers
+#44 exporting layers 19.6s done
+#44 exporting manifest sha256:27fdfa9d356c548fd463e62487535ff17c0a1a6e6f65cffd22d1e5f3440f0db6 done
+#44 exporting config sha256:79bb18fdd0a602e6570c218d52e00926d3a099a484fcb3ad975cf951af695cb8 done
+#44 exporting attestation manifest sha256:3e40069c79def81ab4eae2ca2c948ac4de0f6db629ef60eabc9b3b8da7595720 0.0s done
+#44 exporting manifest list sha256:e74f621661bbdf92f14c2992a6fb7ee9f57a45bcd63e4e2b505f3feada71980a done
+#44 naming to docker.io/telematics/spark-stream-processor:local done
+#44 unpacking to docker.io/telematics/spark-stream-processor:local
+#44 unpacking to docker.io/telematics/spark-stream-processor:local 4.3s done
+#44 DONE 24.1s
+
+#45 [spark] resolving provenance for metadata file
+#45 DONE 0.0s
+ Image telematics/ml-trainer:local Built 
+ Image telematics/spark-stream-processor:local Built 
+ Image telematics/risk-api:local Built 
+ Image telematics/trip-simulator:local Built 
+ Network tp-fresh_default Creating 
+ Network tp-fresh_default Created 
+time="2026-11-26T11:44:45+05:30" level=warning msg="a network with name telematics-net exists but was not created for project \"tp-fresh\".\nSet `external: true` to use an existing network"
+ Volume tp-fresh_influxdb-data Creating 
+ Volume tp-fresh_influxdb-data Created 
+ Volume tp-fresh_grafana-data Creating 
+ Volume tp-fresh_grafana-data Created 
+ Volume tp-fresh_kafka-data Creating 
+ Volume tp-fresh_kafka-data Created 
+ Volume tp-fresh_zookeeper-data Creating 
+ Volume tp-fresh_zookeeper-data Created 
+ Volume tp-fresh_zookeeper-log Creating 
+ Volume tp-fresh_zookeeper-log Created 
+ Volume tp-fresh_spark-ivy Creating 
+ Volume tp-fresh_spark-ivy Created 
+ Container tp-fresh-model-trainer-1 Creating 
+ Container telematics-influxdb Creating 
+ Container telematics-zookeeper Creating 
+ Container tp-fresh-model-trainer-1 Created 
+ Container telematics-zookeeper Created 
+ Container telematics-kafka Creating 
+ Container telematics-influxdb Created 
+ Container tp-fresh-risk-api-1 Creating 
+ Container telematics-grafana Creating 
+ Container tp-fresh-risk-api-1 Created 
+ Container telematics-kafka Created 
+ Container tp-fresh-kafka-init-1 Creating 
+ Container telematics-kafka-ui Creating 
+ Container telematics-grafana Created 
+ Container telematics-kafka-ui Created 
+ Container tp-fresh-kafka-init-1 Created 
+ Container tp-fresh-spark-1 Creating 
+ Container tp-fresh-spark-1 Created 
+ Container tp-fresh-simulator-1 Creating 
+ Container tp-fresh-simulator-1 Created 
+ Container telematics-influxdb Starting 
+ Container tp-fresh-model-trainer-1 Starting 
+ Container telematics-zookeeper Starting 
+ Container telematics-influxdb Started 
+ Container telematics-influxdb Waiting 
+ Container telematics-influxdb Waiting 
+ Container telematics-zookeeper Started 
+ Container telematics-zookeeper Waiting 
+ Container tp-fresh-model-trainer-1 Started 
+ Container telematics-influxdb Healthy 
+ Container telematics-grafana Starting 
+ Container telematics-influxdb Healthy 
+ Container tp-fresh-risk-api-1 Starting 
+ Container tp-fresh-risk-api-1 Started 
+ Container telematics-grafana Started 
+ Container telematics-zookeeper Healthy 
+ Container telematics-kafka Starting 
+ Container telematics-kafka Started 
+ Container telematics-kafka Waiting 
+ Container telematics-kafka Waiting 
+ Container telematics-kafka Healthy 
+ Container tp-fresh-kafka-init-1 Starting 
+ Container telematics-kafka Healthy 
+ Container telematics-kafka-ui Starting 
+ Container telematics-kafka-ui Started 
+ Container tp-fresh-kafka-init-1 Started 
+ Container tp-fresh-kafka-init-1 Waiting 
+ Container tp-fresh-model-trainer-1 Waiting 
+ Container telematics-influxdb Waiting 
+ Container tp-fresh-model-trainer-1 Exited 
+ Container telematics-influxdb Healthy 
+ Container tp-fresh-kafka-init-1 Exited 
+ Container tp-fresh-spark-1 Starting 
+ Container tp-fresh-spark-1 Started 
+ Container tp-fresh-kafka-init-1 Waiting 
+ Container tp-fresh-kafka-init-1 Exited 
+ Container tp-fresh-simulator-1 Starting 
+ Container tp-fresh-simulator-1 Started 
+exit=0 (finished 2026-11-26T11:45:07+05:30, 165 s)

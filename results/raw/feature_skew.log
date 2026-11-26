@@ -1,0 +1,86 @@
+$ python benchmarks/feature_skew.py --drivers 300 --trips 4 --seed 7
+{
+  "trips_scored": 1200,
+  "per_profile": {
+    "safe": {
+      "n_trips": 500,
+      "simulator_feature_mean": {
+        "avg_speed": 59.66,
+        "max_speed": 71.26,
+        "harsh_brake_count": 0.65,
+        "harsh_accel_count": 5.19,
+        "night_driving_ratio": 0.0,
+        "trip_duration_seconds": 62.07,
+        "speed_variance": 44.74
+      },
+      "training_feature_mean": {
+        "avg_speed": 55,
+        "max_speed": 85,
+        "harsh_brake_count": 1.0,
+        "harsh_accel_count": 1.0,
+        "night_driving_ratio": 0.08,
+        "trip_duration_seconds": 900,
+        "speed_variance": 40
+      },
+      "risk_score_median": 25.2,
+      "risk_category_counts": {
+        "Medium": 256,
+        "Low": 244
+      }
+    },
+    "moderate": {
+      "n_trips": 456,
+      "simulator_feature_mean": {
+        "avg_speed": 78.93,
+        "max_speed": 100.5,
+        "harsh_brake_count": 10.63,
+        "harsh_accel_count": 15.76,
+        "night_driving_ratio": 0.0,
+        "trip_duration_seconds": 63.23,
+        "speed_variance": 152.51
+      },
+      "training_feature_mean": {
+        "avg_speed": 75,
+        "max_speed": 115,
+        "harsh_brake_count": 4.0,
+        "harsh_accel_count": 4.0,
+        "night_driving_ratio": 0.2,
+        "trip_duration_seconds": 1100,
+        "speed_variance": 90
+      },
+      "risk_score_median": 72.99,
+      "risk_category_counts": {
+        "Critical": 206,
+        "High": 219,
+        "Medium": 31
+      }
+    },
+    "aggressive": {
+      "n_trips": 244,
+      "simulator_feature_mean": {
+        "avg_speed": 109.42,
+        "max_speed": 143.57,
+        "harsh_brake_count": 19.54,
+        "harsh_accel_count": 21.92,
+        "night_driving_ratio": 0.0,
+        "trip_duration_seconds": 62.43,
+        "speed_variance": 417.74
+      },
+      "training_feature_mean": {
+        "avg_speed": 100,
+        "max_speed": 148,
+        "harsh_brake_count": 9.0,
+        "harsh_accel_count": 9.0,
+        "night_driving_ratio": 0.38,
+        "trip_duration_seconds": 1300,
+        "speed_variance": 150
+      },
+      "risk_score_median": 92.68,
+      "risk_category_counts": {
+        "Critical": 241,
+        "High": 3
+      }
+    }
+  }
+}
+exit=0

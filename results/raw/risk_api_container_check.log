@@ -1,0 +1,25 @@
+$ docker build -t telematics/risk-api:local risk_api   (2026-11-26T11:40:16+05:30)
+sha256:8c05e95858f1a3ca27d1cac15b66d1afeaee83e28c0deb7a73c33deae4c8bdee
+exit=0
+$ docker run -d --name risk-api-check --network telematics-net -p 8001:8000 -e INFLUXDB_URL=http://influxdb:8086 -e INFLUXDB_TOKEN=<local dev token> telematics/risk-api:local
+b01de1128417817a6bb09fd6aa9956a09cd937089572be1bafdbed951ea0a0c1
+$ curl -s -w ' HTTP %{http_code}' http://localhost:8001/health
+{"status":"ok","influxdb":"reachable"} HTTP 200
+$ curl -s -w ' HTTP %{http_code}' http://localhost:8001/drivers/top-risk?limit=3
+{"limit":3,"drivers":[{"rank":1,"driver_id":"driver_0004","risk_score":12.53,"risk_category":"Low","trip_id":"3702f1d1-d6c0-4012-81fc-fd7562b16225","scored_at":"2026-11-26T06:07:30.911210Z"},{"rank":2,"driver_id":"driver_0000","risk_score":8.98,"risk_category":"Low","trip_id":"86b7a4b3-0e7d-4980-a1fc-c346a1ec4391","scored_at":"2026-11-26T06:05:31.038784Z"},{"rank":3,"driver_id":"driver_0001","risk_score":8.78,"risk_category":"Low","trip_id":"09dcaadd-95ee-493c-9305-8bae556d3a65","scored_at":"2026-11-26T06:06:00.737901Z"}]} HTTP 200
+$ curl -s -w ' HTTP %{http_code}' http://localhost:8001/drivers/driver_0001/risk
+{"driver_id":"driver_0001","latest":{"driver_id":"driver_0001","trip_id":"09dcaadd-95ee-493c-9305-8bae556d3a65","scored_at":"2026-11-26T06:06:00.737901Z","risk_score":8.78,"risk_category":"Low","harsh_brake_count":1,"harsh_accel_count":2,"max_speed":64.32,"avg_speed":56.56,"night_driving_ratio":0.0},"trips_scored":106,"records":248,"average_risk_score":35.19} HTTP 200
+$ curl -s -w ' HTTP %{http_code}' http://localhost:8001/drivers/top-risk?limit=0
+{"error":{"code":"validation_error","message":"Request parameters are invalid","details":[{"loc":["query","limit"],"msg":"Input should be greater than or equal to 1","type":"greater_than_equal"}]}} HTTP 422
+$ curl -s -w ' HTTP %{http_code}' http://localhost:8001/drivers/bad%20id/risk
+{"error":{"code":"validation_error","message":"Request parameters are invalid","details":[{"loc":["path","driver_id"],"msg":"String should match pattern '^[A-Za-z0-9_\\-]{1,64}$'","type":"string_pattern_mismatch"}]}} HTTP 422
+$ curl -s -w ' HTTP %{http_code}' http://localhost:8001/drivers/driver_9999/risk
+{"error":{"code":"not_found","message":"No risk scores found for driver 'driver_9999'","details":null}} HTTP 404
+$ curl -s http://localhost:8001/trips/09dcaadd-95ee-493c-9305-8bae556d3a65
+{"trip_id":"09dcaadd-95ee-493c-9305-8bae556d3a65","driver_id":"driver_0001","latest":{"driver_id":"driver_0001","trip_id":"09dcaadd-95ee-493c-9305-8bae556d3a65","scored_at":"2026-11-26T06:06:00.737901Z","risk_score":8.78,"risk_category":"Low","harsh_brake_count":1,"harsh_accel_count":2,"max_speed":64.32,"avg_speed":56.56,"night_driving_ratio":0.0},"history":[{"driver_id":"driver_0001","trip_id":"09dcaadd-95ee-493c-9305-8bae556d3a65","scored_at":"2026-11-26T06:06:00.705221Z","risk_score":23.26,"r
+$ docker run --rm -e INFLUXDB_TOKEN= telematics/risk-api:local   (expect startup failure)
+    raise ConfigError("INFLUXDB_TOKEN is not set. The Risk API needs a read token for InfluxDB.")
+app.config.ConfigError: INFLUXDB_TOKEN is not set. The Risk API needs a read token for InfluxDB.
+ERROR:    Application startup failed. Exiting.
+$ docker inspect --format '{{.State.Health.Status}}' risk-api-check (after 20s)
+healthy

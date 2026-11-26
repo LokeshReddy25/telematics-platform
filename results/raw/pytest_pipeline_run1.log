@@ -1,0 +1,41 @@
+### run 1 cmd: python -m pytest tests/ -v --cov=ml --cov=simulator --cov=storage --cov=spark --cov-report=term (2026-11-26T11:14:17+05:30)
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.3.3, pluggy-1.6.0 -- C:\Users\acer\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: c:\Users\acer\Desktop\Car\telematics-platform
+plugins: cov-5.0.0
+collecting ... collected 17 items
+
+tests/test_risk_scorer.py::test_aggregate_features_computes_expected_values PASSED [  5%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[0-Low] PASSED   [ 11%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[24.9-Low] PASSED [ 17%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[25-Medium] PASSED [ 23%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[49.9-Medium] PASSED [ 29%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[50-High] PASSED [ 35%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[74.9-High] PASSED [ 41%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[75-Critical] PASSED [ 47%]
+tests/test_risk_scorer.py::test_risk_category_boundaries[100-Critical] PASSED [ 52%]
+tests/test_risk_scorer.py::test_score_trip_returns_expected_contract PASSED [ 58%]
+tests/test_risk_scorer.py::test_score_trip_rejects_empty_input PASSED    [ 64%]
+tests/test_trip_generator.py::test_assign_driver_profile_returns_valid_profile PASSED [ 70%]
+tests/test_trip_generator.py::test_assign_driver_profile_produces_all_profiles_over_many_samples PASSED [ 76%]
+tests/test_trip_generator.py::test_generate_trip_events_returns_requested_count PASSED [ 82%]
+tests/test_trip_generator.py::test_generate_trip_events_shares_driver_and_trip_id PASSED [ 88%]
+tests/test_trip_generator.py::test_generate_trip_events_value_ranges PASSED [ 94%]
+tests/test_trip_generator.py::test_stream_events_yields_expected_minimum_event_count PASSED [100%]
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                          Stmts   Miss  Cover
+-------------------------------------------------
+ml\risk_scorer.py                57      5    91%
+ml\train_model.py                74     74     0%
+simulator\kafka_producer.py      75     75     0%
+simulator\trip_generator.py      79      7    91%
+spark\stream_processor.py        50     50     0%
+storage\influxdb_writer.py       40     40     0%
+-------------------------------------------------
+TOTAL                           375    251    33%
+
+
+============================= 17 passed in 2.82s ==============================
+exit=0

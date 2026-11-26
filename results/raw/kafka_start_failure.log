@@ -1,0 +1,15 @@
+[2026-11-12 07:38:23,134] INFO SASL config status: Will not attempt to authenticate using SASL (unknown error) (org.apache.zookeeper.ClientCnxn)
+[2026-11-12 07:38:23,200] WARN An exception was thrown while closing send thread for session 0x100000060390000. (org.apache.zookeeper.ClientCnxn)
+EndOfStreamException: Unable to read additional data from server sessionid 0x100000060390000, likely server has closed socket
+java.io.IOException: Connection to kafka:9092 (id: 1 rack: null) failed.
+[2026-11-12 07:38:28,270] TRACE [Controller id=1 epoch=2] Received response UpdateMetadataResponseData(errorCode=0) for request UPDATE_METADATA with correlation id 0 sent to broker kafka:9092 (id: 1 rack: null) (state.change.logger)
+[2026-11-12 07:38:28,374] TRACE [Controller id=1 epoch=2] Received response LeaderAndIsrResponseData(errorCode=0, partitionErrors=[], topics=[LeaderAndIsrTopicError(topicId=Iovqbd6WS0aBi-JBggD4Ug, partitionErrors=[LeaderAndIsrPartitionError(topicName='', partitionIndex=1, errorCode=0), LeaderAndIsrPartitionError(topicName='', partitionIndex=0, errorCode=0), LeaderAndIsrPartitionError(topicName='', partitionIndex=2, errorCode=0)])]) for request LEADER_AND_ISR with correlation id 1 sent to broker kafka:9092 (id: 1 rack: null) (state.change.logger)
+[2026-11-12 07:38:28,386] TRACE [Controller id=1 epoch=2] Received response UpdateMetadataResponseData(errorCode=0) for request UPDATE_METADATA with correlation id 2 sent to broker kafka:9092 (id: 1 rack: null) (state.change.logger)
+[2026-11-26 05:48:41,335] INFO SASL config status: Will not attempt to authenticate using SASL (unknown error) (org.apache.zookeeper.ClientCnxn)
+[2026-11-26 05:48:41,370] WARN An exception was thrown while closing send thread for session 0x1000004cf1b0000. (org.apache.zookeeper.ClientCnxn)
+EndOfStreamException: Unable to read additional data from server sessionid 0x1000004cf1b0000, likely server has closed socket
+[2026-11-26 05:48:43,747] ERROR Error while creating ephemeral at /brokers/ids/1, node already exists and owner '0x100000060390001' does not match current session '0x1000004cf1b0001' (kafka.zk.KafkaZkClient$CheckedEphemeral)
+[2026-11-26 05:48:43,754] ERROR [KafkaServer id=1] Fatal error during KafkaServer startup. Prepare to shutdown (kafka.server.KafkaServer)
+org.apache.zookeeper.KeeperException$NodeExistsException: KeeperErrorCode = NodeExists
+	at org.apache.zookeeper.KeeperException.create(KeeperException.java:126)
+[2026-11-26 05:48:44,002] ERROR Exiting Kafka due to fatal exception during startup. (kafka.Kafka$)
