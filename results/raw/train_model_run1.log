@@ -1,0 +1,21 @@
+### run 1  cmd: cd ml && python train_model.py  (2026-11-26T11:13:25+05:30)
+/usr/bin/bash: line 1: /usr/bin/time: No such file or directory
+Generating 10000 synthetic training samples...
+Train samples: 8000 | Test samples: 2000
+Training GradientBoostingRegressor...
+
+=== Evaluation on held-out test set ===
+MAE : 2.646
+R^2 : 0.975
+
+=== Feature importances ===
+  max_speed                0.3893
+  speed_variance           0.2853
+  harsh_brake_count        0.1487
+  harsh_accel_count        0.1102
+  avg_speed                0.0457
+  night_driving_ratio      0.0205
+  trip_duration_seconds    0.0003
+
+Saved trained model to C:\Users\acer\Desktop\Car\telematics-platform\ml\models\risk_model.pkl
+train_model.py completed successfully.

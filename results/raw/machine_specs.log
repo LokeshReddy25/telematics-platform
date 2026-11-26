@@ -1,0 +1,10 @@
+﻿$ Get-CimInstance Win32_Processor / Win32_ComputerSystem / Win32_OperatingSystem / Win32_VideoController; docker info; python --version; java -version  (2026-11-26T11:38:06.2971416+05:30)
+CPU: 12th Gen Intel(R) Core(TM) i5-12500H | Cores: 12 | Logical: 16 | MaxClockMHz: 3100
+RAM bytes: 16869548032
+OS: Microsoft Windows 11 Home 10.0.26300 build 26300
+GPU: NVIDIA GeForce RTX 3050 Ti Laptop GPU
+GPU: Intel(R) Iris(R) Xe Graphics
+Docker server 29.6.1 | Docker VM CPUs=16 MemBytes=8172236800 | Kernel=6.18.33.2-microsoft-standard-WSL2
+Docker Compose version v5.3.0
+Python 3.11.9
+openjdk version "17.0.21" 2026-10-20

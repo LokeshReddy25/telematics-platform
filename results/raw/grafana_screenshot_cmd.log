@@ -1,0 +1,1 @@
+﻿cmd: chrome --headless=new --window-size=1600,1000 --virtual-time-budget=20000 --screenshot=results/grafana_dashboard.png http://localhost:3000/d/telematics-driver-risk/?orgId=1&from=now-30m&to=now&kiosk  (2026-11-26T11:37:49.1468212+05:30)

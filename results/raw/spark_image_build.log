@@ -1,0 +1,54 @@
+$ docker build -f devops/Dockerfile.spark -t telematics-spark:bench .  (2026-11-26T11:18:51+05:30)
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.spark
+#1 transferring dockerfile: 2.04kB 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu
+#2 DONE 1.8s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/8] FROM docker.io/apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu@sha256:8d2288e0d19b4e1362c8af4adc278ae59020cc8d812326ce3bc6e0279e4b34e0
+#4 resolve docker.io/apache/spark:3.5.8-scala2.12-java11-python3-r-ubuntu@sha256:8d2288e0d19b4e1362c8af4adc278ae59020cc8d812326ce3bc6e0279e4b34e0 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 271.75kB 0.0s done
+#5 DONE 0.0s
+
+#6 [6/8] COPY spark/ ./spark/
+#6 CACHED
+
+#7 [7/8] COPY ml/ ./ml/
+#7 CACHED
+
+#8 [2/8] WORKDIR /app
+#8 CACHED
+
+#9 [4/8] COPY spark/requirements.txt ./spark-requirements.txt
+#9 CACHED
+
+#10 [5/8] RUN pip install --no-cache-dir -r spark-requirements.txt
+#10 CACHED
+
+#11 [3/8] RUN apt-get update && apt-get install -y --no-install-recommends python3-pip     && rm -rf /var/lib/apt/lists/*
+#11 CACHED
+
+#12 [8/8] COPY storage/ ./storage/
+#12 CACHED
+
+#13 exporting to image
+#13 exporting layers done
+#13 exporting manifest sha256:90a28778b0c2eb97af1f0d888da127f13fbeb0ef8dd8765a724b444616daa709 done
+#13 exporting config sha256:2b0d4e4860868c770e2ed326c2b57a32285ab219ea1f82078cced1ca02116026 done
+#13 exporting attestation manifest sha256:85da94fd8255291e5f7553aa3db50f9e5730bf506b3ef7ae55d68643244b0c3f 0.0s done
+#13 exporting manifest list sha256:bdd565f9cb787354242105c766076c4fa9e9e89b5b94f2504adfa76560707625
+#13 exporting manifest list sha256:bdd565f9cb787354242105c766076c4fa9e9e89b5b94f2504adfa76560707625 0.0s done
+#13 naming to docker.io/library/telematics-spark:bench done
+#13 unpacking to docker.io/library/telematics-spark:bench 0.0s done
+#13 DONE 0.1s
+exit=0

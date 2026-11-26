@@ -1,0 +1,3 @@
+$ python benchmarks/kafka_throughput.py --bootstrap localhost:29092 --drivers 200 --trips 8   (2026-11-26T11:20:08+05:30)
+{"topic": "bench.throughput.632e39ec", "events": 52030, "payload_bytes": 14911898, "acked_ok": 52030, "acked_err": 0, "unflushed": 0, "produce_seconds": 1.1951, "produce_events_per_sec": 43537.5, "consumed": 52030, "consume_seconds": 1.1348, "consume_events_per_sec": 45851.1}
+exit=0

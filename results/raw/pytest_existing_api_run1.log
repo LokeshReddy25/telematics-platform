@@ -1,0 +1,78 @@
+### run 1 cmd: python -m pytest api/tests -v --cov=api/app --cov-report=term (2026-11-26T11:15:27+05:30)
+============================= test session starts =============================
+platform win32 -- Python 3.11.9, pytest-8.3.3, pluggy-1.6.0 -- C:\Users\acer\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: c:\Users\acer\Desktop\Car\telematics-platform
+plugins: anyio-4.16.0, cov-5.0.0
+collecting ... collected 24 items
+
+api/tests/test_auth.py::test_register_and_login_round_trip PASSED        [  4%]
+api/tests/test_auth.py::test_register_duplicate_email_is_409 PASSED      [  8%]
+api/tests/test_auth.py::test_login_wrong_password_is_401 PASSED          [ 12%]
+api/tests/test_auth.py::test_missing_token_is_401 PASSED                 [ 16%]
+api/tests/test_auth.py::test_expired_token_is_401 PASSED                 [ 20%]
+api/tests/test_auth.py::test_garbage_token_is_401 PASSED                 [ 25%]
+api/tests/test_risk.py::test_latest_score_returns_newest PASSED          [ 29%]
+api/tests/test_risk.py::test_risk_level_derived_from_score PASSED        [ 33%]
+api/tests/test_risk.py::test_empty_driver_is_404 PASSED                  [ 37%]
+api/tests/test_risk.py::test_score_out_of_range_is_422 PASSED            [ 41%]
+api/tests/test_risk.py::test_driver_scoped_user_cannot_read_other_driver PASSED [ 45%]
+api/tests/test_risk.py::test_unknown_vehicle_or_trip_is_404_not_500 PASSED [ 50%]
+api/tests/test_risk.py::test_list_risk_scores_newest_first PASSED        [ 54%]
+api/tests/test_telemetry.py::test_ingest_single_event PASSED             [ 58%]
+api/tests/test_telemetry.py::test_ingest_batch_and_order PASSED          [ 62%]
+api/tests/test_telemetry.py::test_ingest_for_unknown_trip_is_404 PASSED  [ 66%]
+api/tests/test_telemetry.py::test_vehicle_telemetry_time_filter PASSED   [ 70%]
+api/tests/test_trips.py::test_create_and_get_trip PASSED                 [ 75%]
+api/tests/test_trips.py::test_create_trip_for_unknown_vehicle_is_404 PASSED [ 79%]
+api/tests/test_trips.py::test_unknown_trip_is_404 PASSED                 [ 83%]
+api/tests/test_vehicles.py::test_create_and_get_vehicle PASSED           [ 87%]
+api/tests/test_vehicles.py::test_duplicate_vin_is_409 PASSED             [ 91%]
+api/tests/test_vehicles.py::test_unknown_vehicle_is_404 PASSED           [ 95%]
+api/tests/test_vehicles.py::test_list_vehicles_requires_auth PASSED      [100%]
+
+============================== warnings summary ===============================
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\testclient.py:40
+  C:\Users\acer\AppData\Local\Programs\Python\Python311\Lib\site-packages\starlette\testclient.py:40: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = typing.Callable[[], typing.ContextManager[anyio.abc.BlockingPortal]]
+
+api\app\main.py:30
+  c:\Users\acer\Desktop\Car\telematics-platform\api\app\main.py:30: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("startup")
+
+..\..\..\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\applications.py:4495
+  C:\Users\acer\AppData\Local\Programs\Python\Python311\Lib\site-packages\fastapi\applications.py:4495: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+
+---------- coverage: platform win32, python 3.11.9-final-0 -----------
+Name                           Stmts   Miss  Cover
+--------------------------------------------------
+api\app\__init__.py                0      0   100%
+api\app\auth.py                   34      2    94%
+api\app\database.py               14      4    71%
+api\app\main.py                   18      3    83%
+api\app\models.py                 69      0   100%
+api\app\routers\__init__.py        0      0   100%
+api\app\routers\auth.py           21      0   100%
+api\app\routers\risk.py           33      1    97%
+api\app\routers\telemetry.py      35      3    91%
+api\app\routers\trips.py          23      1    96%
+api\app\routers\vehicles.py       23      0   100%
+api\app\schemas.py                91      0   100%
+--------------------------------------------------
+TOTAL                            361     14    96%
+
+======================= 24 passed, 3 warnings in 12.39s =======================
+exit=0

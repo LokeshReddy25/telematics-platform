@@ -1,0 +1,6 @@
+$ flake8 . --max-line-length=120 --extend-exclude=ml/models
+exit=0
+$ black --check --line-length=120 .
+All done! \u2728 \U0001f370 \u2728
+34 files would be left unchanged.
+exit=0

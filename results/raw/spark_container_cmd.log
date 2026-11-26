@@ -1,0 +1,2 @@
+$ docker run -d --name telematics-spark-bench --network telematics-net -e INFLUXDB_URL=http://influxdb:8086 -e PROGRESS_FILE=/out/spark_progress.jsonl -v C:\Users\acer\Desktop\Car\telematics-platform\benchmarks:/app/benchmarks:ro -v C:\Users\acer\Desktop\Car\telematics-platform\results\raw:/out --entrypoint /opt/spark/bin/spark-submit telematics-spark:bench --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 /app/benchmarks/spark_with_progress.py
+c01cdd29d45b5b0d549381244b45d8903d4f84f9fa002e132b39839bf31e4596

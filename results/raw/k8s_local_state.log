@@ -1,0 +1,31 @@
+$ kubectl get all,configmap,secret -n telematics
+NAME                                         READY   STATUS    RESTARTS         AGE
+pod/influxdb-bd86f5cf8-lrxx4                 1/1     Running   5 (8m6s ago)     125d
+pod/kafka-779765fd8c-w4644                   1/1     Running   5 (8m6s ago)     125d
+pod/spark-stream-processor-f5c9f7866-th2rg   1/1     Running   15 (7m30s ago)   125d
+pod/trip-simulator-58964bbb7-tbt5c           1/1     Running   30 (8m6s ago)    125d
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/influxdb-service   ClusterIP   10.96.135.133   <none>        8086/TCP   125d
+service/kafka-service      ClusterIP   10.96.228.37    <none>        9092/TCP   125d
+
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/influxdb                 1/1     1            1           125d
+deployment.apps/kafka                    1/1     1            1           125d
+deployment.apps/spark-stream-processor   1/1     1            1           125d
+deployment.apps/trip-simulator           1/1     1            1           125d
+
+NAME                                               DESIRED   CURRENT   READY   AGE
+replicaset.apps/influxdb-bd86f5cf8                 1         1         1       125d
+replicaset.apps/kafka-779765fd8c                   1         1         1       125d
+replicaset.apps/spark-stream-processor-f5c9f7866   1         1         1       125d
+replicaset.apps/trip-simulator-58964bbb7           1         1         1       125d
+replicaset.apps/trip-simulator-65bbc574c5          0         0         0       125d
+replicaset.apps/trip-simulator-7495c999b           0         0         0       125d
+
+NAME                          DATA   AGE
+configmap/kube-root-ca.crt    1      125d
+configmap/telematics-config   6      125d
+
+NAME                        TYPE     DATA   AGE
+secret/telematics-secrets   Opaque   1      125d

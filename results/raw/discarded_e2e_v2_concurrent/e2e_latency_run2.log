@@ -1,0 +1,4 @@
+$ python benchmarks/clock_offset.py telematics-spark-bench   (2026-11-26T11:24:47+05:30)
+{"offset_ms": 41.1, "uncertainty_ms": 49.9, "samples": [{"rtt_ms": 130.8, "offset_ms": 53.1}, {"rtt_ms": 117.1, "offset_ms": 49.4}, {"rtt_ms": 99.8, "offset_ms": 41.1}, {"rtt_ms": 117.7, "offset_ms": 48.7}, {"rtt_ms": 129.4, "offset_ms": 52.3}, {"rtt_ms": 118.4, "offset_ms": 49.9}, {"rtt_ms": 118.2, "offset_ms": 45.1}]}
+$ python benchmarks/e2e_latency.py --drivers 5 --trips 3 --speed 0.3 --wait 240 --clock-offset-ms 41.1   (2026-11-26T11:24:48+05:30)
+exit=127

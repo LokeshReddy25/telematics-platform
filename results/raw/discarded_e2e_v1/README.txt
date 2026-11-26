@@ -1,0 +1,1 @@
+These runs used the first version of benchmarks/e2e_latency.py, whose 'last event -> first score' metric was invalid (Spark update mode scores partial windows, so the first score can precede the last event: run 1 min = -9.343 s). Kept for transparency, not used in results.md. The benchmark was stopped before run 2 started.
